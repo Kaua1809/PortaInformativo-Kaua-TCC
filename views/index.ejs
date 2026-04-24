@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu site</title>
+    <link rel="shortcut icon" href="/images/logo-favicon.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheets/style.css">
+</head>
+<body>
+    <header>
+         <%- include('partials/menu') %>
+         <%- include('partials/navbar') %> 
+    </header>
+    <main>
+        <article>
+
+         <div id="carouselExampleFade" class="carousel slide carousel-fade" data-bs-ride="carousel">
+  
+  <div class="carousel-inner">
+
+    <!-- Slide 1 -->
+    <div class="carousel-item active">
+      <img class="carrosel" src="/images/deficiencia.png" alt="Imagem de uma mulher sentada em uma cadeira de rodas">
+      <div class="overlay"></div>
+      <div class="carousel-caption">
+        <h3>Inclusão importa</h3>
+        <p>Informação transforma vidas</p>
+      </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="carousel-item">
+      <img class="carrosel" src="/images/fotonot1.png" alt="Imagem de uma menina com síndrome de down">
+      <div class="overlay"></div>
+      <div class="carousel-caption">
+        <h3>Conscientização</h3>
+        <p>Conhecimento gera respeito</p>
+      </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="carousel-item">
+      <img class="carrosel" src="/images/deficiencia-carro.jpg" alt="imagem de um homem sentado em uma cadeira de rodas">
+      <div class="overlay"></div>
+      <div class="carousel-caption">
+        <h3>Acessibilidade</h3>
+        <p>Direito de todos</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Botões -->
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon"></span>
+  </button>
+
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+    <span class="carousel-control-next-icon"></span>
+  </button>
+
+</div>
+            
+        
+        <div id="noticias">
+        <h2>NOTÍCIAS</h2>
+        </div>
+
+          <div class="card">
+        <a href="">
+            <img src="/images/fotonot1.png" alt="">
+            <p class="textonoticias">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officiis fugit in aut libero molestias nihil ut possimus rem consequuntur laborum. Provident aperiam optio possimus quas ipsa quod, molestias nam. Facilis!</p>
+        </a>
+        </div>
+
+        <div class="card">
+        <a href="">
+            <img src="/images/fotonot1.png"  alt="">
+            <p class="textonoticias">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officiis fugit in aut libero molestias nihil ut possimus rem consequuntur laborum. Provident aperiam optio possimus quas ipsa quod, molestias nam. Facilis!</p>
+        </a>
+        </div>
+        
+        <div class="card">
+        <a href="">
+            <img src="/images/fotonot1.png"  alt="">
+            <p class="textonoticias">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officiis fugit in aut libero molestias nihil ut possimus rem consequuntur laborum. Provident aperiam optio possimus quas ipsa quod, molestias nam. Facilis!</p>
+        </a>
+        </div>
+        </article>
+    </main>
+    <%- include('partials/rodape') %> 
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="javascripts/menu.js"></script>
+</body>
+</html>
