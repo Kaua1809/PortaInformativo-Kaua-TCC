@@ -11,6 +11,9 @@ var usersRouter = require('./routes/users');
 var deficienciasRouter = require('./routes/deficiencias');
 var responsavelRouter = require('./routes/responsavel');
 var pesquisaRouter = require('./routes/pesquisa');
+var legislacaoRouter = require('./routes/legislacao');
+
+
 
 var app = express();
 
@@ -30,6 +33,10 @@ app.use('/users', usersRouter);
 app.use('/deficiencias', deficienciasRouter);
 app.use('/responsavel', responsavelRouter);
 app.use('/pesquisa', pesquisaRouter);
+app.use('/legislacao', legislacaoRouter);
+
+
+
 
 // 404
 app.use(function(req, res, next) {

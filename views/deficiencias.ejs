@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deficiências</title>
-    <link rel="shortcut icon" href="/images/logo-favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="stylesheets/style.css">
 </head>
@@ -21,33 +21,22 @@
 
 <section class="deficiencias">
 
-    <h1 class="titulo-principal">DEFICIÊNCIAS</h1>
-
     <!-- TEXTO -->
     <div class="conteudo-def">
 
         <h3>O que são Deficiências?</h3>
 
         <p>
-            As deficiências podem ser entendidas como limitações físicas, cognitivas,
-            sensoriais ou intelectuais que afetam a forma como uma pessoa realiza
-            determinadas atividades do dia a dia. Essas condições não definem o indivíduo,
-            mas influenciam na forma como ele interage com o mundo.
+            A Lei Brasileira de Inclusão da Pessoa com Deficiência, em seu artigo primeiro, estabelece que “pessoas com deficiência são aquelas que têm impedimentos de longo prazo de natureza física, mental, intelectual ou sensorial, os quais, em interação com diversas barreiras, podem obstruir sua participação plena e efetiva na sociedade em igualdades de condições com as demais pessoas”.
         </p>
 
-        <img src="/images/Pessoas-com-Deficiencia.jpg" alt="Deficiências">
-
-        <p>
-            Agora que você já conhece um pouco sobre as deficiências, continue aprendendo!
-            Descubra como cuidar com respeito e empatia.
-        </p>
+        <img src="/images/Imagem-pagina-deficiencias1.jpg" alt="Deficiências">
 
     </div>
-
      <!-- GRID -->
     <div class="grid-def">
 
-        <div class="btn-def">Deficiências Físicas</div>
+        <a href="legislacao"><div class="btn-def">Deficiências Físicas</div></a>
         <div class="btn-def">Deficiências Visuais</div>
         <div class="btn-def">Deficiências Auditivas</div>
 
@@ -66,11 +55,14 @@
 
 </article>
 </main>
-
+<%- include('partials/modal-contato') %> 
+<%- include('partials/modal-feedback') %> 
 <%- include('partials/rodape') %> 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="javascripts/menu.js"></script>
+<script src="javascripts/modal-contato.js"></script>
+<script src="javascripts/modal-feedback.js"></script>
 
 </body>
 </html>

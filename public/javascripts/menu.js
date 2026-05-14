@@ -21,14 +21,6 @@ const searchBtn = document.getElementById("searchBtn");
 
 function pesquisar() {
     const termo = searchInput.value.toLowerCase();
-
-    if (termo === "") {
-        alert("Digite algo para pesquisar!");
-        return;
-    }
-
-    // Exemplo simples (tu pode melhorar depois)
-    alert("Você pesquisou por: " + termo);
 }
 
 // clicar no botão

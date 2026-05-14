@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal do Responsável</title>
 
-    <link rel="shortcut icon" href="/images/logo-favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="stylesheets/style.css">
 </head>
@@ -17,22 +17,23 @@
     <%- include('partials/navbar') %> 
 </header>
 
-<main>
+<main id="main-portal">
 
-
-    <section class="container-portal">
+    <section id="container-portal">
 
         <!-- ================= FEED ================= -->
-        <section class="feed-completo">
+        <section id="feed-completo">
 
             <!-- POST 1 -->
             <article class="post-completo">
+
                 <div class="post-topo">
                     <div class="avatar"></div>
                     <h4 class="nome-usuario">Kelly02</h4>
                 </div>
 
                 <div class="post-corpo">
+
                     <img src="/images/Pessoas-com-Deficiencia.jpg" alt="Imagem do post">
 
                     <p>
@@ -40,88 +41,108 @@
                         mas com o tempo eu fui aprendendo e percebi que existem muitas outras famílias
                         passando pela mesma situação. Esse portal pode ajudar muitas pessoas.
                     </p>
+
                 </div>
 
                 <div class="post-acoes">
                     <span>💬 12 comentários</span>
                     <span>❤️ 34 curtidas</span>
                 </div>
+
             </article>
 
             <!-- POST 2 -->
             <article class="post-completo">
+
                 <div class="post-topo">
                     <div class="avatar"></div>
                     <h4 class="nome-usuario">Kaua21</h4>
                 </div>
 
                 <div class="post-corpo">
+
                     <img src="/images/fotonot1.png" alt="Imagem do post">
 
                     <p>
                         Meu irmão tem deficiência e no começo foi difícil entender como lidar com as
                         necessidades dele. Com o tempo aprendemos juntos e hoje temos uma convivência melhor.
                     </p>
+
                 </div>
 
                 <div class="post-acoes">
                     <span>💬 8 comentários</span>
                     <span>❤️ 21 curtidas</span>
                 </div>
+
             </article>
 
             <!-- POST 3 -->
             <article class="post-completo">
+
                 <div class="post-topo">
                     <div class="avatar"></div>
                     <h4 class="nome-usuario">AnaSilva</h4>
                 </div>
 
                 <div class="post-corpo">
+
                     <img src="/images/post3.jpg" alt="Imagem do post">
 
                     <p>
                         Compartilhar experiências com outras famílias me ajudou muito a entender melhor
                         as necessidades do meu filho. Informação e apoio fazem toda a diferença.
                     </p>
+
                 </div>
 
                 <div class="post-acoes">
                     <span>💬 5 comentários</span>
                     <span>❤️ 18 curtidas</span>
                 </div>
+
             </article>
 
         </section>
 
         <!-- ================= SIDEBAR ================= -->
-        <aside class="sidebar-completo">
+        <aside id="sidebar-completo">
 
             <div class="perfil-box">
+
                 <div class="avatar-grande"></div>
+
                 <h4>Usuário</h4>
+
                 <p>Bem-vindo ao portal</p>
+
             </div>
 
             <div class="acoes-lateral">
-                <button class="btn-lateral">Contato</button>
-                <button class="btn-lateral">Feedback</button>
-                <button class="btn-lateral">Ajuda</button>
-                <br>
-                <button class="btn-lateral">+</button>
-            </div>
 
+    <a href="#" onclick="openModal('modal-contato')"class="btn-lateral" id="abrirContato">
+    Contato
+</a>
 
+    <a href="#" onclick="openModal('modal-feedback')" class="btn-lateral">Feedback</a>
+
+    <a href="ajuda.html" class="btn-lateral">Ajuda</a>
+
+    <a href="nova-postagem.html" class="btn-lateral">+</a>
+
+</div>
         </aside>
 
     </section>
 
 </main>
-
-<%- include('partials/rodape') %> 
+<%- include('partials/modal-contato') %> 
+<%- include('partials/modal-feedback') %> 
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="javascripts/menu.js"></script>
+<script src="javascripts/modal-contato.js"></script>
+<script src="javascripts/modal-feedback.js"></script>
 
 </body>
 </html>

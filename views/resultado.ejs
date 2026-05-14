@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <title>Meu site</title>
-    <link rel="shortcut icon" href="/images/logo-favicon.png" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
@@ -17,12 +17,16 @@
         <% if (busca) { %>
     <p class="pesquisa">Exibindo todos os resultados da busca por: <%= busca %></p>
 <% } else { %>
-    <p class="pesquisa">Sua busca por <%= busca%> não retorou resultados. Tente novamento com outros termos</p>
+    <p class="pesquisa">Sua busca por <%= busca%> não retornou resultados. Tente novamento com outros termos</p>
 <% } %>
     </main>
+    <%- include('partials/modal-contato') %> 
+    <%- include('partials/modal-feedback') %> 
         <%- include('partials/rodape') %> 
     
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="/javascripts/menu.js"> </script>
+    <script src="/javascripts/modal-contato.js"></script>
+    <script src="/javascripts/modal-feedback.js"></script>
 </body>
 </html>
