@@ -6,4 +6,6 @@ router.get('/', function(req, res, next) {
   res.render('deficiencias', { title: 'DEFICIÊNCIAS' });
 });
 
+
+
 module.exports = router;

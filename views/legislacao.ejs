@@ -11,21 +11,22 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Seu CSS -->
-    <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 
-<body>
+<body class="pagina-legislacao">
 
 <header>
     <%- include('partials/menu') %>
     <%- include('partials/navbar') %>
 </header>
 
-<main class="container mt-5">
+<main class="conteudo-legislacao">
 
-    <!-- ===== TEXTO INTRO ===== -->
-    <section class="introducao text-center mb-5">
-        <h1 class="titulo-principal">Legislação Brasileira sobre Pessoas com Deficiência</h1>
+    <section class="introducao-legislacao" aria-labelledby="titulo-legislacao">
+        <h1 id="titulo-legislacao" class="titulo-principal">
+            Legislação Brasileira sobre Pessoas com Deficiência
+        </h1>
 
         <p class="texto-intro">
             As leis brasileiras voltadas às pessoas com deficiência têm como objetivo garantir igualdade de direitos, inclusão social e acessibilidade. Essas legislações asseguram oportunidades no mercado de trabalho, educação, saúde e mobilidade, promovendo uma sociedade mais justa e inclusiva.
@@ -36,86 +37,85 @@
         </p>
     </section>
 
+    <section class="legislacao" aria-label="Lista de leis brasileiras sobre pessoas com deficiência">
+        <div class="grade-leis">
 
-    <!-- ===== CARDS DE LEIS ===== -->
-    <section class="legislacao">
-
-        <div class="row g-4">
-
-            <!-- CARD 1 -->
-            <div class="col-md-4">
-                <div class="card card-lei h-100">
-                    
-
-                    <div class="card-body">
-                        <h5 class="card-title">Lei de Cotas</h5>
-                        <p class="numero-lei">Lei nº 8.213/91</p>
-                        <p class="card-text">
-                            Obriga empresas com 100 ou mais funcionários a reservarem vagas para pessoas com deficiência.
-                        </p>
-                    </div>
-
-                    <div class="card-footer">
-                        <a href="https://www.planalto.gov.br/ccivil_03/leis/l8213cons.htm" target="_blank" class="btn btn-primary w-100">
-                            Ver lei completa
-                        </a>
-                    </div>
+            <article class="card-lei">
+                <div class="card-body">
+                    <h2 class="card-title">Lei de Cotas</h2>
+                    <p class="numero-lei">Lei nº 8.213/91</p>
+                    <p class="card-text">
+                        Obriga empresas com 100 ou mais funcionários a reservarem vagas para pessoas com deficiência. Esta lei é fundamental para garantir a inserção no mercado de trabalho formal.
+                    </p>
                 </div>
-            </div>
 
-            <!-- CARD 2 -->
-            <div class="col-md-4">
-                <div class="card card-lei h-100">
-                    
-
-                    <div class="card-body">
-                        <h5 class="card-title">Estatuto da Pessoa com Deficiência</h5>
-                        <p class="numero-lei">Lei nº 13.146/2015</p>
-                        <p class="card-text">
-                            Garante direitos fundamentais e promove a inclusão social das pessoas com deficiência.
-                        </p>
-                    </div>
-
-                    <div class="card-footer">
-                        <a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" target="_blank" class="btn btn-primary w-100">
-                            Ver lei completa
-                        </a>
-                    </div>
+                <div class="card-footer">
+                    <a href="https://www.planalto.gov.br/ccivil_03/leis/l8213cons.htm" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                        Ver lei completa
+                    </a>
                 </div>
-            </div>
+            </article>
 
-            <!-- CARD 3 -->
-            <div class="col-md-4">
-                <div class="card card-lei h-100">
-                    
-                    <div class="card-body">
-                        <h5 class="card-title">BPC/LOAS</h5>
-                        <p class="numero-lei">Lei nº 8.742/93</p>
-                        <p class="card-text">
-                            Garante um salário mínimo mensal para pessoas com deficiência de baixa renda.
-                        </p>
-                    </div>
-
-                    <div class="card-footer">
-                        <a href="https://www.planalto.gov.br/ccivil_03/leis/l8742.htm" target="_blank" class="btn btn-primary w-100">
-                            Ver lei completa
-                        </a>
-                    </div>
+            <article class="card-lei">
+                <div class="card-body">
+                    <h2 class="card-title">Estatuto da Pessoa com Deficiência</h2>
+                    <p class="numero-lei">Lei nº 13.146/2015</p>
+                    <p class="card-text">
+                        Garante direitos fundamentais e promove a inclusão social das pessoas com deficiência em todas as esferas da vida, desde educação até acessibilidade urbana.
+                    </p>
                 </div>
-            </div>
+
+                <div class="card-footer">
+                    <a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                        Ver lei completa
+                    </a>
+                </div>
+            </article>
+
+            <article class="card-lei">
+                <div class="card-body">
+                    <h2 class="card-title">BPC/LOAS</h2>
+                    <p class="numero-lei">Lei nº 8.742/93</p>
+                    <p class="card-text">
+                        Garante um salário mínimo mensal para pessoas com deficiência de baixa renda que não possuem meios de prover a própria manutenção.
+                    </p>
+                </div>
+
+                <div class="card-footer">
+                    <a href="https://www.planalto.gov.br/ccivil_03/leis/l8742.htm" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                        Ver lei completa
+                    </a>
+                </div>
+            </article>
+
+            <article class="card-lei">
+                <div class="card-body">
+                    <h2 class="card-title">Lei da Acessibilidade</h2>
+                    <p class="numero-lei">Lei nº 10.098/2000</p>
+                    <p class="card-text">
+                        Estabelece normas gerais e critérios básicos para a promoção da acessibilidade das pessoas portadoras de deficiência ou com mobilidade reduzida.
+                    </p>
+                </div>
+
+                <div class="card-footer">
+                    <a href="https://www.planalto.gov.br/ccivil_03/leis/l10098.htm" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+                        Ver lei completa
+                    </a>
+                </div>
+            </article>
 
         </div>
-
     </section>
 
 </main>
-<%- include('partials/modal-contato') %> 
-<%- include('partials/modal-feedback') %> 
+
+<%- include('partials/modal-contato') %>
+<%- include('partials/modal-feedback') %>
 <%- include('partials/rodape') %>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script src="javascripts/menu.js"></script>
-<script src="javascripts/modal-contato.js"></script>
-<script src="javascripts/modal-feedback.js"></script>
+<script src="/javascripts/menu.js"></script>
+<script src="/javascripts/modal-contato.js"></script>
+<script src="/javascripts/modal-feedback.js"></script>
 </body>
 </html>
