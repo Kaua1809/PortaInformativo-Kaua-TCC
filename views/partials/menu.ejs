@@ -9,8 +9,28 @@
     <a href="/responsavel">Portal do responsável</a>
     <a href="/deficiencias">Deficiências</a>
     <a href="/legislacao">Legislação</a>
-    <a href="#" id="abrirContatoMenu"  onclick=" openModal('modal-contato')">Contato</a>
+    <a href="#" id="abrirContatoMenu" onclick="openModal('modal-contato')">Contato</a>
     <a href="#" onclick="openModal('modal-feedback')">Feedback</a>
     <a href="/ajuda">Ajuda</a>
     <a href="/ajuda">Sobre</a>
-</div> 
+
+    <!-- SEÇÃO DE CONTA DINÂMICA -->
+    <div class="secao-conta">
+        <% if (usuarioLogado) { %>
+            <!-- APARECE APENAS SE ESTIVER LOGADO -->
+            <a href="/conta" class="perfil-usuario">
+                <div class="avatar-container">
+<img src="<%= usuarioLogado.foto_perfil || '/images/default-avatar.png' %>" alt="Foto de Perfil" class="foto-perfil">
+
+                </div>
+                <span class="nome-usuario2"><%= usuarioLogado.login %></span>
+            </a>
+        <% } else { %>
+            <!-- APARECE APENAS SE NÃO ESTIVER LOGADO -->
+            <div class="links-autenticacao">
+                <a href="/login" class="btn-entrar">Entrar</a>
+                <a href="/cadastro" class="btn-cadastrar">Cadastrar</a>
+            </div>
+        <% } %>
+    </div>
+</div>

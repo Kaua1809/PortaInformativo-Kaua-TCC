@@ -21,14 +21,20 @@ const searchBtn = document.getElementById("searchBtn");
 
 function pesquisar() {
     const termo = searchInput.value.toLowerCase();
+    console.log("Pesquisando por:", termo);
+    // Adicione aqui a lógica de redirecionamento ou filtro de pesquisa
 }
 
 // clicar no botão
-searchBtn.addEventListener("click", pesquisar);
+if (searchBtn) {
+    searchBtn.addEventListener("click", pesquisar);
+}
 
 // apertar ENTER
-searchInput.addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
-        pesquisar();
-    }
-});
+if (searchInput) {
+    searchInput.addEventListener("keypress", function(e) {
+        if (e.key === "Enter") {
+            pesquisar();
+        }
+    });
+}

@@ -3,33 +3,29 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-var session = require('express-session'); // Módulo para sessões
+var session = require('express-session');
 
-// Importando a conexão do banco de dados (apenas uma vez!)
-const db = require('./db');
-
-// Importando os arquivos de rotas
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var deficienciasRouter = require('./routes/deficiencias');
-var responsavelRouter = require('./routes/responsavel');
-var pesquisaRouter = require('./routes/pesquisa');
-var legislacaoRouter = require('./routes/legislacao');
-var loginRouter = require('./routes/login');
-var cadastroRouter = require('./routes/cadastro');
-var contaRouter = require('./routes/conta');
-
+// 1. INICIALIZA O APP (Deve ser logo no início)
 var app = express();
 
-// Configuração da sessão (deve vir antes das rotas)
+// 2. IMPORTA O BANCO DE DADOS
+const db = require('./db');
+
+// 3. CONFIGURAÇÃO DA SESSÃO (Deve vir ANTES de usar req.session)
 app.use(session({
-  secret: 'seu_segredo_aqui', // Pode ser qualquer texto
+  secret: 'seu_segredo_aqui',
   resave: false,
   saveUninitialized: false,
-  cookie: { maxAge: 60 * 60 * 1000 } // Sessão dura 1 hora
+  cookie: { maxAge: 60 * 60 * 1000 }
 }));
 
-// Configuração do view engine (EJS)
+// 4. MIDDLEWARE PARA PASSAR USUARIO PARA AS VIEWS
+app.use((req, res, next) => {
+    res.locals.usuarioLogado = req.session.usuarioLogado || null;
+    next();
+});
+
+// 5. CONFIGURAÇÃO DO VIEW ENGINE (EJS)
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -39,7 +35,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// DEFINIÇÃO DAS ROTAS
+// 6. IMPORTAÇÃO E DEFINIÇÃO DAS ROTAS
+var indexRouter = require('./routes/index');
+var usersRouter = require('./routes/users');
+var deficienciasRouter = require('./routes/deficiencias');
+var responsavelRouter = require('./routes/responsavel');
+var pesquisaRouter = require('./routes/pesquisa');
+var legislacaoRouter = require('./routes/legislacao');
+var loginRouter = require('./routes/login');
+var cadastroRouter = require('./routes/cadastro');
+var contaRouter = require('./routes/conta');
+var verifyRouter = require('./routes/verify'); // Importe a nova rota de verificação
+
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/deficiencias', deficienciasRouter);
@@ -49,17 +56,16 @@ app.use('/legislacao', legislacaoRouter);
 app.use('/login', loginRouter);
 app.use('/cadastro', cadastroRouter);
 app.use('/conta', contaRouter);
+app.use('/verify', verifyRouter); // Use a rota de verificação
 
-// Tratamento de erro 404 (Página não encontrada)
+// 7. TRATAMENTO DE ERROS
 app.use(function(req, res, next) {
   next(createError(404));
 });
 
-// Tratamento de erros gerais
 app.use(function(err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
   res.status(err.status || 500);
   res.render('error');
 });
