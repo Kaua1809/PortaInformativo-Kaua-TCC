@@ -9,12 +9,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="stylesheets/style.css">
     <link rel="stylesheet" href="/stylesheets/modals.css">
+    <link rel="stylesheet" href="/stylesheets/portalinclusao.css">
+
+    
 </head>
 
 <body class="pagina-deficiencias">
 
 <header>
-    <%- include('partials/menu') %>
+    <%- include('partials/menu' ) %>
     <%- include('partials/navbar') %> 
 </header>
 
@@ -25,84 +28,66 @@
         <!-- ================= FEED ================= -->
         <section id="feed-completo">
 
-            <!-- POST 1 -->
-            <article class="post-completo">
+            <% if (postagens && postagens.length > 0) { %>
+                <% postagens.forEach(post => { %>
 
-                <div class="post-topo">
+                    <article class="post-completo" data-post-id="<%= post.id %>">
+    <div class="post-layout-horizontal">
+        <!-- Lado Esquerdo: Imagem -->
+        <div class="post-coluna-imagem">
+            <% if (post.fotos) { %>
+                <img src="data:image/jpeg;base64,<%= post.fotos.toString('base64') %>" alt="Imagem do post" class="post-imagem">
+            <% } %>
+        </div>
+
+        <!-- Lado Direito: Perfil e Legenda -->
+        <div class="post-coluna-conteudo">
+            <div class="post-topo">
+                <% if (post.foto_perfil) { %>
+                    <img src="<%= post.foto_perfil %>" alt="Avatar" class="avatar">
+                <% } else { %>
                     <div class="avatar"></div>
-                    <h4 class="nome-usuario">Kelly02</h4>
+                <% } %>
+                <div>
+                    <h4 class="nome-usuario"><%= post.login %></h4>
+                    <small class="data-postagem"><%= new Date(post.data_postagem).toLocaleDateString('pt-BR') %></small>
                 </div>
+            </div>
 
-                <div class="post-corpo">
-
-                    <img src="/images/Pessoas-com-Deficiencia.jpg" alt="Imagem do post">
-
-                    <p>
-                        Com a chegada do meu filho com deficiência foi algo que mudou toda minha vida,
-                        mas com o tempo eu fui aprendendo e percebi que existem muitas outras famílias
-                        passando pela mesma situação. Esse portal pode ajudar muitas pessoas.
-                    </p>
-
+            <div class="post-corpo">
+                <div class="post-texto-container">
+                    <p><%= post.comentarios %></p>
                 </div>
+            </div>
+        </div>
+    </div>
 
-                <div class="post-acoes">
-                    <span>💬 12 comentários</span>
-                    <span>❤️ 34 curtidas</span>
-                </div>
-
-            </article>
-
-            <!-- POST 2 -->
-            <article class="post-completo">
-
-                <div class="post-topo">
-                    <div class="avatar"></div>
-                    <h4 class="nome-usuario">Kaua21</h4>
-                </div>
-
-                <div class="post-corpo">
-
-                    <img src="/images/fotonot1.png" alt="Imagem do post">
-
-                    <p>
-                        Meu irmão tem deficiência e no começo foi difícil entender como lidar com as
-                        necessidades dele. Com o tempo aprendemos juntos e hoje temos uma convivência melhor.
-                    </p>
-
-                </div>
-
-                <div class="post-acoes">
-                    <span>💬 8 comentários</span>
-                    <span>❤️ 21 curtidas</span>
-                </div>
-
-            </article>
-
-            <!-- POST 3 -->
-            <article class="post-completo">
-
-                <div class="post-topo">
-                    <div class="avatar"></div>
-                    <h4 class="nome-usuario">AnaSilva</h4>
-                </div>
-
-                <div class="post-corpo">
-
-                    <img src="/images/post3.jpg" alt="Imagem do post">
-
-                    <p>
-                        Compartilhar experiências com outras famílias me ajudou muito a entender melhor
-                        as necessidades do meu filho. Informação e apoio fazem toda a diferença.
-                    </p>
-
-                </div>
-
-                <div class="post-acoes">
-                    <span>💬 5 comentários</span>
-                    <span>❤️ 18 curtidas</span>
-                </div>
-
-            </article>
+    <!-- Parte Inferior: Botões de Ação (Abaixo da imagem) -->
+    <div class="post-acoes">
+        <% 
+            let statusCurtido = post.usuario_curtiu > 0 ? 'true' : 'false';
+            let iconeCurtida = post.usuario_curtiu > 0 ? '❤️' : '🤍';
+        %>
+        
+        <button class="btn-acao btn-comentar" onclick="irParaDetalhes('<%= post.id %>')">
+            💬 <%= post.total_comentarios %>
+        </button>
+        
+        <button class="btn-acao btn-curtir" 
+                onclick="curtirPostagem('<%= post.id %>', this)" 
+                data-curtido="<%= statusCurtido %>">
+            <span class="emoji-curtida"><%= iconeCurtida %></span> <%= post.total_curtidas %>
+        </button>
+        
+        <button class="btn-acao btn-denunciar" onclick="abrirModalDenuncia('<%= post.id %>')">
+            🚩 Denunciar
+        </button>
+    </div>
+</article>
+                <% }); %>
+            <% } else { %>
+                <p class="text-center">Nenhuma postagem disponível no momento.</p>
+            <% } %>
 
         </section>
 
@@ -111,39 +96,147 @@
 
             <div class="perfil-box">
 
-                <div class="avatar-grande"></div>
+                <% if (usuarioLogado.foto_perfil) { %>
+                    <img src="<%= usuarioLogado.foto_perfil %>" alt="Avatar" class="avatar-grande">
+                <% } else { %>
+                    <div class="avatar-grande"></div>
+                <% } %>
 
-                <h4>Usuário</h4>
+                <h4><%= usuarioLogado.login %></h4>
 
-                <p>Bem-vindo ao portal</p>
+                <p><%= usuarioLogado.bio || 'Bem-vindo ao portal' %></p>
 
             </div>
 
             <div class="acoes-lateral">
 
-    <a href="#" onclick="openModal('modal-contato')"class="btn-lateral" id="abrirContato">
-    Contato
-</a>
+                <a href="#" onclick="openModal('modal-contato')" class="btn-lateral" id="abrirContato">
+                    Contato
+                </a>
 
-    <a href="#" onclick="openModal('modal-feedback')" class="btn-lateral">Feedback</a>
+                <a href="#" onclick="openModal('modal-feedback')" class="btn-lateral">Feedback</a>
 
-    <a href="ajuda.html" class="btn-lateral">Ajuda</a>
+                <a href="ajuda.html" class="btn-lateral">Ajuda</a>
 
-    <a href="nova-postagem.html" class="btn-lateral">+</a>
+                <a href="/responsavel/criar-postagem" class="btn-lateral">+</a>
 
-</div>
+            </div>
+
         </aside>
 
     </section>
 
 </main>
+
+<!-- ================= MODAIS ================= -->
 <%- include('partials/modal-contato') %> 
 <%- include('partials/modal-feedback') %> 
+
+<!-- Modal para Denúncia -->
+<div class="modal fade" id="modal-denuncia" tabindex="-1" aria-labelledby="denunciaLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="denunciaLabel">Denunciar Postagem</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="form-denuncia">
+                    <div class="mb-3">
+                        <label for="motivo-denuncia" class="form-label">Motivo da denúncia:</label>
+                        <select class="form-select" id="motivo-denuncia" name="motivo" required>
+                            <option value="">Selecione um motivo</option>
+                            <option value="conteudo-ofensivo">Conteúdo ofensivo</option>
+                            <option value="spam">Spam</option>
+                            <option value="conteudo-inapropriado">Conteúdo inapropriado</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descricao-denuncia" class="form-label">Descrição (opcional):</label>
+                        <textarea class="form-control" id="descricao-denuncia" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="enviarDenuncia()">Denunciar</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="javascripts/menu.js"></script>
 <script src="javascripts/modal-contato.js"></script>
 <script src="javascripts/modal-feedback.js"></script>
+
+<script>
+    let postIdAtual = null;
+
+    // Função para curtir/descurtir postagem
+    function curtirPostagem(postId, botao ) {
+        fetch('/responsavel/curtir/' + postId, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso) {
+                location.reload();
+            } else {
+                alert(data.mensagem);
+            }
+        })
+        .catch(error => console.error('Erro:', error));
+    }
+
+    // Função para ir para a página de detalhes
+    function irParaDetalhes(postId) {
+        window.location.href = '/responsavel/post/' + postId;
+    }
+
+    // Função para abrir modal de denúncia
+    function abrirModalDenuncia(postId) {
+        postIdAtual = postId;
+        const modal = new bootstrap.Modal(document.getElementById('modal-denuncia'));
+        modal.show();
+    }
+
+    // Função para enviar denúncia
+    function enviarDenuncia() {
+        const motivo = document.getElementById('motivo-denuncia').value;
+        const descricao = document.getElementById('descricao-denuncia').value;
+
+        if (!motivo) {
+            alert('Por favor, selecione um motivo');
+            return;
+        }
+
+        fetch('/responsavel/denunciar/' + postIdAtual, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                motivo: motivo + (descricao ? ' - ' + descricao : '')
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.sucesso) {
+                alert(data.mensagem);
+                bootstrap.Modal.getInstance(document.getElementById('modal-denuncia')).hide();
+                document.getElementById('form-denuncia').reset();
+            } else {
+                alert(data.mensagem);
+            }
+        })
+        .catch(error => console.error('Erro:', error));
+    }
+</script>
 
 </body>
 </html>
