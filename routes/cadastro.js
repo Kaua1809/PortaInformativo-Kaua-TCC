@@ -24,8 +24,8 @@ router.post('/', async (req, res) => {
                 return res.render('cadastro', { erro: 'Erro ao cadastrar. Tente outro usuário ou e-mail.' });
             }
 
-                        const mailOptions = {
-                from: '"Portal Informativo" <Portal.Informativo02@gmail.com>',
+            const mailOptions = {
+                from: '"Portal Informativo" <portal.informativo02@gmail.com>',
                 to: email,
                 subject: 'Ativação de Conta - Portal Informativo',
                 html: `
@@ -46,25 +46,19 @@ router.post('/', async (req, res) => {
                 `
             };
 
+            // ÚNICO envio do e-mail de validação (antes havia uma chamada duplicada/aninhada aqui,
+            // que mandava o mesmo e-mail duas vezes e piorava a pontuação de spam no destinatário).
+            transporter.sendMail(mailOptions, (error, info) => {
+                if (error) {
+                    console.log('Erro e-mail:', error);
+                    return res.render('cadastro', { erro: 'Cadastro feito, mas houve um erro ao enviar o e-mail de validação.' });
+                }
 
-            transporter.sendMail(mailOptions, (error, info ) => {
-                if (error) {
-                    console.log('Erro e-mail:', error);
-                    return res.render('login', { erro: 'Cadastro feito, mas houve um erro ao enviar o e-mail.', sucesso: null });
-                }
-                
-                  transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.log('Erro e-mail:', error);
-                    return res.render('cadastro', { erro: 'Erro ao enviar e-mail de validação.' });
-                }
-                
                 // RECARREGA A PÁGINA DE CADASTRO COM A MENSAGEM DE SUCESSO
-                res.render('cadastro', { 
-                    erro: null, 
-                    sucesso: 'Enviamos um e-mail de validação! Por favor, verifique sua caixa de entrada para ativar sua conta.' 
+                res.render('cadastro', {
+                    erro: null,
+                    sucesso: 'Enviamos um e-mail de validação! Por favor, verifique sua caixa de entrada (e a pasta de Spam) para ativar sua conta.'
                 });
-            });      
             });
         });
     } catch (e) {

@@ -1,68 +1,73 @@
-/* ================= MODAIS (RESPONSIVIDADE GERAL) ================= */
+/* ================= MODAIS (SISTEMA DE FLUXO DINÂMICO) ================= */
 .modal-container {
     width: 100vw;
     height: 100vh;
     position: fixed;
     top: 0;
     left: 0;
-    background-color: rgba(0, 0, 0, 0.4); /* Um pouco mais escuro para melhor contraste */
+    background-color: rgba(0, 0, 0, 0.4);
     z-index: 1500;
     display: none;
     align-items: center;
     justify-content: center;
-    padding: 20px; /* Evita que o modal encoste nas bordas em telas pequenas */
-    overflow-y: auto; /* Permite scroll se o conteúdo for maior que a tela */
+    padding: 20px;
+    overflow-y: auto;
 }
 
 .modal-box {
     width: 100%;
-    max-width: 1000px; /* Largura padrão para modais comuns */
+    max-width: 1000px;
     height: auto;
-    max-height: 90vh; /* Garante que não ultrapasse a altura da tela */
+    max-height: 90vh;
     background-color: var(--cor04);
     backdrop-filter: blur(10px);
     padding: var(--espacamento-xl);
-    padding-bottom: 80px; /* Espaço para os botões fixos no rodapé */
     border-radius: 10px;
     position: relative;
-    overflow-y: auto; /* Scroll interno se necessário */
+    display: flex; /* TRANSFORMA EM FLEX PARA OS BOTÕES SEGUITEM O TEXTO */
+    flex-direction: column;
+    overflow-y: auto;
     box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-/* AJUSTE ESPECÍFICO: MODAL CONTATO (MAIS COMPRIDO E MENOS ALTO) */
+/* AJUSTE ESPECÍFICO: MODAL CONTATO */
 #modal-contato .modal-box {
-    max-width: 1000px; /* Aumentado para ser mais "comprido" horizontalmente */
+    max-width: 1000px;
 }
 
-/* AJUSTE ESPECÍFICO: MODAL FEEDBACK (MAIOR) */
+/* AJUSTE ESPECÍFICO: MODAL FEEDBACK */
 #modal-feedback .modal-box {
-    max-width: 1100px; /* Aumentado especificamente o de feedback */
+    max-width: 1100px;
 }
 
-/* Ajuste do formulário para aproveitar a largura no modal de contato */
+/* Ajuste do formulário */
 #modal-contato .form-contato, #modal-feedback .form-feedback {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Divide em 2 colunas */
-    gap: 15px 25px; /* Espaçamento entre campos */
+    gap: 15px 25px;
     align-items: start;
+    flex-grow: 1; /* FAZ O FORMULÁRIO OCUPAR O ESPAÇO DISPONÍVEL */
+    margin-bottom: 20px; /* ESPAÇO DE SEGURANÇA ANTES DOS BOTÕES */
 }
 
-/* A mensagem (textarea) deve ocupar a largura total ou se ajustar ao lado? */
 #modal-contato .campo-mensagem, #modal-feedback .campo-mensagem {
-    grid-column: 1 / -1; /* Ocupa as duas colunas */
+    grid-column: 1 / -1;
 }
 
-#modal-contato .input-mensagem {
-    height: 100px; /* Reduzido para não ficar tão alto */
-    min-height: 80px;
+/* BLOQUEIO DE REDIMENSIONAMENTO E SCROLL */
+textarea, .input-mensagem {
+    width: 100%;
+    height: 150px;
+    resize: none !important; /* BLOQUEIA O AUMENTO MANUAL */
+    overflow-y: auto !important; /* PERMITE SCROLL INTERNO */
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid rgba(255,255,255,0.1);
+    outline: none;
+    border-radius: 5px;
+    font-family: var(--fonte-padrao);
+    background: rgba(255,255,255,0.9);
 }
 
-#modal-feedback .input-mensagem, #modal-feedback textarea {
-    height: 250px; /* FEEDBACK MAIOR CONFORME SOLICITADO */
-    min-height: 200px;
-}
-
-/* ================= ELEMENTOS INTERNOS ================= */
+/* ELEMENTOS INTERNOS */
 .modal-box h1 {
     margin-bottom: var(--espacamento-grande);
     color: var(--cor01);
@@ -77,11 +82,11 @@
     margin-bottom: var(--espacamento-grande);
     color: var(--cor01);
     font-family: var(--fonte-padrao);
-    text-align: left; /* Alinhado à esquerda fica mais profissional em modais largos */
+    text-align: left;
     padding: 0;
 }
 
-/* ================= FORMULÁRIOS ================= */
+/* FORMULÁRIOS */
 .campo-contato, .campo-mensagem {
     display: flex;
     flex-direction: column;
@@ -96,7 +101,7 @@
     font-weight: 600;
 }
 
-.input-contato, .input-mensagem {
+.input-contato {
     padding: 12px;
     font-size: 1rem;
     border: 1px solid rgba(255,255,255,0.1);
@@ -106,12 +111,16 @@
     background: rgba(255,255,255,0.9);
 }
 
-textarea{
-    width: 100%;
-    height: 150px;
+/* ================= CONTAINER DE BOTÕES (AGORA NO FLUXO DO MODAL) ================= */
+.acoes-modal {
+    display: flex !important;
+    justify-content: space-between !important; /* CADA UM EM UM CANTO */
+    align-items: center;
+    width: 100% !important;
+    margin-top: auto; /* EMPURRA OS BOTÕES PARA O FINAL DO CONTEÚDO */
+    padding-top: 10px;
 }
 
-/* ================= BOTÕES ================= */
 .fechar, .enviar, .enviar1 {
     width: 120px;
     height: 40px;
@@ -124,8 +133,18 @@ textarea{
     cursor: pointer;
     font-family: var(--fonte-padrao);
     transition: 0.3s;
-    position: absolute;
-    bottom: 25px;
+    position: static !important; /* REMOVE O ABSOLUTE QUE CAUSAVA SOBREPOSIÇÃO */
+}
+
+/* CORREÇÃO DEFINITIVA DE POSICIONAMENTO */
+.enviar, .enviar1 {
+    order: 1;
+    margin-right: auto !important; /* Força o distanciamento para a esquerda */
+}
+
+.fechar {
+    order: 2;
+    margin-left: auto !important; /* Força o distanciamento para a direita */
 }
 
 .fechar:hover, .enviar:hover, .enviar1:hover {
@@ -133,68 +152,33 @@ textarea{
     transform: translateY(-2px);
 }
 
-.fechar {
-    right: var(--espacamento-xl);
-}
-
-.enviar, .enviar1 {
-    left: var(--espacamento-xl);
-}
-
-/* ================= RESPONSIVIDADE (MOBILE) ================= */
+/* ================= RESPONSIVIDADE ================= */
 @media (max-width: 768px) {
-    .modal-box {
-        padding: 20px;
-        padding-bottom: 100px; /* Aumentado para os botões não sobreporem */
-        max-height: 95vh;
-    }
-
-    #modal-contato .modal-box, #modal-feedback .modal-box {
-        max-width: 100%;
-    }
-
     #modal-contato .form-contato, #modal-feedback .form-feedback {
-        grid-template-columns: 1fr; /* Volta para 1 coluna no celular */
+        grid-template-columns: 1fr;
         gap: 10px;
     }
 
-    .modal-box h1 {
-        font-size: 1.5rem;
+    .acoes-modal {
+        flex-direction: row;
+        justify-content: space-between;
     }
 
-    /* BOTÕES RESPONSIVOS LADO A LADO */
     .fechar, .enviar, .enviar1 {
-        width: calc(50% - 25px);
-        bottom: 20px;
-    }
-
-    .enviar, .enviar1 {
-        left: 20px;
-    }
-
-    .fechar {
-        right: 20px;
+       width: 50%;
+       margin: -2px;
     }
 }
 
-/* PARA TELAS MUITO PEQUENAS - EMPILHAR BOTÕES */
 @media (max-width: 480px) {
-    .modal-box {
-        padding-bottom: 150px;
+    .acoes-modal {
+        flex-direction: column;
+        gap: 10px;
     }
 
     .fechar, .enviar, .enviar1 {
-        width: calc(100% - 40px);
-        left: 20px;
-        right: 20px;
-    }
-
-    .enviar, .enviar1 {
-        bottom: 80px;
-    }
-
-    .fechar {
-        bottom: 20px;
+        width: 100%;
+        margin: 0 !important; /* Remove as margens automáticas no mobile */
     }
 }
 

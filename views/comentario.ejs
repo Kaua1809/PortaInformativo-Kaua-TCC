@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/portalinclusao.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <main id="comentario-container">
+        <!-- ÁREA DA POSTAGEM -->
+        <div class="post-wrapper">
+            <div class="post-col-imagem">
+                <% if (postagem.fotos) { %>
+                    <img src="data:image/jpeg;base64,<%= postagem.fotos.toString('base64') %>" alt="Post">
+                <% } %>
+            </div>
+
+            <div class="post-col-info">
+                <div class="perfil-header">
+                    <img src="<%= postagem.foto_perfil || '/img/perfil-padrao.png' %>" class="avatar-img" alt="Avatar">
+                    <span class="nome-autor"><%= postagem.login %></span>
+                </div>
+                <p class="texto-post"><%= postagem.comentarios %></p>
+            </div>
+        </div>
+
+        <!-- BOTÃO VOLTAR: alinhado ao canto direito, acima da linha que separa os comentários -->
+        <div class="area-voltar-topo">
+            <a href="/responsavel" class="btn-voltar-custom">VOLTAR</a>
+        </div>
+
+        <!-- TRIGGER COMENTAR -->
+        <div class="trigger-comentario" id="trigger-comentario">
+            <i class="fas fa-comment"></i> Comentar
+        </div>
+
+        <!-- CAIXA PARA NOVO COMENTÁRIO -->
+        <div class="caixa-novo-comentario" id="caixa-novo-comentario">
+            <textarea id="texto-novo-comentario" placeholder="Escreva um comentário..."></textarea>
+            <button class="btn-enviar-comentario" id="btn-enviar-comentario" disabled>Enviar</button>
+        </div>
+
+        <!-- LISTA DE COMENTÁRIOS RAIZ -->
+        <div class="comentarios-secao">
+            <% if (comentarios && comentarios.length > 0) { %>
+                <% comentarios.forEach(comentario => { %>
+                    <div class="comentario-card" id="comentario-card-<%= comentario.id %>">
+                        <img src="<%= comentario.foto_perfil || '/img/perfil-padrao.png' %>" class="avatar-img" alt="Avatar">
+                        <div class="comentario-corpo">
+                            <strong><%= comentario.login %></strong>
+                            <p><%= comentario.texto_comentario %></p>
+                            <div class="comentario-acoes">
+                                <button type="button" class="btn-resp" data-comentario-id="<%= comentario.id %>">Responder</button>
+
+                                <% if (comentario.total_respostas > 0) { %>
+                                    <button type="button" class="btn-ver-respostas" data-comentario-id="<%= comentario.id %>">
+                                        Respostas (<%= comentario.total_respostas %>)
+                                    </button>
+                                <% } %>
+
+                                <button type="button"
+                                    class="acao-icone btn-denunciar"
+                                    data-id="<%= comentario.id %>"
+                                    data-tipo="comentario"
+                                    title="Denunciar">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                </button>
+
+                                <button type="button"
+                                    class="acao-icone btn-curtir <%= comentario.usuario_curtiu > 0 ? 'curtido' : '' %>"
+                                    data-id="<%= comentario.id %>"
+                                    data-tipo="comentario"
+                                    title="Curtir">
+                                    <i class="fas fa-heart"></i>
+                                    <span class="contador-curtidas"><%= comentario.total_curtidas > 0 ? comentario.total_curtidas : '' %></span>
+                                </button>
+
+                                <% if (comentario.pode_excluir) { %>
+                                    <button type="button"
+                                        class="acao-icone btn-excluir-comentario"
+                                        data-id="<%= comentario.id %>"
+                                        title="Excluir">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                <% } %>
+                            </div>
+
+                            <!-- CAIXA DE RESPOSTA -->
+                            <div class="caixa-resposta" id="resposta-<%= comentario.id %>">
+                                <textarea placeholder="Escreva uma resposta..."></textarea>
+                                <button class="btn-enviar-resposta" disabled>Enviar</button>
+                            </div>
+
+                            <!-- LISTA DE RESPOSTAS (carregada via fetch) -->
+                            <div class="lista-respostas" id="lista-respostas-<%= comentario.id %>"
+                                 data-postagem-id="<%= postagem.id %>"></div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p style="text-align: center; color: #666;">Nenhum comentário ainda.</p>
+            <% } %>
+        </div>
+
+    </main>
+
+    <script>
+        const POSTAGEM_ID = <%= postagem.id %>;
+        const NOME_USUARIO_LOGADO = <%- JSON.stringify(usuarioLogado.login) %>;
+        const FOTO_USUARIO_LOGADO = <%- JSON.stringify(usuarioLogado.foto_perfil || '/img/perfil-padrao.png') %>;
+
+        /* ---------- Abrir/fechar caixa de novo comentário (raiz) ---------- */
+        const triggerComentario = document.getElementById('trigger-comentario');
+        const caixaNovoComentario = document.getElementById('caixa-novo-comentario');
+        const textoNovoComentario = document.getElementById('texto-novo-comentario');
+        const btnEnviarComentario = document.getElementById('btn-enviar-comentario');
+
+        triggerComentario.addEventListener('click', function() {
+            caixaNovoComentario.classList.toggle('aberto');
+            if (caixaNovoComentario.classList.contains('aberto')) {
+                textoNovoComentario.focus();
+            }
+        });
+
+        textoNovoComentario.addEventListener('input', function() {
+            btnEnviarComentario.disabled = textoNovoComentario.value.trim().length === 0;
+        });
+
+        btnEnviarComentario.addEventListener('click', function() {
+            const texto = textoNovoComentario.value.trim();
+            enviarComentario(POSTAGEM_ID, texto, null, function(data) {
+                // Insere o comentário novo no topo da lista, sem recarregar a página
+                const secao = document.querySelector('.comentarios-secao');
+                const vazio = secao.querySelector('p');
+                if (vazio) vazio.remove();
+
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = montarHtmlComentarioRaiz({
+                    id: data.id,
+                    login: NOME_USUARIO_LOGADO,
+                    foto_perfil: FOTO_USUARIO_LOGADO,
+                    texto_comentario: texto
+                });
+                const card = wrapper.firstElementChild;
+                secao.insertBefore(card, secao.firstChild);
+                ativarAcoesComentario(card);
+
+                // Limpa e fecha a caixa de novo comentário
+                textoNovoComentario.value = '';
+                btnEnviarComentario.disabled = true;
+                caixaNovoComentario.classList.remove('aberto');
+            });
+        });
+
+        function montarHtmlComentarioRaiz(c) {
+            const avatar = c.foto_perfil || '/img/perfil-padrao.png';
+            return `
+                <div class="comentario-card" id="comentario-card-${c.id}">
+                    <img src="${escapeHtml(avatar)}" class="avatar-img" alt="Avatar">
+                    <div class="comentario-corpo">
+                        <strong>${escapeHtml(c.login)}</strong>
+                        <p>${escapeHtml(c.texto_comentario)}</p>
+                        <div class="comentario-acoes">
+                            <button type="button" class="btn-resp" data-comentario-id="${c.id}">Responder</button>
+                            <button type="button" class="acao-icone btn-denunciar" data-id="${c.id}" data-tipo="comentario" title="Denunciar">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </button>
+                            <button type="button" class="acao-icone btn-curtir" data-id="${c.id}" data-tipo="comentario" title="Curtir">
+                                <i class="fas fa-heart"></i>
+                                <span class="contador-curtidas"></span>
+                            </button>
+                            <button type="button" class="acao-icone btn-excluir-comentario" data-id="${c.id}" title="Excluir">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                        <div class="caixa-resposta" id="resposta-${c.id}">
+                            <textarea placeholder="Escreva uma resposta..."></textarea>
+                            <button class="btn-enviar-resposta" disabled>Enviar</button>
+                        </div>
+                        <div class="lista-respostas" id="lista-respostas-${c.id}" data-postagem-id="${POSTAGEM_ID}"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Liga os eventos (responder, curtir, denunciar) de um comentário-card recém-criado
+        function ativarAcoesComentario(card) {
+            const btnResp = card.querySelector('.btn-resp');
+            btnResp.addEventListener('click', function() {
+                const id = btnResp.getAttribute('data-comentario-id');
+                const caixa = document.getElementById('resposta-' + id);
+                caixa.classList.toggle('aberto');
+                if (caixa.classList.contains('aberto')) {
+                    caixa.querySelector('textarea').focus();
+                }
+            });
+
+            const caixaResp = card.querySelector('.caixa-resposta');
+            ativarCaixaResposta(caixaResp);
+
+            ativarAcoesIcones(card);
+        }
+
+        /* ---------- Função genérica de enviar comentário/resposta ---------- */
+        function enviarComentario(postId, texto, comentarioPaiId, aoSucesso) {
+            if (!texto) return;
+
+            fetch('/responsavel/comentar/' + postId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ texto: texto, comentario_pai_id: comentarioPaiId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.sucesso) {
+                    if (aoSucesso) aoSucesso(data);
+                } else {
+                    alert('Não foi possível enviar. Tente novamente.');
+                }
+            })
+            .catch(() => alert('Erro de conexão ao enviar.'));
+        }
+
+        /* ---------- Ativa as caixas de resposta já renderizadas pelo EJS ---------- */
+        document.querySelectorAll('.caixa-resposta').forEach(function(caixa) {
+            ativarCaixaResposta(caixa);
+        });
+
+        document.querySelectorAll('.btn-resp').forEach(function(botao) {
+            botao.addEventListener('click', function() {
+                const id = botao.getAttribute('data-comentario-id');
+                const caixa = document.getElementById('resposta-' + id);
+                caixa.classList.toggle('aberto');
+                if (caixa.classList.contains('aberto')) {
+                    caixa.querySelector('textarea').focus();
+                }
+            });
+        });
+
+        /* ---------- Abrir/fechar e enviar caixa de resposta (reutilizável para comentários antigos e novos) ---------- */
+        function ativarCaixaResposta(caixa) {
+            if (caixa.dataset.ativado === 'true') return;
+            caixa.dataset.ativado = 'true';
+
+            const comentarioId = caixa.id.replace('resposta-', '');
+            const textarea = caixa.querySelector('textarea');
+            const botaoEnviar = caixa.querySelector('.btn-enviar-resposta');
+
+            textarea.addEventListener('input', function() {
+                botaoEnviar.disabled = textarea.value.trim().length === 0;
+            });
+
+            botaoEnviar.addEventListener('click', function() {
+                const texto = textarea.value.trim();
+                enviarComentario(POSTAGEM_ID, texto, comentarioId, function() {
+                    textarea.value = '';
+                    botaoEnviar.disabled = true;
+                    caixa.classList.remove('aberto');
+
+                    // Atualiza o contador "Respostas (N)" (cria o botão se for a primeira resposta)
+                    const card = caixa.closest('.comentario-card');
+                    let btnVer = card.querySelector('.btn-ver-respostas');
+                    if (btnVer) {
+                        const totalAtual = parseInt(btnVer.textContent.match(/\d+/)[0], 10);
+                        btnVer.textContent = 'Respostas (' + (totalAtual + 1) + ')';
+                    } else {
+                        const btnResp = card.querySelector('.btn-resp');
+                        btnVer = document.createElement('button');
+                        btnVer.type = 'button';
+                        btnVer.className = 'btn-ver-respostas';
+                        btnVer.setAttribute('data-comentario-id', comentarioId);
+                        btnVer.textContent = 'Respostas (1)';
+                        btnResp.insertAdjacentElement('afterend', btnVer);
+                        ativarBotaoVerRespostas(btnVer);
+                    }
+
+                    // Busca a lista atualizada do servidor (garante IDs reais para curtir/denunciar)
+                    const lista = document.getElementById('lista-respostas-' + comentarioId);
+                    lista.dataset.carregado = 'false';
+                    lista.innerHTML = '';
+                    carregarRespostas(comentarioId, lista, true);
+                });
+            });
+        }
+
+        function carregarRespostas(comentarioId, lista, abrirAposCarregar) {
+            lista.innerHTML = '<div class="carregando-respostas">Carregando respostas...</div>';
+
+            fetch('/responsavel/respostas/' + comentarioId)
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.sucesso) {
+                        lista.innerHTML = '<div class="carregando-respostas">Erro ao carregar respostas.</div>';
+                        return;
+                    }
+                    lista.innerHTML = '';
+                    data.respostas.forEach(function(resposta) {
+                        lista.innerHTML += montarHtmlResposta(resposta);
+                    });
+                    lista.dataset.carregado = 'true';
+                    ativarAcoesIcones(lista);
+                    if (abrirAposCarregar) lista.classList.add('aberto');
+                })
+                .catch(() => {
+                    lista.innerHTML = '<div class="carregando-respostas">Erro de conexão.</div>';
+                });
+        }
+
+        /* ---------- Ver/ocultar respostas de um comentário ---------- */
+        function ativarBotaoVerRespostas(botao) {
+            botao.addEventListener('click', function() {
+                const comentarioId = botao.getAttribute('data-comentario-id');
+                const lista = document.getElementById('lista-respostas-' + comentarioId);
+
+                // Se já carregou antes, só alterna mostrar/ocultar
+                if (lista.dataset.carregado === 'true') {
+                    lista.classList.toggle('aberto');
+                    return;
+                }
+
+                carregarRespostas(comentarioId, lista, true);
+            });
+        }
+
+        document.querySelectorAll('.btn-ver-respostas').forEach(ativarBotaoVerRespostas);
+
+        function montarHtmlResposta(resposta) {
+            const avatar = resposta.foto_perfil || '/img/perfil-padrao.png';
+            const curtidoClasse = resposta.usuario_curtiu > 0 ? 'curtido' : '';
+            const contador = resposta.total_curtidas > 0 ? resposta.total_curtidas : '';
+            const btnExcluir = resposta.pode_excluir
+                ? `<button type="button" class="acao-icone btn-excluir-comentario" data-id="${resposta.id}" title="Excluir">
+                       <i class="fas fa-trash"></i>
+                   </button>`
+                : '';
+            return `
+                <div class="resposta-card" id="comentario-card-${resposta.id}">
+                    <img src="${avatar}" class="avatar-img" alt="Avatar">
+                    <div class="comentario-corpo">
+                        <strong>${escapeHtml(resposta.login)}</strong>
+                        <p>${escapeHtml(resposta.texto_comentario)}</p>
+                        <div class="comentario-acoes">
+                            <button type="button" class="acao-icone btn-denunciar" data-id="${resposta.id}" data-tipo="comentario" title="Denunciar">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </button>
+                            <button type="button" class="acao-icone btn-curtir ${curtidoClasse}" data-id="${resposta.id}" data-tipo="comentario" title="Curtir">
+                                <i class="fas fa-heart"></i>
+                                <span class="contador-curtidas">${contador}</span>
+                            </button>
+                            ${btnExcluir}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function escapeHtml(texto) {
+            const div = document.createElement('div');
+            div.textContent = texto;
+            return div.innerHTML;
+        }
+
+        /* ---------- Curtir / Denunciar (funciona em comentários e respostas carregadas dinamicamente) ---------- */
+        function ativarAcoesIcones(escopo) {
+            escopo.querySelectorAll('.btn-curtir').forEach(function(botao) {
+                if (botao.dataset.ativado === 'true') return;
+                botao.dataset.ativado = 'true';
+
+                botao.addEventListener('click', function() {
+                    const id = botao.getAttribute('data-id');
+                    const tipo = botao.getAttribute('data-tipo');
+
+                    fetch('/responsavel/curtir/' + id, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ tipo: tipo })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.sucesso) {
+                            alert('Não foi possível curtir.');
+                            return;
+                        }
+                        const curtiu = data.acao === 'curtida';
+                        botao.classList.toggle('curtido', curtiu);
+                        const span = botao.querySelector('.contador-curtidas');
+                        let total = parseInt(span.textContent || '0', 10);
+                        total = curtiu ? total + 1 : Math.max(0, total - 1);
+                        span.textContent = total > 0 ? total : '';
+                    })
+                    .catch(() => alert('Erro de conexão ao curtir.'));
+                });
+            });
+
+            escopo.querySelectorAll('.btn-denunciar').forEach(function(botao) {
+                if (botao.dataset.ativado === 'true') return;
+                botao.dataset.ativado = 'true';
+
+                botao.addEventListener('click', function() {
+                    const id = botao.getAttribute('data-id');
+                    const tipo = botao.getAttribute('data-tipo');
+                    const motivo = prompt('Descreva o motivo da denúncia:');
+                    if (!motivo || !motivo.trim()) return;
+
+                    fetch('/responsavel/denunciar/' + id, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ motivo: motivo.trim(), tipo: tipo })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.sucesso) {
+                            alert('Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.');
+                        } else {
+                            alert('Não foi possível enviar a denúncia.');
+                        }
+                    })
+                    .catch(() => alert('Erro de conexão ao denunciar.'));
+                });
+            });
+
+            /* ---------- Excluir comentário/resposta (autor do comentário ou dono da postagem) ---------- */
+            escopo.querySelectorAll('.btn-excluir-comentario').forEach(function(botao) {
+                if (botao.dataset.ativado === 'true') return;
+                botao.dataset.ativado = 'true';
+
+                botao.addEventListener('click', function() {
+                    const id = botao.getAttribute('data-id');
+                    if (!confirm('Excluir este comentário?')) return;
+
+                    fetch('/responsavel/comentario/' + id, { method: 'DELETE' })
+                        .then(res => res.json())
+                        .then(data => {
+                            if (!data.sucesso) {
+                                alert('Não foi possível excluir o comentário.');
+                                return;
+                            }
+
+                            const card = document.getElementById('comentario-card-' + id);
+                            if (!card) return;
+
+                            // Se for uma resposta, atualiza o contador "Respostas (N)" do comentário-pai
+                            const listaPai = card.closest('.lista-respostas');
+                            if (listaPai) {
+                                const idComentarioPai = listaPai.id.replace('lista-respostas-', '');
+                                const cardPai = document.getElementById('comentario-card-' + idComentarioPai);
+                                const btnVer = cardPai ? cardPai.querySelector('.btn-ver-respostas') : null;
+                                if (btnVer) {
+                                    const match = btnVer.textContent.match(/\d+/);
+                                    const totalAtual = match ? parseInt(match[0], 10) : 1;
+                                    const novoTotal = Math.max(0, totalAtual - 1);
+                                    if (novoTotal === 0) {
+                                        btnVer.remove();
+                                    } else {
+                                        btnVer.textContent = 'Respostas (' + novoTotal + ')';
+                                    }
+                                }
+                            }
+
+                            card.remove();
+                        })
+                        .catch(() => alert('Erro de conexão ao excluir.'));
+                });
+            });
+        }
+
+        // Ativa os ícones dos comentários raiz já renderizados pelo EJS
+        ativarAcoesIcones(document);
+    </script>
+</body>
+</html>

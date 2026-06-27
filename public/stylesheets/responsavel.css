@@ -1,0 +1,405 @@
+/* ================= PORTAL RESPONSÁVEL - V3 DEFINITIVA ================= */
+
+/* 1. TRAVA O CORPO DA PÁGINA (Fundamental)
+   ESCOPADO por classe: só se aplica quando <html> e <body> tiverem
+   as classes abaixo. Isso evita que esta trava vaze para outras páginas
+   (comentários, nova-postagem, editar-publicação) que carreguem o mesmo
+   arquivo de CSS. Adicione estas classes SOMENTE na view do feed:
+     <html lang="pt-br" class="html-pagina-feed">
+     <body class="pagina-feed">
+*/
+html.html-pagina-feed,
+body.pagina-feed {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden; /* Impede que o navegador role lateralmente ou verticalmente */
+}
+
+/* 2. ESTRUTURA PRINCIPAL (Ajustada para o seu ID) */
+#main-portal {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    margin: 0 !important; /* Remove margens do Bootstrap se houver */
+    padding: 0 !important;
+}
+
+/* 3. O CONTAINER QUE DIVIDE FEED E SIDEBAR (A MÁGICA ESTÁ AQUI) */
+#container-portal {
+    display: grid;
+    /* Divide em duas colunas: a primeira cresce (feed), a segunda é fixa (352px) */
+    grid-template-columns: 1fr 352px; 
+    height: calc(100vh - 110px); /* Altura total menos o header */
+    width: 100%;
+    overflow: hidden; /* Garante que o container pai não role */
+}
+
+/* 4. ÁREA DAS POSTAGENS (O ÚNICO LUGAR QUE ROLA) */
+#feed-completo {
+    height: 100%;
+    overflow-y: auto; /* Scroll apenas aqui dentro */
+    overflow-x: hidden;
+    padding: var(--espacamento-grande) var(--espacamento-xl);
+    background-color: #f4f4f4;
+    box-sizing: border-box;
+    margin: 0 !important; /* IMPORTANTE: Remove qualquer margin-right anterior */
+}
+
+/* 5. SIDEBAR TOTALMENTE FIXA E IMÓVEL */
+#sidebar-completo {
+    width: 100%; /* Ela preenche a coluna do grid */
+    height: 100%;
+    background-color: var(--cor03);
+    color: white;
+    padding: var(--espacamento-grande) var(--espacamento-pequeno);
+    overflow-y: auto; /* Se o menu for grande, ele rola internamente */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+/* AJUSTE PARA O HEADER (Garantir que ele não empurre o layout) */
+header {
+    height: 110px;
+    width: 100%;
+    flex-shrink: 0;
+}
+
+/* --- ESTILOS DE CONTEÚDO (MANTIDOS) --- */
+.post-completo {
+    display: flex;
+    flex-direction: column;
+    padding: 30px;
+    margin-bottom: 40px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.post-layout-horizontal {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+}
+
+.post-coluna-imagem {
+    flex-shrink: 0;
+    width: 400px;
+}
+
+.post-imagem {
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    border-radius: 12px;
+    object-fit: cover;
+    display: block;
+}
+
+.post-coluna-conteudo {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    min-width: 300px;
+}
+
+.post-topo {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: #eee;
+    border: 2px solid #f0f0f0;
+}
+
+.nome-usuario {
+    margin: 0;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #222;
+}
+
+.data-postagem {
+    font-size: 0.95rem;
+    color: #777;
+}
+
+.post-corpo p {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #333;
+}
+
+.post-acoes {
+    display: flex;
+    gap: 40px;
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+    justify-content: flex-start;
+}
+
+.btn-acao {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: #444;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-acao:hover {
+    color: #000;
+    transform: translateY(-2px);
+}
+
+.perfil-box {
+    text-align: center;
+}
+
+.perfil-box h4 {
+    color: var(--cor01);
+    margin-top: var(--espacamento-pequeno);
+}
+
+.perfil-box p {
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.avatar-grande {
+    width: 80px;
+    height: 80px;
+    background-color: var(--cor02);
+    border-radius: 50%;
+    margin: auto;
+    margin-bottom: var(--espacamento-pequeno);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.avatar-grande img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.acoes-lateral {
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacamento-medio);
+    margin-top: var(--espacamento-grande);
+}
+
+.btn-lateral {
+    background-color: var(--cor02);
+    color: var(--cor01);
+    border: none;
+    padding: var(--espacamento-pequeno);
+    border-radius: 30px;
+    font-family: var(--fonte-destaque);
+    font-weight: 600;
+    transition: 0.3s;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+    cursor: pointer;
+}
+
+.btn-lateral:hover {
+    background-color: var(--cor04);
+    transform: translateY(-2px);
+}
+
+.info-box {
+    font-size: 0.875rem;
+}
+
+.pesquisa {
+    text-align: center;
+    color: black;
+    font-family: var(--fonte-padrao);
+    font-size: 2rem;
+}
+
+
+/* ================= RESPONSIVIDADE =================
+   Estrutura mantida 100% igual (grid 2 colunas, sem scroll na página,
+   scroll só dentro de #feed-completo). A sidebar apenas "emagrece"
+   conforme a tela encolhe, e o conteúdo interno dela e dos posts
+   se ajusta para não quebrar o layout.
+*/
+
+@media (min-width: 1400px) {
+    #container-portal {
+        grid-template-columns: 1fr 380px;
+    }
+}
+
+@media (max-width: 1199px) {
+    #container-portal {
+        grid-template-columns: 1fr 280px;
+    }
+
+    .post-coluna-imagem {
+        width: 320px;
+    }
+}
+
+@media (max-width: 991px) {
+    #container-portal {
+        grid-template-columns: 1fr 220px;
+    }
+
+    #sidebar-completo {
+        padding: var(--espacamento-medio) var(--espacamento-pequeno);
+    }
+
+    .perfil-box h4 {
+        font-size: 0.95rem;
+    }
+
+    .avatar-grande {
+        width: 64px;
+        height: 64px;
+    }
+
+    .btn-lateral {
+        font-size: 0.85rem;
+        padding: 10px;
+    }
+
+    .post-completo {
+        padding: 20px;
+        max-width: 100%;
+    }
+
+    .post-coluna-imagem {
+        width: 260px;
+    }
+
+    .post-imagem {
+        max-height: 380px;
+    }
+
+    .post-coluna-conteudo {
+        min-width: 0;
+    }
+}
+
+@media (max-width: 767px) {
+    #container-portal {
+        grid-template-columns: 1fr 110px;
+    }
+
+    #feed-completo {
+        padding: var(--espacamento-medio) var(--espacamento-pequeno);
+    }
+
+    #sidebar-completo {
+        padding: var(--espacamento-pequeno) 6px;
+        gap: 10px;
+    }
+
+    .perfil-box p,
+    .info-box {
+        display: none;
+    }
+
+    .perfil-box h4 {
+        font-size: 0.75rem;
+        margin-top: 6px;
+        word-break: break-word;
+    }
+
+    .avatar-grande {
+        width: 48px;
+        height: 48px;
+    }
+
+    .acoes-lateral {
+        gap: 8px;
+        margin-top: var(--espacamento-medio);
+    }
+
+    .btn-lateral {
+        font-size: 0.7rem;
+        padding: 8px 4px;
+        border-radius: 20px;
+    }
+
+    .post-layout-horizontal {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .post-coluna-imagem {
+        width: 100%;
+    }
+
+    .post-imagem {
+        max-height: 320px;
+    }
+
+    .post-coluna-conteudo {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .post-acoes {
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+}
+
+@media (max-width: 480px) {
+    #container-portal {
+        grid-template-columns: 1fr 76px;
+    }
+
+    .post-completo {
+        padding: 14px;
+        border-radius: 10px;
+    }
+
+    .nome-usuario {
+        font-size: 1.05rem;
+    }
+
+    .data-postagem {
+        font-size: 0.8rem;
+    }
+
+    .post-corpo p {
+        font-size: 1rem;
+    }
+
+    .btn-acao {
+        font-size: 0.95rem;
+        gap: 6px;
+    }
+
+    .avatar {
+        width: 46px;
+        height: 46px;
+    }
+}
