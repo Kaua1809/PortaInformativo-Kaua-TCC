@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/portalinclusao.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        .editor-noticia-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px 60px;
+            align-items: start;
+        }
+
+        .coluna-editor {
+            background: #f8f9fa;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+            padding: 25px;
+        }
+
+        .coluna-editor h1 {
+            margin-bottom: 20px;
+            color: var(--cor02);
+            font-size: 1.5rem;
+        }
+
+        .campo-noticia { margin-bottom: 18px; }
+        .campo-noticia label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #333;
+            font-size: 0.9rem;
+        }
+        .campo-noticia input[type="text"],
+        .campo-noticia textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            box-sizing: border-box;
+        }
+        .campo-noticia textarea { resize: vertical; }
+
+        .preview-capa-atual {
+            max-width: 100%;
+            max-height: 180px;
+            display: block;
+            margin-bottom: 8px;
+            border-radius: 8px;
+        }
+
+        .erro-noticia {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+
+        .lista-blocos-editor { margin-top: 10px; }
+
+        .bloco-editor {
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 16px;
+            background: #fff;
+            position: relative;
+        }
+
+        .bloco-editor-topo {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .bloco-editor-topo span {
+            font-weight: 700;
+            color: var(--cor02);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+        }
+
+        .bloco-editor-acoes { display: flex; gap: 8px; }
+
+        .btn-icone-bloco {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #888;
+            font-size: 1rem;
+            padding: 4px;
+        }
+        .btn-icone-bloco:hover { color: #2c4759; }
+        .btn-icone-bloco.remover:hover { color: #e74c3c; }
+
+        .bloco-editor-imagem-preview {
+            max-width: 100%;
+            max-height: 160px;
+            display: block;
+            margin-bottom: 8px;
+            border-radius: 6px;
+        }
+
+        .bloco-editor textarea {
+            width: 100%;
+            min-height: 70px;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            resize: vertical;
+            box-sizing: border-box;
+        }
+
+        .bloco-editor input[type="file"] {
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+
+        .bloco-tipo-select {
+            margin-bottom: 10px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 0.85rem;
+            font-family: inherit;
+        }
+
+        .bloco-toolbar {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .bloco-toolbar button {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ccc;
+            background: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+        .bloco-toolbar button:hover { background: #eef2f5; }
+
+        .bloco-texto-editavel {
+            width: 100%;
+            min-height: 70px;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 0.9rem;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .bloco-texto-editavel:focus { border-color: var(--cor02); }
+        .bloco-texto-editavel.modo-subtitulo {
+            font-weight: 700;
+            color: var(--cor02);
+            font-size: 1.05rem;
+        }
+
+        .btn-add-bloco {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed var(--cor02);
+            background: none;
+            color: var(--cor02);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        .btn-add-bloco:hover { background: #eef2f5; }
+
+        .coluna-preview {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+            padding: 30px;
+            position: sticky;
+            top: 20px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .preview-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: #999;
+            margin-bottom: 12px;
+            letter-spacing: 0.05em;
+        }
+
+        .preview-titulo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #222;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .preview-descricao {
+            font-size: 1.05rem;
+            color: #555;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .preview-capa {
+            width: 100%;
+            max-height: 320px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .preview-bloco { margin-bottom: 22px; }
+
+        .preview-bloco img {
+            width: 100%;
+            max-height: 360px;
+            object-fit: cover;
+            border-radius: 8px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .preview-bloco p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: #333;
+            margin: 0;
+        }
+
+        .preview-bloco p.modo-subtitulo {
+            font-weight: 700;
+            color: var(--cor02);
+            font-size: 1.25rem;
+        }
+
+        .preview-vazio {
+            color: #aaa;
+            text-align: center;
+            padding: 40px 0;
+            font-style: italic;
+        }
+
+        @media (max-width: 900px) {
+            .editor-noticia-wrapper { grid-template-columns: 1fr; }
+            .coluna-preview { position: static; max-height: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="editor-noticia-wrapper">
+
+        <div class="coluna-editor">
+            <h1><%= noticia ? 'Editar Notícia' : 'Nova Notícia' %></h1>
+
+            <% if (typeof erro !== 'undefined' && erro) { %>
+                <div class="erro-noticia"><%= erro %></div>
+            <% } %>
+
+            <form id="form-noticia" method="POST"
+                  action="<%= noticia ? '/noticias/' + noticia.id + '/editar' : '/noticias/nova/criar' %>"
+                  enctype="multipart/form-data">
+
+                <div class="campo-noticia">
+                    <label for="titulo">Título</label>
+                    <input type="text" id="titulo" name="titulo" required
+                           value="<%= noticia ? noticia.titulo : '' %>">
+                </div>
+
+                <div class="campo-noticia">
+                    <label for="descricao">Legenda / Resumo (aparece no card da home)</label>
+                    <input type="text" id="descricao" name="descricao" maxlength="150"
+                           value="<%= noticia ? (noticia.descricao || '') : '' %>">
+                </div>
+
+                <div class="campo-noticia">
+                    <label for="imagem_capa">Imagem de capa (aparece no card da home)</label>
+                    <% if (noticia && noticia.foto) { %>
+                        <img class="preview-capa-atual" id="preview-capa-atual"
+                             src="data:image/jpeg;base64,<%= noticia.foto.toString('base64') %>"
+                             alt="Capa atual">
+                        <p style="font-size:0.8rem;color:#666;margin-bottom:8px;">Envie uma nova imagem apenas se quiser substituir a atual.</p>
+                    <% } %>
+                    <input type="file" id="imagem_capa" name="imagem_capa" accept="image/*" <%= noticia ? '' : 'required' %>>
+                </div>
+
+                <hr style="margin: 24px 0; border-color: #e0e0e0;">
+
+                <label style="font-weight:700;color:var(--cor02);display:block;margin-bottom:10px;">
+                    Conteúdo do artigo (blocos)
+                </label>
+
+                <div class="lista-blocos-editor" id="lista-blocos-editor"></div>
+
+                <button type="button" class="btn-add-bloco" id="btn-add-bloco">
+                    <i class="fas fa-plus"></i> Adicionar bloco (imagem e/ou texto)
+                </button>
+
+                <div class="botoes-container" style="margin-top:24px;">
+                    <button type="submit" class="btn-publicar"><%= noticia ? 'SALVAR' : 'PUBLICAR' %></button>
+                    <a href="/" class="btn-voltar">VOLTAR</a>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="coluna-preview">
+            <div class="preview-label">Pré-visualização</div>
+
+            <img class="preview-capa" id="preview-capa-img" style="display:none;">
+
+            <h2 class="preview-titulo" id="preview-titulo">Título da notícia</h2>
+            <p class="preview-descricao" id="preview-descricao"></p>
+
+            <div id="preview-blocos-container"></div>
+
+            <p class="preview-vazio" id="preview-vazio">Adicione blocos para ver o artigo aqui.</p>
+        </div>
+
+    </div>
+
+    <script>
+        const BLOCOS_EXISTENTES = [
+            <% if (blocos && blocos.length > 0) { %>
+                <% blocos.forEach(function(bloco, i) { %>
+                    {
+                        texto: <%- JSON.stringify(bloco.texto || '') %>,
+                        tipo: <%- JSON.stringify(bloco.tipo_texto || 'normal') %>,
+                        imagemBase64: <%- bloco.imagem ? JSON.stringify(bloco.imagem.toString('base64')) : 'null' %>
+                    }<%= i < blocos.length - 1 ? ',' : '' %>
+                <% }); %>
+            <% } %>
+        ];
+
+        let contadorBlocos = 0;
+
+        const listaBlocosEditor = document.getElementById('lista-blocos-editor');
+        const previewBlocosContainer = document.getElementById('preview-blocos-container');
+        const previewVazio = document.getElementById('preview-vazio');
+
+        function criarBlocoEditor(dadosIniciais) {
+            const index = contadorBlocos++;
+            dadosIniciais = dadosIniciais || { texto: '', tipo: 'normal', imagemBase64: null };
+
+            const wrapper = document.createElement('div');
+            wrapper.className = 'bloco-editor';
+            wrapper.dataset.index = index;
+
+            wrapper.innerHTML =
+                '<div class="bloco-editor-topo">' +
+                    '<span>Bloco ' + (index + 1) + '</span>' +
+                    '<div class="bloco-editor-acoes">' +
+                        '<button type="button" class="btn-icone-bloco subir" title="Mover para cima"><i class="fas fa-arrow-up"></i></button>' +
+                        '<button type="button" class="btn-icone-bloco descer" title="Mover para baixo"><i class="fas fa-arrow-down"></i></button>' +
+                        '<button type="button" class="btn-icone-bloco remover" title="Remover bloco"><i class="fas fa-trash"></i></button>' +
+                    '</div>' +
+                '</div>' +
+                (dadosIniciais.imagemBase64 ? '<img class="bloco-editor-imagem-preview" src="data:image/jpeg;base64,' + dadosIniciais.imagemBase64 + '">' : '') +
+                '<input type="file" name="bloco_imagem_' + index + '" accept="image/*" class="bloco-input-imagem">' +
+                '<select class="bloco-tipo-select" name="blocos_tipo[]">' +
+                    '<option value="normal"' + (dadosIniciais.tipo !== 'subtitulo' ? ' selected' : '') + '>Texto normal</option>' +
+                    '<option value="subtitulo"' + (dadosIniciais.tipo === 'subtitulo' ? ' selected' : '') + '>Subtítulo (negrito + destaque)</option>' +
+                '</select>' +
+                '<div class="bloco-toolbar">' +
+                    '<button type="button" class="btn-negrito" title="Negrito"><i class="fas fa-bold"></i></button>' +
+                '</div>' +
+                '<div class="bloco-texto-editavel' + (dadosIniciais.tipo === 'subtitulo' ? ' modo-subtitulo' : '') + '" contenteditable="true" data-placeholder="Texto deste bloco (opcional)">' + (dadosIniciais.texto || '') + '</div>' +
+                '<textarea name="blocos_texto[]" style="display:none;"></textarea>';
+
+            listaBlocosEditor.appendChild(wrapper);
+
+            const previewBloco = document.createElement('div');
+            previewBloco.className = 'preview-bloco';
+            previewBloco.dataset.previewFor = index;
+            if (dadosIniciais.imagemBase64) {
+                previewBloco.innerHTML = '<img src="data:image/jpeg;base64,' + dadosIniciais.imagemBase64 + '">';
+            }
+            previewBloco.innerHTML += '<p class="' + (dadosIniciais.tipo === 'subtitulo' ? 'modo-subtitulo' : '') + '">' + (dadosIniciais.texto || '') + '</p>';
+            previewBlocosContainer.appendChild(previewBloco);
+
+            ligarEventosBloco(wrapper, previewBloco);
+            atualizarVisibilidadeVazio();
+            renumerarBlocos();
+        }
+
+        function ligarEventosBloco(wrapper, previewBloco) {
+            const editavel = wrapper.querySelector('.bloco-texto-editavel');
+            const textareaOculta = wrapper.querySelector('textarea');
+            const inputImagem = wrapper.querySelector('.bloco-input-imagem');
+            const seletorTipo = wrapper.querySelector('.bloco-tipo-select');
+            const btnNegrito = wrapper.querySelector('.btn-negrito');
+            const previewP = previewBloco.querySelector('p');
+
+            // Sincroniza o conteúdo HTML editado com a textarea oculta (que é
+            // o campo realmente enviado no submit) e atualiza o preview.
+            function sincronizar() {
+                textareaOculta.value = editavel.innerHTML;
+                previewP.innerHTML = editavel.innerHTML;
+            }
+
+            editavel.addEventListener('input', sincronizar);
+            sincronizar(); // garante valor inicial (modo edição)
+
+            btnNegrito.addEventListener('click', function() {
+                editavel.focus();
+                document.execCommand('bold');
+                sincronizar();
+            });
+
+            seletorTipo.addEventListener('change', function() {
+                const ehSubtitulo = seletorTipo.value === 'subtitulo';
+                editavel.classList.toggle('modo-subtitulo', ehSubtitulo);
+                previewP.classList.toggle('modo-subtitulo', ehSubtitulo);
+            });
+
+            inputImagem.addEventListener('change', function() {
+                if (!inputImagem.files || !inputImagem.files[0]) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    let img = previewBloco.querySelector('img');
+                    if (!img) {
+                        img = document.createElement('img');
+                        previewBloco.insertBefore(img, previewBloco.firstChild);
+                    }
+                    img.src = e.target.result;
+
+                    let imgEditor = wrapper.querySelector('.bloco-editor-imagem-preview');
+                    if (!imgEditor) {
+                        imgEditor = document.createElement('img');
+                        imgEditor.className = 'bloco-editor-imagem-preview';
+                        wrapper.insertBefore(imgEditor, inputImagem);
+                    }
+                    imgEditor.src = e.target.result;
+                };
+                reader.readAsDataURL(inputImagem.files[0]);
+            });
+
+            wrapper.querySelector('.remover').addEventListener('click', function() {
+                wrapper.remove();
+                previewBloco.remove();
+                atualizarVisibilidadeVazio();
+                renumerarBlocos();
+            });
+
+            wrapper.querySelector('.subir').addEventListener('click', function() {
+                const anterior = wrapper.previousElementSibling;
+                if (anterior) {
+                    listaBlocosEditor.insertBefore(wrapper, anterior);
+                    const previewAnterior = previewBloco.previousElementSibling;
+                    if (previewAnterior) previewBlocosContainer.insertBefore(previewBloco, previewAnterior);
+                    renumerarBlocos();
+                }
+            });
+
+            wrapper.querySelector('.descer').addEventListener('click', function() {
+                const proximo = wrapper.nextElementSibling;
+                if (proximo) {
+                    listaBlocosEditor.insertBefore(proximo, wrapper);
+                    const previewProximo = previewBloco.nextElementSibling;
+                    if (previewProximo) previewBlocosContainer.insertBefore(previewProximo, previewBloco);
+                    renumerarBlocos();
+                }
+            });
+        }
+
+        function renumerarBlocos() {
+            const blocosWrapper = Array.from(listaBlocosEditor.querySelectorAll('.bloco-editor'));
+            blocosWrapper.forEach(function(wrapper, novoIndex) {
+                wrapper.querySelector('span').textContent = 'Bloco ' + (novoIndex + 1);
+                const inputImagem = wrapper.querySelector('.bloco-input-imagem');
+                inputImagem.name = 'bloco_imagem_' + novoIndex;
+            });
+        }
+
+        function atualizarVisibilidadeVazio() {
+            previewVazio.style.display = listaBlocosEditor.children.length === 0 ? 'block' : 'none';
+        }
+
+        function escapeHtml(texto) {
+            const div = document.createElement('div');
+            div.textContent = texto;
+            return div.innerHTML;
+        }
+
+        document.getElementById('btn-add-bloco').addEventListener('click', function() {
+            criarBlocoEditor();
+        });
+
+        const inputTitulo = document.getElementById('titulo');
+        const inputDescricao = document.getElementById('descricao');
+        const inputCapa = document.getElementById('imagem_capa');
+        const previewTitulo = document.getElementById('preview-titulo');
+        const previewDescricao = document.getElementById('preview-descricao');
+        const previewCapaImg = document.getElementById('preview-capa-img');
+
+        inputTitulo.addEventListener('input', function() {
+            previewTitulo.textContent = inputTitulo.value || 'Título da notícia';
+        });
+        inputDescricao.addEventListener('input', function() {
+            previewDescricao.textContent = inputDescricao.value;
+        });
+        inputCapa.addEventListener('change', function() {
+            if (!inputCapa.files || !inputCapa.files[0]) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewCapaImg.src = e.target.result;
+                previewCapaImg.style.display = 'block';
+            };
+            reader.readAsDataURL(inputCapa.files[0]);
+        });
+
+        previewTitulo.textContent = inputTitulo.value || 'Título da notícia';
+        previewDescricao.textContent = inputDescricao.value;
+        <% if (noticia && noticia.foto) { %>
+            previewCapaImg.src = document.getElementById('preview-capa-atual').src;
+            previewCapaImg.style.display = 'block';
+        <% } %>
+
+        if (BLOCOS_EXISTENTES.length > 0) {
+            BLOCOS_EXISTENTES.forEach(function(bloco) {
+                criarBlocoEditor(bloco);
+            });
+        } else {
+            atualizarVisibilidadeVazio();
+        }
+    </script>
+
+</body>
+</html>

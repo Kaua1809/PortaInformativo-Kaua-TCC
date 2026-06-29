@@ -171,7 +171,7 @@
 <script>
     let postIdAtual = null;
 
-    // Função para curtir/descurtir postagem
+    // Função para curtir/descurtir postagem (instantâneo, sem reload — igual comentario.ejs)
     function curtirPostagem(postId, botao) {
         fetch('/responsavel/curtir/' + postId, {
             method: 'POST',
@@ -182,11 +182,25 @@
         })
         .then(response => response.json())
         .then(data => {
-            if (data.sucesso) {
-                location.reload();
-            } else {
+            if (!data.sucesso) {
                 alert(data.mensagem || 'Não foi possível curtir.');
+                return;
             }
+
+            const curtiu = data.acao === 'curtida';
+            botao.classList.toggle('curtido', curtiu);
+            botao.dataset.curtido = curtiu ? 'true' : 'false';
+
+            // Atualiza o número ao lado do ícone (texto do botão após o <i>)
+            const partes = botao.textContent.trim().split(/\s+/);
+            let total = parseInt(partes[partes.length - 1], 10) || 0;
+            total = curtiu ? total + 1 : Math.max(0, total - 1);
+
+            // Substitui só o número, mantendo o ícone <i> intacto
+            const icone = botao.querySelector('i');
+            botao.innerHTML = '';
+            botao.appendChild(icone);
+            botao.append(' ' + total);
         })
         .catch(error => console.error('Erro:', error));
     }

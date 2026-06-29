@@ -46,6 +46,8 @@ var loginRouter = require('./routes/login');
 var cadastroRouter = require('./routes/cadastro');
 var contaRouter = require('./routes/conta');
 var verifyRouter = require('./routes/verify'); // Importe a nova rota de verificação
+const contatoRouter = require('./routes/contato'); // ajuste o caminho conforme sua estrutura
+var noticiasRouter = require('./routes/noticias');
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -56,7 +58,9 @@ app.use('/legislacao', legislacaoRouter);
 app.use('/login', loginRouter);
 app.use('/cadastro', cadastroRouter);
 app.use('/conta', contaRouter);
+app.use('/', contatoRouter);
 app.use('/verify', verifyRouter); // Use a rota de verificação
+app.use('/noticias', noticiasRouter);
 
 // 7. TRATAMENTO DE ERROS
 app.use(function(req, res, next) {

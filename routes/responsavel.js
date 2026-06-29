@@ -40,7 +40,7 @@ router.get('/', verificarLogin, function(req, res, next) {
       u.login,
       u.foto_perfil,
       (SELECT COUNT(*) FROM curtidas WHERE postagem_id = pp.id) as total_curtidas,
-      (SELECT COUNT(*) FROM comentarios WHERE postagem_id = pp.id AND comentario_pai_id IS NULL) as total_comentarios,
+      (SELECT COUNT(*) FROM comentarios WHERE postagem_id = pp.id) as total_comentarios,
       (SELECT COUNT(*) FROM curtidas WHERE postagem_id = pp.id AND usuario_id = ?) as usuario_curtiu
     FROM postagem_pais pp
     LEFT JOIN usuario u ON pp.id_portal = u.id

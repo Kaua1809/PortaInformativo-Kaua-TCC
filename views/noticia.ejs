@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        .noticia-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px 40px;
+        }
+        .noticia-foto {
+            width: 100%;
+            max-height: 480px;
+            object-fit: cover;
+            border-radius: 10px;
+            display: block;
+            margin-bottom: 24px;
+        }
+        .noticia-titulo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #222;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        .noticia-meta {
+            color: #777;
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+            display: flex;
+            gap: 14px;
+            align-items: center;
+        }
+        .noticia-descricao {
+            font-size: 1.15rem;
+            color: #444;
+            font-weight: 600;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .noticia-bloco { margin-bottom: 28px; }
+
+        .noticia-bloco img {
+            width: 100%;
+            max-height: 480px;
+            object-fit: cover;
+            border-radius: 10px;
+            display: block;
+            margin-bottom: 14px;
+        }
+
+        .noticia-bloco p {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: #333;
+            white-space: pre-wrap;
+            margin: 0;
+        }
+
+        .noticia-bloco p.noticia-subtitulo {
+            font-weight: 700;
+            color: var(--cor02);
+            font-size: 1.3rem;
+            white-space: normal;
+        }
+
+        .noticia-acoes-admin {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 12px;
+        }
+        .btn-editar-noticia, .btn-excluir-noticia {
+            padding: 10px 20px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn-editar-noticia { background: #2c4759; color: #fff; }
+        .btn-excluir-noticia { background: #fff; color: #e74c3c; border: 2px solid #e74c3c; }
+
+        .area-voltar-noticia { margin-bottom: 20px; }
+        .btn-voltar-noticia {
+            background-color: #2c4759;
+            color: white;
+            border: none;
+            padding: 10px 30px;
+            border-radius: 30px;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <main class="noticia-container">
+
+        <div class="area-voltar-noticia">
+            <a href="/" class="btn-voltar-noticia">VOLTAR</a>
+        </div>
+
+        <% if (noticia.foto) { %>
+            <img class="noticia-foto" src="data:image/jpeg;base64,<%= noticia.foto.toString('base64') %>" alt="<%= noticia.titulo %>">
+        <% } %>
+
+        <h1 class="noticia-titulo"><%= noticia.titulo %></h1>
+
+        <div class="noticia-meta">
+            <% if (noticia.autor_login) { %>
+                <span><i class="fas fa-user"></i> <%= noticia.autor_login %></span>
+            <% } %>
+            <span><i class="fas fa-calendar"></i> <%= new Date(noticia.data_publicacao).toLocaleDateString('pt-BR') %></span>
+        </div>
+
+        <% if (noticia.descricao) { %>
+            <p class="noticia-descricao"><%= noticia.descricao %></p>
+        <% } %>
+
+        <% if (blocos && blocos.length > 0) { %>
+            <% blocos.forEach(function(bloco) { %>
+                <div class="noticia-bloco">
+                    <% if (bloco.imagem) { %>
+                        <img src="data:image/jpeg;base64,<%= bloco.imagem.toString('base64') %>" alt="">
+                    <% } %>
+                    <% if (bloco.texto) { %>
+                        <p class="<%= bloco.tipo_texto === 'subtitulo' ? 'noticia-subtitulo' : '' %>"><%- bloco.texto %></p>
+                    <% } %>
+                </div>
+            <% }); %>
+        <% } %>
+
+        <% if (usuarioLogado && usuarioLogado.is_admin) { %>
+            <div class="noticia-acoes-admin">
+                <a href="/noticias/<%= noticia.id %>/editar" class="btn-editar-noticia">Editar</a>
+                <button type="button" class="btn-excluir-noticia" onclick="excluirNoticia(<%= noticia.id %>)">Excluir</button>
+            </div>
+        <% } %>
+
+    </main>
+
+    <script>
+        function excluirNoticia(id) {
+            if (!confirm('Excluir esta notícia permanentemente?')) return;
+
+            fetch('/noticias/' + id, { method: 'DELETE' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.sucesso) {
+                        window.location.href = '/';
+                    } else {
+                        alert(data.mensagem || 'Não foi possível excluir.');
+                    }
+                })
+                .catch(() => alert('Erro de conexão ao excluir.'));
+        }
+    </script>
+
+</body>
+</html>

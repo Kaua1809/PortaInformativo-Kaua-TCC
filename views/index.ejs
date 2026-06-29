@@ -3,11 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meu site</title>
+    <title>Portal IncluaNeuro</title>
     <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="stylesheets/style.css">
     <link rel="stylesheet" href="/stylesheets/modals.css">
+
+    <style>
+        .btn-nova-noticia {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 42px;
+            height: 42px;
+            background-color: var(--cor02);
+            color: #fff;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            margin: 12px auto 20px;
+        }
+        .btn-nova-noticia:hover { background-color: var(--cor04); color: #fff; }
+        .area-btn-nova-noticia { text-align: center; }
+        .sem-noticias {
+            text-align: center;
+            color: #777;
+            margin: 30px 0;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -69,26 +93,32 @@
         <h2>NOTÍCIAS</h2>
         </div>
 
-          <div class="card">
-        <a href="">
-            <img src="/images/fotonot1.png" alt="">
-            <p class="textonoticias">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officiis fugit in aut libero molestias nihil ut possimus rem consequuntur laborum. Provident aperiam optio possimus quas ipsa quod, molestias nam. Facilis!</p>
-        </a>
-        </div>
+        <% if (usuarioLogado && usuarioLogado.is_admin) { %>
+            <div class="area-btn-nova-noticia">
+                <a href="/noticias/nova/criar" class="btn-nova-noticia" title="Criar nova notícia">+</a>
+            </div>
+        <% } %>
 
-        <div class="card">
-        <a href="">
-            <img src="/images/fotonot1.png"  alt="">
-            <p class="textonoticias">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officiis fugit in aut libero molestias nihil ut possimus rem consequuntur laborum. Provident aperiam optio possimus quas ipsa quod, molestias nam. Facilis!</p>
-        </a>
-        </div>
-        
-        <div class="card">
-        <a href="">
-            <img src="/images/fotonot1.png"  alt="">
-            <p class="textonoticias">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Officiis fugit in aut libero molestias nihil ut possimus rem consequuntur laborum. Provident aperiam optio possimus quas ipsa quod, molestias nam. Facilis!</p>
-        </a>
-        </div>
+        <% if (noticias && noticias.length > 0) { %>
+            <% noticias.forEach(function(noticia) { %>
+                <div class="card">
+                    <a href="/noticias/<%= noticia.id %>">
+                        <% if (noticia.foto) { %>
+                            <img src="data:image/jpeg;base64,<%= noticia.foto.toString('base64') %>" alt="<%= noticia.titulo %>">
+                        <% } else { %>
+                            <img src="/images/fotonot1.png" alt="<%= noticia.titulo %>">
+                        <% } %>
+                        <p class="textonoticias">
+                            <strong><%= noticia.titulo %></strong><br>
+                            <%= noticia.descricao || '' %>
+                        </p>
+                    </a>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <p class="sem-noticias">Nenhuma notícia publicada ainda.</p>
+        <% } %>
+
         </article>
     </main>
     <%- include('partials/modal-contato') %> 

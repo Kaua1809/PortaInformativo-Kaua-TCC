@@ -381,7 +381,7 @@
     align-items: center;
     gap: 8px;
     margin-bottom: 15px;
-    color: #2c4759;
+    color: var(--cor03);
     font-weight: 600;
     cursor: pointer;
     width: fit-content;
