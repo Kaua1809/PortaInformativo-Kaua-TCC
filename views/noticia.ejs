@@ -3,13 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %></title>
+    <title><%= typeof title !== 'undefined' ? title : noticia.titulo %></title>
     <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/portalinclusao.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
+        /* Container Principal */
         .noticia-container {
-            max-width: 800px;
+            max-width: 1251px;
             margin: 30px auto;
             padding: 0 20px 40px;
         }
@@ -22,81 +24,223 @@
             margin-bottom: 24px;
         }
         .noticia-titulo {
-            font-size: 2rem;
+            font-size: 2.5rem;
             font-weight: 800;
             color: #222;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             line-height: 1.2;
         }
         .noticia-meta {
             color: #777;
             font-size: 0.9rem;
-            margin-bottom: 24px;
+            margin-bottom: 30px;
             display: flex;
             gap: 14px;
             align-items: center;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
         }
         .noticia-descricao {
-            font-size: 1.15rem;
-            color: #444;
+            font-size: 1.25rem;
+            color: #555;
             font-weight: 600;
-            margin-bottom: 30px;
-            line-height: 1.5;
+            margin-bottom: 35px;
+            line-height: 1.6;
+            font-style: italic;
         }
 
-        .noticia-bloco { margin-bottom: 28px; }
+        /* Estilos de Blocos de Conteúdo */
+        .noticia-bloco { 
+            margin-bottom: 30px; 
+            line-height: 1.8;
+            color: #333;
+            word-break: break-word;
+            overflow-wrap: break-word;
+        }
 
         .noticia-bloco img {
             width: 100%;
-            max-height: 480px;
+            max-height: 550px;
+            object-fit: cover;
+            border-radius: 12px;
+            display: block;
+            margin: 20px 0;
+        }
+
+        /* Suporte a Listas do Editor */
+        .noticia-bloco ul, .noticia-bloco ol {
+            margin: 15px 0 15px 30px;
+        }
+        .noticia-bloco li {
+            margin-bottom: 8px;
+        }
+        .noticia-bloco li.tarefa {
+            list-style: none;
+            margin-left: -20px;
+        }
+        .noticia-bloco li.tarefa input[type="checkbox"] {
+            margin-right: 10px;
+            pointer-events: none; /* Apenas visualização */
+        }
+
+        /* Estilo para Separador */
+        .noticia-bloco hr {
+            border: none;
+            border-top: 2px solid #eee;
+            margin: 40px 0;
+        }
+
+        /* Estilo para Subtítulos */
+        .noticia-subtitulo {
+            font-weight: 700;
+            color: var(--cor02, #2c4759);
+            font-size: 1.6rem;
+            margin-top: 40px;
+            margin-bottom: 15px;
+        }
+
+        /* Estilo para Citações (Completo) */
+        .bloco-tipo-citacao {
+            border-left: 5px solid var(--cor02, #2c4759);
+            background: #f8f9fa;
+            padding: 25px 30px;
+            border-radius: 0 12px 12px 0;
+            margin: 35px 0;
+        }
+        .bloco-tipo-citacao .conteudo-texto-view {
+            font-style: italic;
+            font-size: 1.25rem;
+            color: #444;
+            line-height: 1.7;
+        }
+        .autor-citacao-view {
+            display: block;
+            margin-top: 15px;
+            font-style: normal;
+            font-weight: 700;
+            color: #666;
+            font-size: 1rem;
+        }
+        .autor-citacao-view::before { content: "— "; }
+
+        /* Tamanhos e orientação de imagem nos blocos */
+        .noticia-bloco figure { margin: 20px 0; text-align: center; }
+
+        /* Base: todas as imagens centralizam e cobrem bem */
+        .noticia-bloco figure img {
+            display: block;
+            margin: 0 auto;
             object-fit: cover;
             border-radius: 10px;
+        }
+
+        /* Horizontal */
+        .img-orientacao-horizontal { width: 100%; }
+        .img-orientacao-horizontal.img-tamanho-pequena  { max-height: 180px; }
+        .img-orientacao-horizontal.img-tamanho-media    { max-height: 300px; }
+        .img-orientacao-horizontal.img-tamanho-grande   { max-height: 480px; }
+        .img-orientacao-horizontal.img-tamanho-gigante  { max-height: none; }
+
+        /* Vertical: largura fixa + altura mínima para não colapsar */
+        .img-orientacao-vertical { display: block; margin: 0 auto; object-fit: cover; }
+        .img-orientacao-vertical.img-tamanho-pequena  { width: 22%; min-height: 120px; max-height: 220px; }
+        .img-orientacao-vertical.img-tamanho-media    { width: 32%; min-height: 200px; max-height: 360px; }
+        .img-orientacao-vertical.img-tamanho-grande   { width: 45%; min-height: 300px; max-height: 520px; }
+        .img-orientacao-vertical.img-tamanho-gigante  { width: 60%; min-height: 400px; max-height: none; }
+
+        /* Galeria */
+        .preview-galeria {
+            display: grid;
+            gap: 6px;
+            margin: 16px 0;
+        }
+        .preview-galeria.cols-1 { grid-template-columns: 1fr; }
+        .preview-galeria.cols-2 { grid-template-columns: 1fr 1fr; }
+        .preview-galeria.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+        .preview-galeria.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+        .preview-galeria img {
+            width: 100%;
+            border-radius: 8px;
+            object-fit: cover;
             display: block;
-            margin-bottom: 14px;
+        }
+        .preview-galeria.altura-pequena img { height: 100px; }
+        .preview-galeria.altura-media img   { height: 180px; }
+        .preview-galeria.altura-grande img  { height: 280px; }
+
+        .legenda-imagem {
+            font-size: 0.8rem;
+            color: #888;
+            text-align: center;
+            margin-top: 6px;
+            font-style: italic;
         }
 
-        .noticia-bloco p {
-            font-size: 1.05rem;
-            line-height: 1.8;
-            color: #333;
-            white-space: pre-wrap;
-            margin: 0;
-        }
+        /* --- CLASSES DE FORMATAÇÃO DO EDITOR (CORES, FONTES, ETC) --- */
+        
+        /* Cores de Texto */
+        .cor-preto { color: #111111 !important; }
+        .cor-vermelho { color: #c0392b !important; }
+        .cor-azul { color: #2980b9 !important; }
+        .cor-verde { color: #27ae60 !important; }
+        .cor-laranja { color: #e67e22 !important; }
+        .cor-roxo { color: #8e44ad !important; }
+        .cor-cinza { color: #7f8c8d !important; }
 
-        .noticia-bloco p.noticia-subtitulo {
-            font-weight: 700;
-            color: var(--cor02);
-            font-size: 1.3rem;
-            white-space: normal;
-        }
+        /* Marca-texto (Fundo) */
+        .marca-amarelo { background-color: #fff3a0 !important; padding: 2px 4px; border-radius: 3px; }
+        .marca-verde { background-color: #c8f7c5 !important; padding: 2px 4px; border-radius: 3px; }
+        .marca-azul { background-color: #bee3f8 !important; padding: 2px 4px; border-radius: 3px; }
+        .marca-rosa { background-color: #fbd1e3 !important; padding: 2px 4px; border-radius: 3px; }
 
+        /* Famílias de Fontes */
+        .fonte-padrao { font-family: var(--fonte-padrao); }
+        .fonte-destaque { font-family: var(--fonte-destaque); }
+        .fonte-serifada { font-family: 'Times New Roman', serif !important; }
+        .fonte-monoespacada { font-family: 'Courier New', monospace !important; }
+
+        /* Tamanhos de Fonte */
+        .texto-pequeno { font-size: 0.78rem !important; }
+        .texto-medio { font-size: 1rem !important; }
+        .texto-grande { font-size: 1.3rem !important; }
+        .texto-extra-grande { font-size: 1.7rem !important; }
+
+        /* Alinhamentos */
+        .alinhar-esquerda { text-align: left !important; display: block; }
+        .alinhar-centro { text-align: center !important; display: block; }
+        .alinhar-direita { text-align: right !important; display: block; }
+        .alinhar-justificado { text-align: justify !important; display: block; }
+
+        /* Ações Administrativas */
         .noticia-acoes-admin {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
+            margin-top: 50px;
+            padding-top: 25px;
+            border-top: 2px solid #eee;
             display: flex;
-            gap: 12px;
+            gap: 15px;
         }
         .btn-editar-noticia, .btn-excluir-noticia {
-            padding: 10px 20px;
-            border-radius: 20px;
+            padding: 12px 25px;
+            border-radius: 30px;
             border: none;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             text-decoration: none;
             display: inline-block;
+            transition: opacity 0.2s;
         }
         .btn-editar-noticia { background: #2c4759; color: #fff; }
         .btn-excluir-noticia { background: #fff; color: #e74c3c; border: 2px solid #e74c3c; }
+        .btn-editar-noticia:hover, .btn-excluir-noticia:hover { opacity: 0.8; }
 
-        .area-voltar-noticia { margin-bottom: 20px; }
+        .area-voltar-noticia { margin-bottom: 25px; }
         .btn-voltar-noticia {
             background-color: #2c4759;
             color: white;
             border: none;
-            padding: 10px 30px;
-            border-radius: 30px;
-            font-weight: bold;
+            padding: 12px 35px;
+            border-radius: 35px;
+            font-weight: 800;
             text-decoration: none;
             display: inline-block;
         }
@@ -107,7 +251,7 @@
     <main class="noticia-container">
 
         <div class="area-voltar-noticia">
-            <a href="/" class="btn-voltar-noticia">VOLTAR</a>
+            <a href="/" class="btn-voltar-noticia"><i class="fas fa-arrow-left"></i> VOLTAR</a>
         </div>
 
         <% if (noticia.foto) { %>
@@ -127,23 +271,57 @@
             <p class="noticia-descricao"><%= noticia.descricao %></p>
         <% } %>
 
-        <% if (blocos && blocos.length > 0) { %>
-            <% blocos.forEach(function(bloco) { %>
-                <div class="noticia-bloco">
-                    <% if (bloco.imagem) { %>
-                        <img src="data:image/jpeg;base64,<%= bloco.imagem.toString('base64') %>" alt="">
-                    <% } %>
-                    <% if (bloco.texto) { %>
-                        <p class="<%= bloco.tipo_texto === 'subtitulo' ? 'noticia-subtitulo' : '' %>"><%- bloco.texto %></p>
-                    <% } %>
-                </div>
-            <% }); %>
-        <% } %>
+        <div class="conteudo-artigo">
+            <% if (blocos && blocos.length > 0) { %>
+                <% blocos.forEach(function(bloco) { %>
+                    <div class="noticia-bloco <%= bloco.tipo_texto === 'citacao' ? 'bloco-tipo-citacao' : '' %>">
+                        
+                        <% if (bloco.tipo_texto === 'galeria') { %>
+                            <% let galData = { cols: '3', altura: 'media', imagens: [] }; %>
+                            <% try { if (bloco.texto) galData = JSON.parse(bloco.texto); } catch(e) {} %>
+                            <% const galeriaImgs = bloco.galeriaImagens || []; %>
+                            <% if (galeriaImgs.length > 0) { %>
+                            <div class="preview-galeria cols-<%= galData.cols || '3' %> altura-<%= galData.altura || 'media' %>">
+                                <% galeriaImgs.forEach(function(img, gi) { %>
+                                    <% const altImg = (galData.imagens && galData.imagens[gi]) ? (galData.imagens[gi].alt || '') : ''; %>
+                                    <img src="data:image/jpeg;base64,<%= img.imagem.toString('base64') %>" alt="<%= altImg %>">
+                                <% }); %>
+                            </div>
+                            <% } %>
+                        <% } else if (bloco.imagem) { %>
+                            <% const tam = bloco.imagem_tamanho || 'grande'; %>
+                            <% const ori = bloco.imagem_orientacao || 'horizontal'; %>
+                            <figure>
+                                <img src="data:image/jpeg;base64,<%= bloco.imagem.toString('base64') %>"
+                                     alt="<%= bloco.imagem_alt || '' %>"
+                                     class="img-tamanho-<%= tam %> img-orientacao-<%= ori %>">
+                                <% if (bloco.imagem_fonte) { %>
+                                    <figcaption class="legenda-imagem">Fonte: <%= bloco.imagem_fonte %></figcaption>
+                                <% } %>
+                            </figure>
+                        <% } %>
+
+                        <% if (bloco.tipo_texto === 'separador') { %>
+                            <hr>
+                        <% } else if (bloco.tipo_texto !== 'galeria' && bloco.texto) { %>
+                            <div class="conteudo-texto-view <%= bloco.tipo_texto === 'subtitulo' ? 'noticia-subtitulo' : '' %>">
+                                <%- bloco.texto %>
+                            </div>
+                        <% } %>
+
+                        <% if (bloco.tipo_texto === 'citacao' && bloco.citacao_autor) { %>
+                            <span class="autor-citacao-view"><%= bloco.citacao_autor %></span>
+                        <% } %>
+
+                    </div>
+                <% }); %>
+            <% } %>
+        </div>
 
         <% if (usuarioLogado && usuarioLogado.is_admin) { %>
             <div class="noticia-acoes-admin">
-                <a href="/noticias/<%= noticia.id %>/editar" class="btn-editar-noticia">Editar</a>
-                <button type="button" class="btn-excluir-noticia" onclick="excluirNoticia(<%= noticia.id %>)">Excluir</button>
+                <a href="/noticias/<%= noticia.id %>/editar" class="btn-editar-noticia"><i class="fas fa-edit"></i> Editar</a>
+                <button type="button" class="btn-excluir-noticia" onclick="excluirNoticia(<%= noticia.id %>)"><i class="fas fa-trash"></i> Excluir</button>
             </div>
         <% } %>
 

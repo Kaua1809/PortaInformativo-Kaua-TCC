@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hidrocefalia | Portal IncluaNeuro</title>
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="stylesheet" href="stylesheets/deficiencias.css">
+    <link rel="stylesheet" href="/stylesheets/modals.css">
+</head>
+<body>
+    <header>
+         <%- include('partials/menu') %>
+         <%- include('partials/navbar') %>
+    </header>
+    <main>
+        <article class="conteudo-condicao">
+
+            <h1 class="titulo-condicao">Hidrocefalia — o que é, causas e o que se sabe hoje</h1>
+
+            <div class="condicao-secao">
+                <img src="/images/Amputação.jpg" alt="Ilustração representando o acúmulo de líquido no cérebro na hidrocefalia">
+                <div class="condicao-secao-texto">
+                    <p>
+                        A hidrocefalia é uma condição caracterizada pelo acúmulo excessivo de líquido
+                        cefalorraquidiano (líquor) nos ventrículos cerebrais, o que aumenta a pressão
+                        dentro do crânio e pode comprometer o desenvolvimento e o funcionamento do
+                        cérebro. Pode ser congênita, presente desde o nascimento, ou adquirida ao
+                        longo da vida por infecções, traumas ou tumores.
+                    </p>
+                    <p>
+                        Os sintomas variam conforme a idade: em bebês, é comum observar aumento
+                        do perímetro cefálico, irritabilidade e vômitos; em crianças maiores e
+                        adultos, dor de cabeça, náuseas, alterações visuais e dificuldades de
+                        equilíbrio costumam ser os sinais mais frequentes.
+                    </p>
+                </div>
+            </div>
+
+            <div class="condicao-secao inverter">
+                <img src="/images/Amputação.jpg" alt="Criança em acompanhamento médico">
+                <div class="condicao-secao-texto">
+                    <h3>Cuidados</h3>
+                    <p>
+                        O tratamento mais comum é cirúrgico, e o acompanhamento contínuo é essencial
+                        para garantir qualidade de vida:
+                    </p>
+                    <ul>
+                        <li>Colocação de válvula de derivação (shunt) para drenar o excesso de líquido;</li>
+                        <li>Ventriculostomia endoscópica em casos selecionados;</li>
+                        <li>Acompanhamento neurológico periódico para monitorar a válvula e o desenvolvimento;</li>
+                        <li>Fisioterapia e terapia ocupacional, quando há impacto motor ou cognitivo;</li>
+                        <li>Suporte psicológico para a criança e a família ao longo do tratamento.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="condicao-secao">
+                <img src="/images/Amputação.jpg" alt="Atendimento de saúde no Brasil">
+                <div class="condicao-secao-texto">
+                    <h3>Cenário atual no Brasil</h3>
+                    <p>
+                        No Brasil, a hidrocefalia é acompanhada principalmente pelo SUS, mas o acesso
+                        a neurocirurgia pediátrica e a insumos como válvulas ainda é desigual entre
+                        regiões. Faltam dados epidemiológicos consolidados em nível nacional, o que
+                        dificulta o planejamento de políticas públicas voltadas à condição. Famílias
+                        de áreas mais distantes dos grandes centros costumam enfrentar filas maiores
+                        e a necessidade de deslocamento para tratamento especializado.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faixa-outras-info">
+                <h2>Outras informações e notícias</h2>
+            </div>
+
+            <% if (noticiasRelacionadas && noticiasRelacionadas.length > 0) { %>
+                <% noticiasRelacionadas.forEach(function(noticia) { %>
+                    <div class="card">
+                        <a href="/noticias/<%= noticia.id %>">
+                            <% if (noticia.foto) { %>
+                                <img src="data:image/jpeg;base64,<%= noticia.foto.toString('base64') %>" alt="<%= noticia.titulo %>">
+                            <% } else { %>
+                                <img src="/images/fotonot1.png" alt="<%= noticia.titulo %>">
+                            <% } %>
+                            <p class="textonoticias">
+                                <strong><%= noticia.titulo %></strong><br>
+                                <%= noticia.descricao || '' %>
+                            </p>
+                        </a>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p class="sem-noticias">Nenhuma notícia relacionada encontrada.</p>
+            <% } %>
+
+        </article>
+    </main>
+    <%- include('partials/modal-contato') %>
+    <%- include('partials/modal-feedback') %>
+    <%- include('partials/rodape') %>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="javascripts/menu.js"></script>
+    <script src="javascripts/modal-contato.js"></script>
+    <script src="javascripts/modal-feedback.js"></script>
+</body>
+</html>

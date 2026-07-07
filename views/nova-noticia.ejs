@@ -6,14 +6,14 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="stylesheet" href="/stylesheets/portalinclusao.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> 
 
     <style>
         .editor-noticia-wrapper {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 30px;
-            max-width: 1400px;
+            max-width: 1500px;
             margin: 30px auto;
             padding: 0 20px 60px;
             align-items: start;
@@ -40,8 +40,7 @@
             color: #333;
             font-size: 0.9rem;
         }
-        .campo-noticia input[type="text"],
-        .campo-noticia textarea {
+        .campo-noticia input[type="text"] {
             width: 100%;
             padding: 10px 12px;
             border: 1px solid #ccc;
@@ -50,7 +49,6 @@
             font-size: 0.95rem;
             box-sizing: border-box;
         }
-        .campo-noticia textarea { resize: vertical; }
 
         .preview-capa-atual {
             max-width: 100%;
@@ -77,7 +75,6 @@
             padding: 16px;
             margin-bottom: 16px;
             background: #fff;
-            position: relative;
         }
 
         .bloco-editor-topo {
@@ -85,16 +82,32 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
-        .bloco-editor-topo span {
+        .bloco-editor-topo-esquerda {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .bloco-editor-topo span.rotulo-bloco {
             font-weight: 700;
             color: var(--cor02);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             text-transform: uppercase;
         }
 
-        .bloco-editor-acoes { display: flex; gap: 8px; }
+        .bloco-tipo-select {
+            padding: 5px 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 0.82rem;
+            font-family: inherit;
+        }
+
+        .bloco-editor-acoes { display: flex; gap: 6px; }
 
         .btn-icone-bloco {
             background: none;
@@ -102,10 +115,39 @@
             cursor: pointer;
             color: #888;
             font-size: 1rem;
-            padding: 4px;
+            padding: 4px 6px;
+            border-radius: 4px;
         }
-        .btn-icone-bloco:hover { color: #2c4759; }
-        .btn-icone-bloco.remover:hover { color: #e74c3c; }
+        .btn-icone-bloco:hover { color: #2c4759; background: #eef2f5; }
+        .btn-icone-bloco.remover:hover { color: #e74c3c; background: #fdeaea; }
+
+        /* Tamanhos de imagem no preview */
+        .preview-bloco figure { margin: 0 0 8px 0; text-align: center; }
+        .preview-bloco figure img {
+            display: block;
+            margin: 0 auto;
+            object-fit: cover;
+            border-radius: 6px;
+        }
+        .img-orientacao-horizontal { width: 100%; }
+        .img-orientacao-horizontal.img-tamanho-pequena  { max-height: 180px; }
+        .img-orientacao-horizontal.img-tamanho-media    { max-height: 300px; }
+        .img-orientacao-horizontal.img-tamanho-grande   { max-height: 480px; }
+        .img-orientacao-horizontal.img-tamanho-gigante  { max-height: none; }
+
+        .img-orientacao-vertical { display: block; margin: 0 auto; object-fit: cover; }
+        .img-orientacao-vertical.img-tamanho-pequena  { width: 22%; min-height: 120px; max-height: 220px; }
+        .img-orientacao-vertical.img-tamanho-media    { width: 32%; min-height: 200px; max-height: 360px; }
+        .img-orientacao-vertical.img-tamanho-grande   { width: 45%; min-height: 300px; max-height: 520px; }
+        .img-orientacao-vertical.img-tamanho-gigante  { width: 60%; min-height: 400px; max-height: none; }
+
+        .legenda-imagem {
+            font-size: 0.78rem;
+            color: #888;
+            text-align: center;
+            margin-top: 4px;
+            font-style: italic;
+        }
 
         .bloco-editor-imagem-preview {
             max-width: 100%;
@@ -115,66 +157,251 @@
             border-radius: 6px;
         }
 
-        .bloco-editor textarea {
-            width: 100%;
-            min-height: 70px;
-            padding: 8px 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 0.9rem;
-            resize: vertical;
-            box-sizing: border-box;
+        /* ── Galeria ── */
+        .galeria-editor {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
         }
+        .galeria-editor-item {
+            position: relative;
+            width: 100px;
+            height: 80px;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 2px solid #ddd;
+            flex-shrink: 0;
+        }
+        .galeria-editor-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .galeria-editor-item .btn-remover-img {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        .btn-add-img-galeria {
+            width: 100px;
+            height: 80px;
+            border: 2px dashed var(--cor02);
+            border-radius: 6px;
+            background: none;
+            color: var(--cor02);
+            font-size: 1.4rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .btn-add-img-galeria:hover { background: #eef2f5; }
+        .galeria-controles {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+            font-size: 0.82rem;
+        }
+        .galeria-controles label { font-weight: 600; color: #555; }
+        .galeria-controles select {
+            height: 26px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            padding: 0 4px;
+        }
+        /* Preview galeria */
+        .preview-galeria {
+            display: grid;
+            gap: 6px;
+        }
+        .preview-galeria.cols-1 { grid-template-columns: 1fr; }
+        .preview-galeria.cols-2 { grid-template-columns: 1fr 1fr; }
+        .preview-galeria.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+        .preview-galeria.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
+        .preview-galeria img {
+            width: 100%;
+            border-radius: 6px;
+            object-fit: cover;
+            display: block;
+        }
+        .preview-galeria.altura-pequena img  { height: 80px; }
+        .preview-galeria.altura-media img    { height: 130px; }
+        .preview-galeria.altura-grande img   { height: 200px; }
 
+        .bloco-imagem-controles {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .bloco-imagem-controles label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #555;
+            margin-right: 2px;
+        }
+        .bloco-imagem-controles select,
+        .bloco-imagem-controles input[type="text"] {
+            height: 28px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            padding: 0 6px;
+            font-family: inherit;
+            background: #fff;
+        }
+        .bloco-imagem-controles input[type="text"] {
+            flex: 1;
+            min-width: 120px;
+        }
         .bloco-editor input[type="file"] {
             font-size: 0.85rem;
-            margin-bottom: 8px;
-        }
-
-        .bloco-tipo-select {
             margin-bottom: 10px;
-            padding: 6px 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 0.85rem;
-            font-family: inherit;
+            display: block;
         }
 
         .bloco-toolbar {
             display: flex;
-            gap: 6px;
-            margin-bottom: 6px;
+            flex-wrap: wrap;
+            gap: 4px;
+            margin-bottom: 8px;
+            padding: 6px;
+            background: #f1f3f5;
+            border-radius: 6px;
         }
 
+        .bloco-toolbar .grupo-toolbar {
+            display: flex;
+            gap: 2px;
+            padding-right: 6px;
+            border-right: 1px solid #ddd;
+        }
+        .bloco-toolbar .grupo-toolbar:last-child { border-right: none; }
+
         .bloco-toolbar button {
-            width: 30px;
-            height: 30px;
-            border: 1px solid #ccc;
+            width: 28px;
+            height: 28px;
+            border: none;
             background: #fff;
             border-radius: 4px;
             cursor: pointer;
-            font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
+            color: #444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .bloco-toolbar button:hover { background: #eef2f5; }
+        .bloco-toolbar button:hover { background: #dde4e8; }
+        .bloco-toolbar button.ativo { background: var(--cor02); color: #fff; }
+
+        .bloco-toolbar select {
+            height: 28px;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .dropdown-cor {
+            position: relative;
+            display: inline-block;
+        }
+        .painel-cores {
+            display: none;
+            position: absolute;
+            top: 32px;
+            left: 0;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 6px;
+            gap: 4px;
+            grid-template-columns: repeat(6, 1fr);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            z-index: 5;
+        }
+        .painel-cores.aberto { display: grid; }
+        .swatch-cor {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+        }
 
         .bloco-texto-editavel {
             width: 100%;
             min-height: 70px;
-            padding: 8px 10px;
+            padding: 10px 12px;
             border: 1px solid #ccc;
             border-radius: 6px;
             font-family: inherit;
-            font-size: 0.9rem;
+            font-size: 0.92rem;
             box-sizing: border-box;
             outline: none;
+            line-height: 1.6;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+            overflow: hidden;
         }
         .bloco-texto-editavel:focus { border-color: var(--cor02); }
+        .bloco-texto-editavel ul, .bloco-texto-editavel ol {
+            margin: 6px 0 6px 20px;
+        }
+        .bloco-texto-editavel li.tarefa {
+            list-style: none;
+            margin-left: -20px;
+        }
+        .bloco-texto-editavel li.tarefa input[type="checkbox"] {
+            margin-right: 6px;
+        }
+
         .bloco-texto-editavel.modo-subtitulo {
             font-weight: 700;
             color: var(--cor02);
-            font-size: 1.05rem;
+            font-size: 1.1rem;
+        }
+        .bloco-texto-editavel.modo-citacao {
+            font-style: italic;
+            border-left: 4px solid var(--cor02);
+            background: #f7f9fa;
+        }
+
+        .campo-citacao-autor {
+            width: 100%;
+            margin-top: 8px;
+            padding: 7px 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            box-sizing: border-box;
+        }
+
+        .bloco-separador-preview-editor {
+            border: none;
+            border-top: 2px dashed #ccc;
+            margin: 10px 0;
         }
 
         .btn-add-bloco {
@@ -245,17 +472,49 @@
             margin-bottom: 10px;
         }
 
-        .preview-bloco p {
+        .preview-bloco .conteudo-texto {
             font-size: 1rem;
             line-height: 1.7;
             color: #333;
             margin: 0;
+            word-break: break-word;
+            overflow-wrap: break-word;
         }
+        .preview-bloco .conteudo-texto ul, .preview-bloco .conteudo-texto ol {
+            margin: 8px 0 8px 22px;
+        }
+        .preview-bloco .conteudo-texto li.tarefa { list-style: none; margin-left: -20px; }
 
-        .preview-bloco p.modo-subtitulo {
+        .preview-bloco.tipo-subtitulo .conteudo-texto {
             font-weight: 700;
             color: var(--cor02);
             font-size: 1.25rem;
+        }
+
+        .preview-bloco.tipo-citacao {
+            border-left: 4px solid var(--cor02);
+            background: #f7f9fa;
+            padding: 14px 18px;
+            border-radius: 0 8px 8px 0;
+        }
+        .preview-bloco.tipo-citacao .conteudo-texto {
+            font-style: italic;
+            font-size: 1.1rem;
+        }
+        .preview-bloco.tipo-citacao .autor-citacao {
+            display: block;
+            margin-top: 8px;
+            font-style: normal;
+            font-weight: 600;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .preview-bloco.tipo-citacao .autor-citacao::before { content: '— '; }
+
+        .preview-bloco.tipo-separador hr {
+            border: none;
+            border-top: 2px solid #ddd;
+            margin: 0;
         }
 
         .preview-vazio {
@@ -264,6 +523,34 @@
             padding: 40px 0;
             font-style: italic;
         }
+
+        .cor-preto { color: #111111; }
+        .cor-vermelho { color: #c0392b; }
+        .cor-azul { color: #2980b9; }
+        .cor-verde { color: #27ae60; }
+        .cor-laranja { color: #e67e22; }
+        .cor-roxo { color: #8e44ad; }
+        .cor-cinza { color: #7f8c8d; }
+
+        .marca-amarelo { background-color: #fff3a0; }
+        .marca-verde { background-color: #c8f7c5; }
+        .marca-azul { background-color: #bee3f8; }
+        .marca-rosa { background-color: #fbd1e3; }
+
+        .fonte-padrao { font-family: var(--fonte-padrao); }
+        .fonte-destaque { font-family: var(--fonte-destaque); }
+        .fonte-serifada { font-family: 'Times New Roman', serif; }
+        .fonte-monoespacada { font-family: 'Courier New', monospace; }
+
+        .texto-pequeno { font-size: 0.78rem; }
+        .texto-medio { font-size: 1rem; }
+        .texto-grande { font-size: 1.3rem; }
+        .texto-extra-grande { font-size: 1.7rem; }
+
+        .alinhar-esquerda { text-align: left; display: block; }
+        .alinhar-centro { text-align: center; display: block; }
+        .alinhar-direita { text-align: right; display: block; }
+        .alinhar-justificado { text-align: justify; display: block; }
 
         @media (max-width: 900px) {
             .editor-noticia-wrapper { grid-template-columns: 1fr; }
@@ -318,7 +605,7 @@
                 <div class="lista-blocos-editor" id="lista-blocos-editor"></div>
 
                 <button type="button" class="btn-add-bloco" id="btn-add-bloco">
-                    <i class="fas fa-plus"></i> Adicionar bloco (imagem e/ou texto)
+                    <i class="fas fa-plus"></i> Adicionar bloco
                 </button>
 
                 <div class="botoes-container" style="margin-top:24px;">
@@ -351,10 +638,53 @@
                     {
                         texto: <%- JSON.stringify(bloco.texto || '') %>,
                         tipo: <%- JSON.stringify(bloco.tipo_texto || 'normal') %>,
-                        imagemBase64: <%- bloco.imagem ? JSON.stringify(bloco.imagem.toString('base64')) : 'null' %>
+                        citacaoAutor: <%- JSON.stringify(bloco.citacao_autor || '') %>,
+                        imagemBase64: <%- bloco.imagem ? JSON.stringify(bloco.imagem.toString('base64')) : 'null' %>,
+                        imagemAlt: <%- JSON.stringify(bloco.imagem_alt || '') %>,
+                        imagemFonte: <%- JSON.stringify(bloco.imagem_fonte || '') %>,
+                        imagemTamanho: <%- JSON.stringify(bloco.imagem_tamanho || 'grande') %>,
+                        imagemOrientacao: <%- JSON.stringify(bloco.imagem_orientacao || 'horizontal') %>,
+                        galeriaImagens: <%- JSON.stringify((bloco.galeriaImagens || []).map(function(img){ return { src: 'data:image/jpeg;base64,' + img.imagem.toString('base64'), alt: '' }; })) %>
                     }<%= i < blocos.length - 1 ? ',' : '' %>
                 <% }); %>
             <% } %>
+        ];
+
+        const TIPOS_BLOCO = [
+            { valor: 'normal', rotulo: 'Texto' },
+            { valor: 'subtitulo', rotulo: 'Subtítulo' },
+            { valor: 'citacao', rotulo: 'Citação' },
+            { valor: 'separador', rotulo: 'Separador' },
+            { valor: 'galeria', rotulo: 'Galeria de Imagens' }
+        ];
+
+        const CORES_TEXTO = [
+            { classe: 'cor-preto', cor: '#111111' },
+            { classe: 'cor-vermelho', cor: '#c0392b' },
+            { classe: 'cor-azul', cor: '#2980b9' },
+            { classe: 'cor-verde', cor: '#27ae60' },
+            { classe: 'cor-laranja', cor: '#e67e22' },
+            { classe: 'cor-roxo', cor: '#8e44ad' },
+            { classe: 'cor-cinza', cor: '#7f8c8d' }
+        ];
+        const CORES_MARCA_TEXTO = [
+            { classe: 'marca-amarelo', cor: '#fff3a0' },
+            { classe: 'marca-verde', cor: '#c8f7c5' },
+            { classe: 'marca-azul', cor: '#bee3f8' },
+            { classe: 'marca-rosa', cor: '#fbd1e3' }
+        ];
+        const FONTES = [
+            { valor: '', rotulo: 'Fonte padrão' },
+            { valor: 'fonte-destaque', rotulo: 'Destaque' },
+            { valor: 'fonte-serifada', rotulo: 'Serifada' },
+            { valor: 'fonte-monoespacada', rotulo: 'Monoespaçada' }
+        ];
+        const TAMANHOS_FONTE = [
+            { valor: '', rotulo: 'Tamanho' },
+            { valor: 'texto-pequeno', rotulo: 'Pequeno' },
+            { valor: 'texto-medio', rotulo: 'Médio' },
+            { valor: 'texto-grande', rotulo: 'Grande' },
+            { valor: 'texto-extra-grande', rotulo: 'Extra grande' }
         ];
 
         let contadorBlocos = 0;
@@ -365,100 +695,373 @@
 
         function criarBlocoEditor(dadosIniciais) {
             const index = contadorBlocos++;
-            dadosIniciais = dadosIniciais || { texto: '', tipo: 'normal', imagemBase64: null };
+            dadosIniciais = dadosIniciais || { texto: '', tipo: 'normal', citacaoAutor: '', imagemBase64: null };
 
             const wrapper = document.createElement('div');
             wrapper.className = 'bloco-editor';
             wrapper.dataset.index = index;
+            wrapper.dataset.tipo = dadosIniciais.tipo;
 
-            wrapper.innerHTML =
-                '<div class="bloco-editor-topo">' +
-                    '<span>Bloco ' + (index + 1) + '</span>' +
-                    '<div class="bloco-editor-acoes">' +
-                        '<button type="button" class="btn-icone-bloco subir" title="Mover para cima"><i class="fas fa-arrow-up"></i></button>' +
-                        '<button type="button" class="btn-icone-bloco descer" title="Mover para baixo"><i class="fas fa-arrow-down"></i></button>' +
-                        '<button type="button" class="btn-icone-bloco remover" title="Remover bloco"><i class="fas fa-trash"></i></button>' +
-                    '</div>' +
-                '</div>' +
-                (dadosIniciais.imagemBase64 ? '<img class="bloco-editor-imagem-preview" src="data:image/jpeg;base64,' + dadosIniciais.imagemBase64 + '">' : '') +
-                '<input type="file" name="bloco_imagem_' + index + '" accept="image/*" class="bloco-input-imagem">' +
-                '<select class="bloco-tipo-select" name="blocos_tipo[]">' +
-                    '<option value="normal"' + (dadosIniciais.tipo !== 'subtitulo' ? ' selected' : '') + '>Texto normal</option>' +
-                    '<option value="subtitulo"' + (dadosIniciais.tipo === 'subtitulo' ? ' selected' : '') + '>Subtítulo (negrito + destaque)</option>' +
-                '</select>' +
-                '<div class="bloco-toolbar">' +
-                    '<button type="button" class="btn-negrito" title="Negrito"><i class="fas fa-bold"></i></button>' +
-                '</div>' +
-                '<div class="bloco-texto-editavel' + (dadosIniciais.tipo === 'subtitulo' ? ' modo-subtitulo' : '') + '" contenteditable="true" data-placeholder="Texto deste bloco (opcional)">' + (dadosIniciais.texto || '') + '</div>' +
-                '<textarea name="blocos_texto[]" style="display:none;"></textarea>';
-
+            wrapper.innerHTML = montarHtmlBlocoEditor(index, dadosIniciais);
             listaBlocosEditor.appendChild(wrapper);
 
             const previewBloco = document.createElement('div');
-            previewBloco.className = 'preview-bloco';
+            previewBloco.className = 'preview-bloco tipo-' + dadosIniciais.tipo;
             previewBloco.dataset.previewFor = index;
-            if (dadosIniciais.imagemBase64) {
-                previewBloco.innerHTML = '<img src="data:image/jpeg;base64,' + dadosIniciais.imagemBase64 + '">';
-            }
-            previewBloco.innerHTML += '<p class="' + (dadosIniciais.tipo === 'subtitulo' ? 'modo-subtitulo' : '') + '">' + (dadosIniciais.texto || '') + '</p>';
             previewBlocosContainer.appendChild(previewBloco);
+            atualizarPreviewBloco(wrapper, previewBloco);
 
             ligarEventosBloco(wrapper, previewBloco);
             atualizarVisibilidadeVazio();
             renumerarBlocos();
         }
 
-        function ligarEventosBloco(wrapper, previewBloco) {
-            const editavel = wrapper.querySelector('.bloco-texto-editavel');
-            const textareaOculta = wrapper.querySelector('textarea');
-            const inputImagem = wrapper.querySelector('.bloco-input-imagem');
-            const seletorTipo = wrapper.querySelector('.bloco-tipo-select');
-            const btnNegrito = wrapper.querySelector('.btn-negrito');
-            const previewP = previewBloco.querySelector('p');
+        function montarHtmlBlocoEditor(index, dados) {
+            const optionsTipo = TIPOS_BLOCO.map(function(t) {
+                return '<option value="' + t.valor + '"' + (dados.tipo === t.valor ? ' selected' : '') + '>' + t.rotulo + '</option>';
+            }).join('');
 
-            // Sincroniza o conteúdo HTML editado com a textarea oculta (que é
-            // o campo realmente enviado no submit) e atualiza o preview.
-            function sincronizar() {
-                textareaOculta.value = editavel.innerHTML;
-                previewP.innerHTML = editavel.innerHTML;
+            const imagemPreviewHtml = dados.imagemBase64
+                ? '<img class="bloco-editor-imagem-preview" src="data:image/jpeg;base64,' + dados.imagemBase64 + '">'
+                : '';
+
+            if (dados.tipo === 'separador') {
+                return cabecalhoBloco(index, optionsTipo) +
+                    '<hr class="bloco-separador-preview-editor">' +
+                    camposOcultosComuns() +
+                    camposOcultosSeparador();
             }
 
-            editavel.addEventListener('input', sincronizar);
-            sincronizar(); // garante valor inicial (modo edição)
+            if (dados.tipo === 'galeria') {
+                return cabecalhoBloco(index, optionsTipo) +
+                    montarEditorGaleria(index, dados) +
+                    camposOcultosComuns() +
+                    camposOcultosSeparador();
+            }
 
-            btnNegrito.addEventListener('click', function() {
-                editavel.focus();
-                document.execCommand('bold');
-                sincronizar();
+            const classeModo = dados.tipo === 'subtitulo' ? ' modo-subtitulo' : (dados.tipo === 'citacao' ? ' modo-citacao' : '');
+
+            const campoAutorCitacao = dados.tipo === 'citacao'
+                ? '<input type="text" class="campo-citacao-autor" name="blocos_citacao_autor[]" placeholder="Autor da citação (opcional)" value="' + escapeAtributo(dados.citacaoAutor || '') + '">'
+                : '<input type="hidden" name="blocos_citacao_autor[]" value="">';
+
+            // Input hidden com base64 da imagem já salva (usada se não vier novo upload)
+            const imagemExistenteHtml = dados.imagemBase64
+                ? '<input type="hidden" class="bloco-imagem-existente" name="bloco_imagem_existente_' + index + '" value="' + dados.imagemBase64 + '">'
+                : '<input type="hidden" class="bloco-imagem-existente" name="bloco_imagem_existente_' + index + '" value="">';
+
+            return cabecalhoBloco(index, optionsTipo) +
+                imagemPreviewHtml +
+                imagemExistenteHtml +
+                '<input type="file" name="bloco_imagem_' + index + '" accept="image/*" class="bloco-input-imagem">' +
+                montarControlesImagem(index, dados) +
+                montarToolbar() +
+                '<div class="bloco-texto-editavel' + classeModo + '" contenteditable="true" data-placeholder="Texto deste bloco">' + (dados.texto || '') + '</div>' +
+                campoAutorCitacao +
+                camposOcultosComuns();
+        }
+
+        function cabecalhoBloco(index, optionsTipoHtml) {
+            return '<div class="bloco-editor-topo">' +
+                '<div class="bloco-editor-topo-esquerda">' +
+                    '<span class="rotulo-bloco">Bloco ' + (index + 1) + '</span>' +
+                    '<select class="bloco-tipo-select">' + optionsTipoHtml + '</select>' +
+                '</div>' +
+                '<div class="bloco-editor-acoes">' +
+                    '<button type="button" class="btn-icone-bloco subir" title="Mover para cima"><i class="fas fa-arrow-up"></i></button>' +
+                    '<button type="button" class="btn-icone-bloco descer" title="Mover para baixo"><i class="fas fa-arrow-down"></i></button>' +
+                    '<button type="button" class="btn-icone-bloco remover" title="Remover bloco"><i class="fas fa-trash"></i></button>' +
+                '</div>' +
+            '</div>';
+        }
+
+        function camposOcultosComuns() {
+            return '<textarea name="blocos_texto[]" style="display:none;"></textarea>' +
+                   '<input type="hidden" name="blocos_tipo[]" class="bloco-tipo-hidden" value="">';
+        }
+
+        function camposOcultosSeparador() {
+            // Separador nao tem controles de imagem no HTML, entao precisa de campos hidden
+            return '<input type="hidden" name="blocos_imagem_tamanho[]" value="grande">' +
+                   '<input type="hidden" name="blocos_imagem_orientacao[]" value="horizontal">' +
+                   '<input type="hidden" name="blocos_imagem_alt[]" value="">' +
+                   '<input type="hidden" name="blocos_imagem_fonte[]" value="">';
+        }
+
+        function montarEditorGaleria(index, dados) {
+            // Ao editar, imagens vêm de dados.galeriaImagens (banco); ao criar, de galData
+            let galData = { cols: '3', altura: 'media', imagens: [] };
+            try { if (dados.texto) galData = JSON.parse(dados.texto); } catch(e) {}
+            const cols = galData.cols || '3';
+            const altura = galData.altura || 'media';
+            // Preferência: imagens carregadas do banco (edição); fallback: JSON salvo
+            const imagens = (dados.galeriaImagens && dados.galeriaImagens.length > 0)
+                ? dados.galeriaImagens
+                : (galData.imagens || []);
+
+            const thumbsHtml = imagens.map(function(img, i) {
+                return '<div class="galeria-editor-item" data-idx="' + i + '">' +
+                    '<img src="' + img.src + '" alt="' + escapeAtributo(img.alt || '') + '">' +
+                    '<button type="button" class="btn-remover-img" data-idx="' + i + '" title="Remover">✕</button>' +
+                '</div>';
+            }).join('');
+
+            return '<div class="galeria-controles">' +
+                    '<label>Colunas:</label>' +
+                    '<select class="select-galeria-cols">' +
+                        '<option value="1"' + (cols==='1'?' selected':'') + '>1</option>' +
+                        '<option value="2"' + (cols==='2'?' selected':'') + '>2</option>' +
+                        '<option value="3"' + (cols==='3'?' selected':'') + '>3</option>' +
+                        '<option value="4"' + (cols==='4'?' selected':'') + '>4</option>' +
+                    '</select>' +
+                    '<label>Altura:</label>' +
+                    '<select class="select-galeria-altura">' +
+                        '<option value="pequena"' + (altura==='pequena'?' selected':'') + '>Pequena</option>' +
+                        '<option value="media"'   + (altura==='media'  ?' selected':'') + '>Média</option>' +
+                        '<option value="grande"'  + (altura==='grande' ?' selected':'') + '>Grande</option>' +
+                    '</select>' +
+                '</div>' +
+                '<div class="galeria-editor" id="galeria-editor-' + index + '">' +
+                    thumbsHtml +
+                    '<button type="button" class="btn-add-img-galeria" title="Adicionar imagem"><i class="fas fa-plus"></i></button>' +
+                '</div>' +
+                '<input type="file" accept="image/*" multiple class="bloco-input-galeria-file" style="display:none">';
+        }
+
+        function montarControlesImagem(index, dados) {
+            const tam = dados.imagemTamanho || 'grande';
+            const ori = dados.imagemOrientacao || 'horizontal';
+            const alt = escapeAtributo(dados.imagemAlt || '');
+            const fonte = escapeAtributo(dados.imagemFonte || '');
+            return '<div class="bloco-imagem-controles">' +
+                '<label>Tamanho:</label>' +
+                '<select name="blocos_imagem_tamanho[]" class="select-img-tamanho">' +
+                    '<option value="pequena"' + (tam === 'pequena' ? ' selected' : '') + '>Pequena</option>' +
+                    '<option value="media"'   + (tam === 'media'   ? ' selected' : '') + '>Média</option>' +
+                    '<option value="grande"'  + (tam === 'grande'  ? ' selected' : '') + '>Grande</option>' +
+                    '<option value="gigante"' + (tam === 'gigante' ? ' selected' : '') + '>Gigante</option>' +
+                '</select>' +
+                '<label>Orientação:</label>' +
+                '<select name="blocos_imagem_orientacao[]" class="select-img-orientacao">' +
+                    '<option value="horizontal"' + (ori === 'horizontal' ? ' selected' : '') + '>Horizontal</option>' +
+                    '<option value="vertical"'   + (ori === 'vertical'   ? ' selected' : '') + '>Vertical</option>' +
+                '</select>' +
+                '<label>Alt:</label>' +
+                '<input type="text" name="blocos_imagem_alt[]" class="campo-img-alt" placeholder="Texto alternativo (acessibilidade)" value="' + alt + '">' +
+                '<label>Fonte:</label>' +
+                '<input type="text" name="blocos_imagem_fonte[]" class="campo-img-fonte" placeholder="Fonte / crédito da imagem" value="' + fonte + '">' +
+            '</div>';
+        }
+
+        function montarToolbar() {
+            const swatchesCor = CORES_TEXTO.map(function(c) {
+                return '<span class="swatch-cor" data-classe="' + c.classe + '" style="background:' + c.cor + '"></span>';
+            }).join('');
+            const swatchesMarca = CORES_MARCA_TEXTO.map(function(c) {
+                return '<span class="swatch-cor" data-classe="' + c.classe + '" style="background:' + c.cor + '"></span>';
+            }).join('');
+            const optionsFonte = FONTES.map(function(f) {
+                return '<option value="' + f.valor + '">' + f.rotulo + '</option>';
+            }).join('');
+            const optionsTamanho = TAMANHOS_FONTE.map(function(t) {
+                return '<option value="' + t.valor + '">' + t.rotulo + '</option>';
+            }).join('');
+
+            return '<div class="bloco-toolbar">' +
+                '<div class="grupo-toolbar">' +
+                    '<button type="button" data-acao="bold" title="Negrito"><i class="fas fa-bold"></i></button>' +
+                    '<button type="button" data-acao="italic" title="Itálico"><i class="fas fa-italic"></i></button>' +
+                    '<button type="button" data-acao="underline" title="Sublinhado"><i class="fas fa-underline"></i></button>' +
+                    '<button type="button" data-acao="strikeThrough" title="Tachado"><i class="fas fa-strikethrough"></i></button>' +
+                '</div>' +
+                '<div class="grupo-toolbar">' +
+                    '<div class="dropdown-cor">' +
+                        '<button type="button" class="btn-abrir-cor" title="Cor do texto"><i class="fas fa-font"></i></button>' +
+                        '<div class="painel-cores cores-texto">' + swatchesCor + '</div>' +
+                    '</div>' +
+                    '<div class="dropdown-cor">' +
+                        '<button type="button" class="btn-abrir-marca" title="Marca-texto"><i class="fas fa-highlighter"></i></button>' +
+                        '<div class="painel-cores cores-marca">' + swatchesMarca + '<span class="swatch-cor swatch-limpar-marca" title="Remover marca-texto" style="background:#fff;font-size:13px;display:flex;align-items:center;justify-content:center;">✕</span></div>' +
+                    '</div>' +
+                '</div>' +
+                '<div class="grupo-toolbar">' +
+                    '<select class="select-fonte" title="Família da fonte">' + optionsFonte + '</select>' +
+                    '<select class="select-tamanho" title="Tamanho da fonte">' + optionsTamanho + '</select>' +
+                '</div>' +
+                '<div class="grupo-toolbar">' +
+                    '<button type="button" data-acao="alinhar-esquerda" title="Alinhar à esquerda"><i class="fas fa-align-left"></i></button>' +
+                    '<button type="button" data-acao="alinhar-centro" title="Centralizar"><i class="fas fa-align-center"></i></button>' +
+                    '<button type="button" data-acao="alinhar-direita" title="Alinhar à direita"><i class="fas fa-align-right"></i></button>' +
+                    '<button type="button" data-acao="alinhar-justificado" title="Justificar"><i class="fas fa-align-justify"></i></button>' +
+                '</div>' +
+                '<div class="grupo-toolbar">' +
+                    '<button type="button" data-acao="lista-marcadores" title="Lista com marcadores"><i class="fas fa-list-ul"></i></button>' +
+                    '<button type="button" data-acao="lista-numerada" title="Lista numerada"><i class="fas fa-list-ol"></i></button>' +
+                    '<button type="button" data-acao="lista-tarefa" title="Lista de tarefas"><i class="fas fa-tasks"></i></button>' +
+                '</div>' +
+                '<div class="grupo-toolbar">' +
+                    '<button type="button" data-acao="link" title="Inserir link"><i class="fas fa-link"></i></button>' +
+                '</div>' +
+            '</div>';
+        }
+
+        function ligarEventosBloco(wrapper, previewBloco) {
+            const tipoSelect = wrapper.querySelector('.bloco-tipo-select');
+            const tipoHidden = wrapper.querySelector('.bloco-tipo-hidden');
+            tipoHidden.value = wrapper.dataset.tipo;
+
+            if (tipoSelect) {
+                tipoSelect.addEventListener('change', function() {
+                    const novoTipo = tipoSelect.value;
+                    const index = parseInt(wrapper.dataset.index, 10);
+                    const textoAtual = (wrapper.querySelector('.bloco-texto-editavel') || {}).innerHTML || '';
+                    const imgEditorAtual = wrapper.querySelector('.bloco-editor-imagem-preview');
+                    const imagemBase64Atual = imgEditorAtual ? imgEditorAtual.src.split(',')[1] : null;
+
+                    wrapper.dataset.tipo = novoTipo;
+                    wrapper.innerHTML = montarHtmlBlocoEditor(index, {
+                        texto: textoAtual,
+                        tipo: novoTipo,
+                        citacaoAutor: '',
+                        imagemBase64: imagemBase64Atual
+                    });
+
+                    previewBloco.className = 'preview-bloco tipo-' + novoTipo;
+                    ligarEventosBloco(wrapper, previewBloco);
+                    atualizarPreviewBloco(wrapper, previewBloco);
+                    renumerarBlocos();
+                });
+            }
+
+            const inputImagem = wrapper.querySelector('.bloco-input-imagem');
+            if (inputImagem) {
+                inputImagem.addEventListener('change', function() {
+                    if (!inputImagem.files || !inputImagem.files[0]) return;
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        let imgEditor = wrapper.querySelector('.bloco-editor-imagem-preview');
+                        if (!imgEditor) {
+                            imgEditor = document.createElement('img');
+                            imgEditor.className = 'bloco-editor-imagem-preview';
+                            wrapper.insertBefore(imgEditor, inputImagem);
+                        }
+                        imgEditor.src = e.target.result;
+                        // Atualiza o hidden para o backend usar se o file input não chegar
+                        const hiddenExistente = wrapper.querySelector('.bloco-imagem-existente');
+                        if (hiddenExistente) hiddenExistente.value = e.target.result.split(',')[1];
+                        atualizarPreviewBloco(wrapper, previewBloco);
+                    };
+                    reader.readAsDataURL(inputImagem.files[0]);
+                });
+            }
+
+            // Controles de imagem: tamanho, orientação, alt, fonte
+            ['select-img-tamanho', 'select-img-orientacao'].forEach(function(cls) {
+                const el = wrapper.querySelector('.' + cls);
+                if (el) el.addEventListener('change', function() { atualizarPreviewBloco(wrapper, previewBloco); });
+            });
+            ['campo-img-alt', 'campo-img-fonte'].forEach(function(cls) {
+                const el = wrapper.querySelector('.' + cls);
+                if (el) el.addEventListener('input', function() { atualizarPreviewBloco(wrapper, previewBloco); });
             });
 
-            seletorTipo.addEventListener('change', function() {
-                const ehSubtitulo = seletorTipo.value === 'subtitulo';
-                editavel.classList.toggle('modo-subtitulo', ehSubtitulo);
-                previewP.classList.toggle('modo-subtitulo', ehSubtitulo);
-            });
+            // ── Galeria ──────────────────────────────────────────────────────
+            if (wrapper.dataset.tipo === 'galeria') {
+                ligarEventosGaleria(wrapper, previewBloco);
+            }
 
-            inputImagem.addEventListener('change', function() {
-                if (!inputImagem.files || !inputImagem.files[0]) return;
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    let img = previewBloco.querySelector('img');
-                    if (!img) {
-                        img = document.createElement('img');
-                        previewBloco.insertBefore(img, previewBloco.firstChild);
+            const editavel = wrapper.querySelector('.bloco-texto-editavel');
+            if (editavel) {
+                editavel.addEventListener('input', function() {
+                    atualizarPreviewBloco(wrapper, previewBloco);
+                });
+                // Salva seleção ao perder foco (blur) para que botões da toolbar possam usá-la
+                editavel.addEventListener('blur', function() {
+                    const sel = window.getSelection();
+                    if (sel && sel.rangeCount && !sel.isCollapsed && editavel.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+                        selecaoSalva = { editavel: editavel, range: sel.getRangeAt(0).cloneRange() };
                     }
-                    img.src = e.target.result;
+                });
+            }
 
-                    let imgEditor = wrapper.querySelector('.bloco-editor-imagem-preview');
-                    if (!imgEditor) {
-                        imgEditor = document.createElement('img');
-                        imgEditor.className = 'bloco-editor-imagem-preview';
-                        wrapper.insertBefore(imgEditor, inputImagem);
-                    }
-                    imgEditor.src = e.target.result;
-                };
-                reader.readAsDataURL(inputImagem.files[0]);
+            const campoAutor = wrapper.querySelector('.campo-citacao-autor');
+            if (campoAutor) {
+                campoAutor.addEventListener('input', function() {
+                    atualizarPreviewBloco(wrapper, previewBloco);
+                });
+            }
+
+            wrapper.querySelectorAll('.bloco-toolbar button[data-acao]').forEach(function(botao) {
+                botao.addEventListener('mousedown', function(e) { e.preventDefault(); });
+                botao.addEventListener('click', function() {
+                    if (!editavel) return;
+                    editavel.focus();
+                    executarAcaoToolbar(botao.dataset.acao, editavel);
+                    atualizarPreviewBloco(wrapper, previewBloco);
+                });
             });
+
+            const selectFonte = wrapper.querySelector('.select-fonte');
+            if (selectFonte) {
+                selectFonte.addEventListener('change', function() {
+                    if (!editavel) return;
+                    aplicarSpanNaSelecao(editavel, selectFonte.value);
+                    atualizarPreviewBloco(wrapper, previewBloco);
+                    selectFonte.value = '';
+                });
+            }
+            const selectTamanho = wrapper.querySelector('.select-tamanho');
+            if (selectTamanho) {
+                selectTamanho.addEventListener('change', function() {
+                    if (!editavel) return;
+                    aplicarSpanNaSelecao(editavel, selectTamanho.value);
+                    atualizarPreviewBloco(wrapper, previewBloco);
+                    selectTamanho.value = '';
+                });
+            }
+
+            const btnAbrirCor = wrapper.querySelector('.btn-abrir-cor');
+            if (btnAbrirCor) {
+                btnAbrirCor.addEventListener('mousedown', function(e) { e.preventDefault(); });
+                btnAbrirCor.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    wrapper.querySelector('.cores-texto').classList.toggle('aberto');
+                });
+                wrapper.querySelector('.cores-texto').addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                });
+                wrapper.querySelectorAll('.cores-texto .swatch-cor').forEach(function(swatch) {
+                    swatch.addEventListener('click', function() {
+                        if (!editavel) return;
+                        aplicarSpanNaSelecao(editavel, swatch.dataset.classe);
+                        wrapper.querySelector('.cores-texto').classList.remove('aberto');
+                        atualizarPreviewBloco(wrapper, previewBloco);
+                    });
+                });
+            }
+            const btnAbrirMarca = wrapper.querySelector('.btn-abrir-marca');
+            if (btnAbrirMarca) {
+                btnAbrirMarca.addEventListener('mousedown', function(e) { e.preventDefault(); });
+                btnAbrirMarca.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    wrapper.querySelector('.cores-marca').classList.toggle('aberto');
+                });
+                wrapper.querySelector('.cores-marca').addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                });
+                wrapper.querySelectorAll('.cores-marca .swatch-cor').forEach(function(swatch) {
+                    swatch.addEventListener('click', function() {
+                        if (!editavel) return;
+                        if (swatch.classList.contains('swatch-limpar-marca')) {
+                            limparMarcaTexto(editavel);
+                        } else {
+                            aplicarSpanNaSelecao(editavel, swatch.dataset.classe);
+                        }
+                        wrapper.querySelector('.cores-marca').classList.remove('aberto');
+                        atualizarPreviewBloco(wrapper, previewBloco);
+                    });
+                });
+            }
 
             wrapper.querySelector('.remover').addEventListener('click', function() {
                 wrapper.remove();
@@ -488,12 +1091,372 @@
             });
         }
 
+        function lerGaleriaJson(wrapper) {
+            const sel = wrapper.querySelector('.select-galeria-cols');
+            const alt = wrapper.querySelector('.select-galeria-altura');
+            const thumbs = Array.from(wrapper.querySelectorAll('.galeria-editor-item img'));
+            return {
+                cols: sel ? sel.value : '3',
+                altura: alt ? alt.value : 'media',
+                imagens: thumbs.map(function(img) { return { alt: img.alt || '' }; })
+            };
+        }
+
+        function salvarGaleriaNoTextarea(wrapper) {
+            const ta = wrapper.querySelector('textarea');
+            if (ta) ta.value = JSON.stringify(lerGaleriaJson(wrapper));
+        }
+
+        function atualizarBtnAdd(wrapper) {
+            const selCols = wrapper.querySelector('.select-galeria-cols');
+            const maxImgs = selCols ? parseInt(selCols.value) * 4 : 12; // máx: 4 linhas de imgs
+            const total   = wrapper.querySelectorAll('.galeria-editor-item').length;
+            const btnAdd  = wrapper.querySelector('.btn-add-img-galeria');
+            if (!btnAdd) return;
+            // Limite: número de colunas × 4 linhas (ex: 3 colunas = máx 12 imagens)
+            if (total >= maxImgs) {
+                btnAdd.style.display = 'none';
+            } else {
+                btnAdd.style.display = 'flex';
+            }
+        }
+
+        function adicionarInputsOcultosGaleria(wrapper, index) {
+            // Remove inputs antigos
+            wrapper.querySelectorAll('.galeria-hidden-input').forEach(function(el) { el.remove(); });
+            // Cria um input hidden para cada imagem (src base64) para envio ao servidor
+            const thumbs = Array.from(wrapper.querySelectorAll('.galeria-editor-item img'));
+            thumbs.forEach(function(img, i) {
+                const inp = document.createElement('input');
+                inp.type = 'hidden';
+                inp.name = 'galeria_img_' + index + '_' + i;
+                inp.value = img.src; // base64
+                inp.className = 'galeria-hidden-input';
+                wrapper.appendChild(inp);
+            });
+        }
+
+        function ligarEventosGaleria(wrapper, previewBloco) {
+            const index = parseInt(wrapper.dataset.index, 10);
+
+            function atualizar() {
+                salvarGaleriaNoTextarea(wrapper);
+                adicionarInputsOcultosGaleria(wrapper, index);
+                atualizarPreviewBloco(wrapper, previewBloco);
+                atualizarBtnAdd(wrapper);
+            }
+
+            const selCols = wrapper.querySelector('.select-galeria-cols');
+            const selAltura = wrapper.querySelector('.select-galeria-altura');
+            if (selCols) selCols.addEventListener('change', function() { atualizar(); atualizarBtnAdd(wrapper); });
+            if (selAltura) selAltura.addEventListener('change', atualizar);
+
+            const btnAdd = wrapper.querySelector('.btn-add-img-galeria');
+            const fileInput = wrapper.querySelector('.bloco-input-galeria-file');
+            if (btnAdd && fileInput) {
+                btnAdd.addEventListener('click', function() { fileInput.click(); });
+                fileInput.addEventListener('change', function() {
+                    const files = Array.from(fileInput.files);
+                    const galeriaDiv = wrapper.querySelector('.galeria-editor');
+                    let pendentes = files.length;
+                    if (pendentes === 0) return;
+                    files.forEach(function(file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const item = document.createElement('div');
+                            item.className = 'galeria-editor-item';
+                            item.innerHTML =
+                                '<img src="' + e.target.result + '" alt="">' +
+                                '<button type="button" class="btn-remover-img" title="Remover">✕</button>';
+                            item.querySelector('.btn-remover-img').addEventListener('click', function() {
+                                item.remove();
+                                atualizar();
+                            });
+                            galeriaDiv.insertBefore(item, btnAdd);
+                            pendentes--;
+                            if (pendentes === 0) atualizar();
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    fileInput.value = '';
+                });
+            }
+
+            wrapper.querySelectorAll('.btn-remover-img').forEach(function(btn) {
+                btn.addEventListener('click', function() {
+                    btn.closest('.galeria-editor-item').remove();
+                    atualizar();
+                });
+            });
+
+            // Estado inicial
+            atualizar();
+        }
+
+        function executarAcaoToolbar(acao, editavel) {
+            switch (acao) {
+                case 'bold':
+                case 'italic':
+                case 'underline':
+                case 'strikeThrough':
+                    document.execCommand(acao);
+                    break;
+                case 'lista-marcadores':
+                    document.execCommand('insertUnorderedList');
+                    break;
+                case 'lista-numerada':
+                    document.execCommand('insertOrderedList');
+                    break;
+                case 'lista-tarefa':
+                    inserirListaTarefa(editavel);
+                    break;
+                case 'alinhar-esquerda':
+                    aplicarSpanNaSelecao(editavel, 'alinhar-esquerda');
+                    break;
+                case 'alinhar-centro':
+                    aplicarSpanNaSelecao(editavel, 'alinhar-centro');
+                    break;
+                case 'alinhar-direita':
+                    aplicarSpanNaSelecao(editavel, 'alinhar-direita');
+                    break;
+                case 'alinhar-justificado':
+                    aplicarSpanNaSelecao(editavel, 'alinhar-justificado');
+                    break;
+                case 'link':
+                    inserirLink(editavel);
+                    break;
+            }
+        }
+
+        // Grupos mutuamente exclusivos: aplicar uma classe remove as outras do mesmo grupo
+        const GRUPOS_EXCLUSIVOS = [
+            ['cor-preto', 'cor-vermelho', 'cor-azul', 'cor-verde', 'cor-laranja', 'cor-roxo', 'cor-cinza'],
+            ['marca-amarelo', 'marca-verde', 'marca-azul', 'marca-rosa'],
+            ['texto-pequeno', 'texto-medio', 'texto-grande', 'texto-extra-grande'],
+            ['fonte-padrao', 'fonte-destaque', 'fonte-serifada', 'fonte-monoespacada']
+        ];
+
+        // Seleção salva para uso após perda de foco (clique em swatch/select)
+        let selecaoSalva = null;
+
+        document.addEventListener('selectionchange', function() {
+            const sel = window.getSelection();
+            if (sel && sel.rangeCount && !sel.isCollapsed) {
+                const range = sel.getRangeAt(0);
+                const editores = document.querySelectorAll('.bloco-texto-editavel');
+                for (let ed of editores) {
+                    if (ed.contains(range.commonAncestorContainer)) {
+                        selecaoSalva = { editavel: ed, range: range.cloneRange() };
+                        break;
+                    }
+                }
+            }
+        });
+
+        // Remove classes de um grupo de um elemento span e de todos os seus descendentes spans
+        function limparGrupoNoFragmento(no, grupo) {
+            if (no.nodeType === Node.ELEMENT_NODE && no.tagName === 'SPAN') {
+                grupo.forEach(function(c) { no.classList.remove(c); });
+            }
+            no.childNodes.forEach(function(filho) { limparGrupoNoFragmento(filho, grupo); });
+        }
+
+        // Desfaz spans vazios (sem classe) após limpeza
+        function achatarSpansVazios(fragmento) {
+            fragmento.querySelectorAll('span').forEach(function(s) {
+                if (!s.className || s.className.trim() === '') {
+                    const pai = s.parentNode;
+                    while (s.firstChild) pai.insertBefore(s.firstChild, s);
+                    pai.removeChild(s);
+                }
+            });
+        }
+
+        function aplicarSpanNaSelecao(editavel, classe) {
+            if (!classe) return;
+
+            let range = null;
+            const sel = window.getSelection();
+            if (sel && sel.rangeCount && !sel.isCollapsed && editavel.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+                range = sel.getRangeAt(0);
+            } else if (selecaoSalva && selecaoSalva.editavel === editavel) {
+                sel.removeAllRanges();
+                sel.addRange(selecaoSalva.range);
+                range = selecaoSalva.range;
+            }
+
+            if (!range) {
+                alert('Selecione um trecho de texto antes de aplicar esta formatação.');
+                return;
+            }
+
+            const grupoAtual = GRUPOS_EXCLUSIVOS.find(g => g.includes(classe)) || null;
+            const fragmento = range.extractContents();
+
+            if (grupoAtual) {
+                limparGrupoNoFragmento(fragmento, grupoAtual);
+                achatarSpansVazios(fragmento);
+            }
+
+            const span = document.createElement('span');
+            span.className = classe;
+            span.appendChild(fragmento);
+            range.insertNode(span);
+
+            const novoRange = document.createRange();
+            novoRange.setStartAfter(span);
+            novoRange.collapse(true);
+            sel.removeAllRanges();
+            sel.addRange(novoRange);
+        }
+
+        function limparMarcaTexto(editavel) {
+            const classesMarca = ['marca-amarelo', 'marca-verde', 'marca-azul', 'marca-rosa'];
+
+            // Pega seleção atual ou salva
+            let range = null;
+            const sel = window.getSelection();
+            if (sel && sel.rangeCount && !sel.isCollapsed && editavel.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+                range = sel.getRangeAt(0);
+            } else if (selecaoSalva && selecaoSalva.editavel === editavel) {
+                range = selecaoSalva.range;
+            }
+            if (!range) { alert('Selecione o texto marcado para remover o destaque.'); return; }
+
+            // Percorre todos os spans do editavel e remove marca dos que intersectam a selecao
+            const spans = Array.from(editavel.querySelectorAll('span'));
+            spans.forEach(function(span) {
+                const temMarca = classesMarca.some(function(c) { return span.classList.contains(c); });
+                if (!temMarca) return;
+
+                const spanRange = document.createRange();
+                spanRange.selectNodeContents(span);
+                const intersecta = !(
+                    range.compareBoundaryPoints(Range.END_TO_START, spanRange) >= 0 ||
+                    range.compareBoundaryPoints(Range.START_TO_END, spanRange) <= 0
+                );
+                if (!intersecta) return;
+
+                classesMarca.forEach(function(c) { span.classList.remove(c); });
+
+                if (!span.className || span.className.trim() === '') {
+                    const pai = span.parentNode;
+                    while (span.firstChild) pai.insertBefore(span.firstChild, span);
+                    pai.removeChild(span);
+                }
+            });
+        }
+
+        function inserirListaTarefa(editavel) {
+            document.execCommand('insertUnorderedList');
+            const listas = editavel.querySelectorAll('ul');
+            if (listas.length > 0) {
+                const ultimaLista = listas[listas.length - 1];
+                const ultimoItem = ultimaLista.querySelector('li:last-child');
+                if (ultimoItem && !ultimoItem.classList.contains('tarefa')) {
+                    ultimoItem.classList.add('tarefa');
+                    ultimoItem.innerHTML = '<input type="checkbox"> ' + (ultimoItem.innerHTML || 'Nova tarefa');
+                }
+            }
+        }
+
+        function inserirLink(editavel) {
+            const selecao = window.getSelection();
+            const textoSelecionado = selecao.toString();
+
+            const url = prompt('URL do link:', 'https://');
+            if (!url) return;
+
+            const textoLink = prompt('Texto do link:', textoSelecionado || url);
+            if (!textoLink) return;
+
+            const novaAba = confirm('Abrir em uma nova aba?');
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.textContent = textoLink;
+            if (novaAba) {
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+            }
+
+            if (selecao.rangeCount > 0 && !selecao.isCollapsed) {
+                const range = selecao.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(a);
+            } else {
+                editavel.appendChild(a);
+            }
+        }
+
+        function atualizarPreviewBloco(wrapper, previewBloco) {
+            const tipo = wrapper.dataset.tipo;
+            const editavel = wrapper.querySelector('.bloco-texto-editavel');
+            const textareaOculta = wrapper.querySelector('textarea');
+            const imgEditor = wrapper.querySelector('.bloco-editor-imagem-preview');
+            const campoAutor = wrapper.querySelector('.campo-citacao-autor');
+
+            if (textareaOculta) {
+                textareaOculta.value = editavel ? editavel.innerHTML : '';
+            }
+
+            const selectTam = wrapper.querySelector('.select-img-tamanho');
+            const selectOri = wrapper.querySelector('.select-img-orientacao');
+            const campoAlt = wrapper.querySelector('.campo-img-alt');
+            const campoFonte = wrapper.querySelector('.campo-img-fonte');
+
+            let html = '';
+            if (imgEditor) {
+                const tam = selectTam ? selectTam.value : 'grande';
+                const ori = selectOri ? selectOri.value : 'horizontal';
+                const alt = campoAlt ? escapeHtml(campoAlt.value) : '';
+                const fonte = campoFonte ? escapeHtml(campoFonte.value) : '';
+                html += '<figure style="margin:0">' +
+                    '<img src="' + imgEditor.src + '" alt="' + alt + '" ' +
+                    'class="img-tamanho-' + tam + ' img-orientacao-' + ori + '" ' +
+                    'style="object-fit:cover;border-radius:6px;display:block;">' +
+                    (fonte ? '<figcaption class="legenda-imagem">Fonte: ' + fonte + '</figcaption>' : '') +
+                    '</figure>';
+            }
+
+            if (tipo === 'separador') {
+                html += '<hr>';
+            } else if (tipo === 'galeria') {
+                // Lê direto do DOM (mais confiável que a textarea que pode estar desatualizada)
+                const selCols   = wrapper.querySelector('.select-galeria-cols');
+                const selAltura = wrapper.querySelector('.select-galeria-altura');
+                const cols   = selCols   ? selCols.value   : '3';
+                const altura = selAltura ? selAltura.value : 'media';
+                const thumbImgs = Array.from(wrapper.querySelectorAll('.galeria-editor-item img'));
+                if (thumbImgs.length === 0) {
+                    html += '<p style="color:#aaa;font-size:0.85rem;">Nenhuma imagem adicionada ainda.</p>';
+                } else {
+                    html += '<div class="preview-galeria cols-' + cols + ' altura-' + altura + '">' +
+                        thumbImgs.map(function(img) {
+                            return '<img src="' + img.src + '" alt="' + escapeHtml(img.alt || '') + '">';
+                        }).join('') +
+                    '</div>';
+                }
+            } else {
+                html += '<div class="conteudo-texto">' + (editavel ? editavel.innerHTML : '') + '</div>';
+                if (tipo === 'citacao' && campoAutor && campoAutor.value.trim()) {
+                    html += '<span class="autor-citacao">' + escapeHtml(campoAutor.value.trim()) + '</span>';
+                }
+            }
+
+            previewBloco.innerHTML = html;
+        }
+
         function renumerarBlocos() {
             const blocosWrapper = Array.from(listaBlocosEditor.querySelectorAll('.bloco-editor'));
             blocosWrapper.forEach(function(wrapper, novoIndex) {
-                wrapper.querySelector('span').textContent = 'Bloco ' + (novoIndex + 1);
+                const rotulo = wrapper.querySelector('.rotulo-bloco');
+                if (rotulo) rotulo.textContent = 'Bloco ' + (novoIndex + 1);
+
                 const inputImagem = wrapper.querySelector('.bloco-input-imagem');
-                inputImagem.name = 'bloco_imagem_' + novoIndex;
+                if (inputImagem) inputImagem.name = 'bloco_imagem_' + novoIndex;
+
+                wrapper.dataset.index = novoIndex;
             });
         }
 
@@ -506,6 +1469,16 @@
             div.textContent = texto;
             return div.innerHTML;
         }
+
+        function escapeAtributo(texto) {
+            return String(texto).replace(/"/g, '&quot;');
+        }
+
+        document.addEventListener('click', function() {
+            document.querySelectorAll('.painel-cores.aberto').forEach(function(p) {
+                p.classList.remove('aberto');
+            });
+        });
 
         document.getElementById('btn-add-bloco').addEventListener('click', function() {
             criarBlocoEditor();
@@ -548,6 +1521,16 @@
         } else {
             atualizarVisibilidadeVazio();
         }
+
+        document.getElementById('form-noticia').addEventListener('submit', function() {
+            document.querySelectorAll('.bloco-editor').forEach(function(wrapper) {
+                const editavel = wrapper.querySelector('.bloco-texto-editavel');
+                const textareaOculta = wrapper.querySelector('textarea');
+                if (editavel && textareaOculta) {
+                    textareaOculta.value = editavel.innerHTML;
+                }
+            });
+        });
     </script>
 
 </body>

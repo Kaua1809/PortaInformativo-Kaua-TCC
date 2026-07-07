@@ -38,7 +38,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // 6. IMPORTAÇÃO E DEFINIÇÃO DAS ROTAS
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var deficienciasRouter = require('./routes/deficiencias');
+var mielomeningoceleRouter = require('./routes/mielomeningocele');
+var hidrocefaliaRouter = require('./routes/hidrocefalia');
 var responsavelRouter = require('./routes/responsavel');
 var pesquisaRouter = require('./routes/pesquisa');
 var legislacaoRouter = require('./routes/legislacao');
@@ -51,7 +52,8 @@ var noticiasRouter = require('./routes/noticias');
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/deficiencias', deficienciasRouter);
+app.use('/mielomeningocele', mielomeningoceleRouter);
+app.use('/hidrocefalia', hidrocefaliaRouter);
 app.use('/responsavel', responsavelRouter);
 app.use('/pesquisa', pesquisaRouter);
 app.use('/legislacao', legislacaoRouter);

@@ -1,0 +1,72 @@
+@charset "UTF-8";
+
+/* Este arquivo é usado apenas pelas páginas de condição (hidrocefalia.ejs e
+   mielomeningocele.ejs). Ele depende das variáveis de cor, fonte e
+   espaçamento definidas em style.css (--cor01, --cor02, --fonte-padrao,
+   --espacamento-*, etc.), então style.css deve ser incluído antes deste
+   arquivo na página. */
+
+/* ================= PÁGINA DE CONDIÇÃO (Hidrocefalia / Mielomeningocele) ================= */
+.conteudo-condicao {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--espacamento-grande) var(--espacamento-medio);
+}
+
+.titulo-condicao {
+    color: var(--cor-primaria-azul);
+    font-size: 2rem;
+    margin-bottom: var(--espacamento-grande);
+}
+
+.condicao-secao {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--espacamento-xl);
+    margin-bottom: var(--espacamento-xl);
+    flex-wrap: wrap;
+}
+
+.condicao-secao.inverter { flex-direction: row-reverse; }
+
+.condicao-secao img {
+    width: 380px;
+    max-width: 100%;
+    border-radius: 15px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.condicao-secao-texto { flex: 1; min-width: 280px; }
+
+.condicao-secao-texto h3 {
+    color: var(--cor02);
+    margin-bottom: var(--espacamento-pequeno);
+}
+
+.condicao-secao-texto p,
+.condicao-secao-texto li {
+    color: var(--cor-texto-suave);
+    line-height: 1.7;
+}
+
+.condicao-secao-texto ul {
+    padding-left: 20px;
+    margin-top: var(--espacamento-pequeno);
+}
+
+.condicao-secao-texto li { margin-bottom: 8px; }
+
+.faixa-outras-info {
+    background-color: var(--cor02);
+    color: var(--cor01);
+    padding: var(--espacamento-medio) var(--espacamento-grande);
+    border-radius: 10px;
+    font-size: 1.3rem;
+    margin: var(--espacamento-xl) 0 var(--espacamento-medio);
+}
+
+.faixa-outras-info h2 {
+    color: var(--cor01);
+    font-size: 1.3rem;
+}

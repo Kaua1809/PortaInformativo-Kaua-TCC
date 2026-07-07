@@ -1,7 +1,6 @@
 @charset "UTF-8";
 
 /* ================= FONTES ================= */
-/* Apenas as fontes realmente usadas no projeto (Montserrat = padrão, Poppins = destaque) */
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 /* ================= VARIÁVEIS ================= */
@@ -12,7 +11,6 @@
     --cor04: #253943;
     --cor05: #010027;
 
-    /* Aliases semânticos, mapeados para a paleta acima (em vez de cores novas/soltas) */
     --cor-primaria-azul: var(--cor02);
     --cor-secundaria-azul: var(--cor04);
     --cor-texto-suave: #555555;
@@ -54,22 +52,10 @@ h1, h2, h3, h4, h5, h6 {
     margin: 0;
 }
 
-h1 {
-    font-size: 2.8em;
-}
-
-h2 {
-    font-size: 2.2rem;
-    color: var(--cor01);
-}
-
-h3 {
-    font-size: 1.5rem;
-}
-
-h4 {
-    font-size: 1.2rem;
-}
+h1 { font-size: 2.8em; }
+h2 { font-size: 2.2rem; color: var(--cor01); }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.2rem; }
 
 p {
     font-size: 1rem;
@@ -178,13 +164,9 @@ header h1 {
     transition: 0.3s;
 }
 
-.menu-lateral a:hover {
-    background: var(--cor02);
-}
+.menu-lateral a:hover { background: var(--cor02); }
 
-.menu-lateral.ativo {
-    left: 0;
-}
+.menu-lateral.ativo { left: 0; }
 
 #overlay-menu {
     position: fixed;
@@ -207,7 +189,7 @@ header h1 {
 /* ================= SEÇÃO CONTA ================= */
 .secao-conta {
     border-top: 1px solid rgba(255, 255, 255, 0.1);
-    margin-top: auto; /* Empurra para o final do menu */
+    margin-top: auto;
     padding: 15px 10px;
     background: rgba(0, 0, 0, 0.1);
 }
@@ -221,9 +203,7 @@ header h1 {
     transition: 0.3s;
 }
 
-.perfil-usuario:hover {
-    background: var(--cor02) !important;
-}
+.perfil-usuario:hover { background: var(--cor02) !important; }
 
 .avatar-container {
     width: 40px;
@@ -241,7 +221,7 @@ header h1 {
     height: 100%;
     max-width: 100%;
     max-height: 100%;
-    object-fit: cover; /* Faz a foto preencher o círculo sem esticar */
+    object-fit: cover;
     object-position: center;
     border-radius: 50%;
     display: block;
@@ -306,9 +286,7 @@ main {
     margin: 0 auto;
 }
 
-.carousel-item {
-    position: relative;
-}
+.carousel-item { position: relative; }
 
 .overlay {
     position: absolute;
@@ -320,14 +298,82 @@ main {
     pointer-events: none;
 }
 
-.carousel-caption {
-    z-index: 2;
-}
+.carousel-caption { z-index: 2; }
 
-#noticias {
+#noticias,
+.faixa-titulo {
     background-image: linear-gradient(to right, var(--cor02), var(--cor01));
     padding: 5px;
     margin: 5px;
+}
+
+/* ================= APRESENTAÇÃO DO PORTAL ================= */
+.apresentacao-portal {
+    max-width: 1600px;
+    margin: var(--espacamento-medio) auto;
+    padding: 0;
+}
+
+.apresentacao-portal p {
+    font-size: 1.05rem;
+    color: var(--cor-texto-suave);
+    line-height: 1.6;
+    text-align: left;
+}
+
+/* ================= CARDS DAS CONDIÇÕES ================= */
+.area-condicoes {
+    max-width: 1600px;
+    margin: var(--espacamento-medio) auto var(--espacamento-grande);
+    padding: 0;
+}
+
+.condicoes-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--espacamento-grande);
+    justify-content: center;
+}
+
+.card-condicao {
+    flex: 1 1 320px;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.08);
+    transition: 0.3s;
+    background-color: var(--cor-branco);
+}
+
+.card-condicao:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+    color: inherit;
+}
+
+.card-condicao img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
+
+.card-condicao-texto {
+    padding: var(--espacamento-medio);
+}
+
+.card-condicao-texto h3 {
+    margin: 0 0 8px;
+    color: var(--cor02);
+    font-size: 1.2rem;
+}
+
+.card-condicao-texto p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--cor-texto-suave);
 }
 
 /* ================= CARDS GERAIS ================= */
@@ -363,18 +409,39 @@ main {
     flex-shrink: 0;
 }
 
-.card p {
-    color: #333;
-    font-family: var(--fonte-padrao);
-}
+.card p { color: #333; font-family: var(--fonte-padrao); }
 
-.card-body {
-    padding: var(--espacamento-grande);
-}
+.card-body { padding: var(--espacamento-grande); }
 
 .card-footer {
     background: none;
     border: none;
+}
+
+/* ================= BOTÃO NOVA NOTÍCIA ================= */
+.btn-nova-noticia {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    background-color: var(--cor02);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-decoration: none;
+    margin: 12px auto 20px;
+}
+
+.btn-nova-noticia:hover { background-color: var(--cor04); color: #fff; }
+
+.area-btn-nova-noticia { text-align: center; }
+
+.sem-noticias {
+    text-align: center;
+    color: #777;
+    margin: 30px 0;
 }
 
 /* ================= FOOTER ================= */
@@ -386,9 +453,7 @@ footer {
     font-family: var(--fonte-padrao);
 }
 
-#rodape {
-    font-size: 1rem;
-}
+#rodape { font-size: 1rem; }
 
 /* ================= PÁGINA DEFICIÊNCIAS ================= */
 .conteudo-def {
@@ -426,9 +491,7 @@ footer {
     overflow: hidden;
 }
 
-.card-def:hover {
-    transform: translateY(-5px);
-}
+.card-def:hover { transform: translateY(-5px); }
 
 .cardimg {
     width: 100%;
@@ -453,7 +516,7 @@ footer {
 
 /* ================= PÁGINA LEGISLAÇÃO ================= */
 main.conteudo-legislacao {
-    flex: 1 0 auto; /* Faz o conteúdo principal ocupar o espaço disponível */
+    flex: 1 0 auto;
     padding: 40px 50px;
     width: 100%;
     max-width: 1480px;
@@ -495,14 +558,9 @@ main.conteudo-legislacao {
     transition: transform 0.3s ease;
 }
 
-.card-lei:hover {
-    transform: translateY(-5px);
-}
+.card-lei:hover { transform: translateY(-5px); }
 
-.card-lei .card-body {
-    padding: 30px;
-    flex: 1;
-}
+.card-lei .card-body { padding: 30px; flex: 1; }
 
 .card-lei .card-title {
     color: var(--cor-primaria-azul) !important;
@@ -542,118 +600,166 @@ main.conteudo-legislacao {
     display: block;
 }
 
-.btn-primary:hover {
-    background-color: var(--cor-secundaria-azul) !important;
+.btn-primary:hover { background-color: var(--cor-secundaria-azul) !important; }
+
+/* ================= PÁGINA DE PESQUISA ================= */
+.pesquisa-topo {
+    text-align: center;
+    padding: 32px 16px 8px;
+    font-size: 1rem;
+    color: var(--cor-texto-suave);
+    font-style: italic;
+    font-family: var(--fonte-padrao);
 }
 
+.pesquisa-topo strong {
+    color: var(--cor02);
+    font-style: normal;
+}
 
-/* =====================================================
-   RESPONSIVIDADE GLOBAL
-   (regras de #feed-completo / #sidebar-completo /
-   #main-portal / #container-portal ficam só em
-   responsavel.css, para não haver duplicidade/conflito)
-   ===================================================== */
+.resultado-lista {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 8px 0 80px;
+}
 
-/* Telas grandes: legislação ainda em 2 colunas até aqui */
+.card-resultado {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    padding: 32px 16px;
+    border-bottom: 1px solid var(--cor-borda-suave);
+    text-decoration: none;
+    color: inherit;
+    border-radius: 10px;
+    transition: background 0.15s;
+}
+
+.card-resultado:last-child { border-bottom: none; }
+
+.card-resultado:hover { background: rgba(40, 75, 99, 0.05); }
+
+.card-resultado-foto {
+    width: 220px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 14px;
+    flex-shrink: 0;
+}
+
+.card-resultado-foto-placeholder {
+    width: 220px;
+    height: 160px;
+    border-radius: 14px;
+    flex-shrink: 0;
+    background: #e2e8f0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #aaa;
+}
+
+.card-resultado-info { flex: 1; }
+
+.card-resultado-titulo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 10px;
+    line-height: 1.25;
+    font-family: var(--fonte-destaque);
+}
+
+.card-resultado-desc {
+    font-size: 0.97rem;
+    color: var(--cor-texto-suave);
+    line-height: 1.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 12px;
+    font-family: var(--fonte-padrao);
+}
+
+.card-resultado-meta {
+    font-size: 0.78rem;
+    color: #aaa;
+    font-family: var(--fonte-padrao);
+}
+
+.badge-relacionado {
+    display: inline-block;
+    font-size: 0.68rem;
+    background: #eef2ff;
+    color: var(--cor02);
+    border: 1px solid #c7d2fe;
+    border-radius: 20px;
+    padding: 2px 9px;
+    margin-left: 8px;
+    vertical-align: middle;
+    font-weight: 700;
+}
+
+.secao-titulo {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #aaa;
+    padding: 28px 16px 4px;
+    font-family: var(--fonte-padrao);
+}
+
+.secao-relacionados {
+    margin-top: 16px;
+    border-top: 2px dashed var(--cor-borda-suave);
+}
+
+.sem-resultado {
+    text-align: center;
+    padding: 80px 20px;
+    color: #bbb;
+    font-size: 1.05rem;
+    font-family: var(--fonte-padrao);
+}
+
+.sem-resultado .icone { font-size: 3.5rem; margin-bottom: 16px; }
+
+/* ================= RESPONSIVIDADE ================= */
 @media (max-width: 992px) {
-    .grade-leis {
-        grid-template-columns: 1fr;
-    }
-
-    main.conteudo-legislacao {
-        padding: 30px 20px;
-    }
+    .grade-leis { grid-template-columns: 1fr; }
+    main.conteudo-legislacao { padding: 30px 20px; }
 }
 
-/* Tablets: a barra de busca encolhe em vez de quebrar linha feio */
 @media (max-width: 900px) {
-    .search-bar {
-        max-width: 220px;
-    }
-
-    header h1 {
-        font-size: 1.7rem;
-    }
+    .search-bar { max-width: 220px; }
+    header h1 { font-size: 1.7rem; }
+    .card-resultado-foto,
+    .card-resultado-foto-placeholder { width: 160px; height: 120px; }
 }
 
-/* Celulares grandes / tablets pequenos: header reorganiza em duas linhas
-   de forma controlada (logo+título numa linha, busca abaixo) */
 @media (max-width: 768px) {
-    header {
-        flex-wrap: wrap;
-        gap: var(--espacamento-pequeno);
-    }
-
-    .logo {
-        width: 50px;
-        height: 50px;
-    }
-
-    header h1 {
-        font-size: 1.5rem;
-        white-space: normal;
-        width: auto;
-        flex: 1;
-    }
-
-    .search-bar {
-        margin-left: 0;
-        max-width: 100%;
-        width: 100%;
-        order: 3;
-    }
-
-    main {
-        padding: var(--espacamento-pequeno) var(--espacamento-grande);
-    }
-
-    .carrosel {
-        height: 250px;
-    }
-
-    .card a {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: var(--espacamento-pequeno);
-    }
-
-    .card img {
-        width: 100%;
-        height: 200px;
-    }
-
-    .grid-def {
-        grid-template-columns: 1fr;
-        gap: var(--espacamento-grande);
-    }
-
-    .titulo-principal {
-        font-size: 1.75rem;
-    }
-
-    .btn-def {
-        padding: var(--espacamento-grande);
-        font-size: 1rem;
-    }
+    header { flex-wrap: wrap; gap: var(--espacamento-pequeno); }
+    .logo { width: 50px; height: 50px; }
+    header h1 { font-size: 1.5rem; white-space: normal; width: auto; flex: 1; }
+    .search-bar { margin-left: 0; max-width: 100%; width: 100%; order: 3; }
+    main { padding: var(--espacamento-pequeno) var(--espacamento-grande); }
+    .carrosel { height: 250px; }
+    .card a { flex-direction: column; align-items: flex-start; gap: var(--espacamento-pequeno); }
+    .card img { width: 100%; height: 200px; }
+    .grid-def { grid-template-columns: 1fr; gap: var(--espacamento-grande); }
+    .titulo-principal { font-size: 1.75rem; }
+    .btn-def { padding: var(--espacamento-grande); font-size: 1rem; }
+    .card-resultado { flex-direction: column; align-items: flex-start; }
+    .card-resultado-foto,
+    .card-resultado-foto-placeholder { width: 100%; height: 200px; }
 }
 
-/* Celulares pequenos: header bem mais compacto */
 @media (max-width: 480px) {
-    .logo {
-        width: 42px;
-        height: 42px;
-    }
-
-    header h1 {
-        font-size: 1.2rem;
-    }
-
-    #searchInput {
-        font-size: 0.8rem;
-        padding: 6px;
-    }
-
-    main {
-        padding: var(--espacamento-pequeno) var(--espacamento-medio);
-    }
+    .logo { width: 42px; height: 42px; }
+    header h1 { font-size: 1.2rem; }
+    #searchInput { font-size: 0.8rem; padding: 6px; }
+    main { padding: var(--espacamento-pequeno) var(--espacamento-medio); }
 }

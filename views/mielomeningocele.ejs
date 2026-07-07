@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mielomeningocele | Portal IncluaNeuro</title>
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="stylesheet" href="stylesheets/deficiencias.css">
+    <link rel="stylesheet" href="/stylesheets/modals.css">
+</head>
+<body>
+    <header>
+         <%- include('partials/menu') %>
+         <%- include('partials/navbar') %>
+    </header>
+    <main>
+        <article class="conteudo-condicao">
+
+            <h1 class="titulo-condicao">Mielomeningocele — o que é, causas e o que se sabe hoje</h1>
+
+            <div class="condicao-secao">
+                <img src="/images/mielomeningocele.png" alt="Ilustração representando a mielomeningocele na coluna">
+                <div class="condicao-secao-texto">
+                    <p>
+                        A mielomeningocele é a forma mais grave de espinha bífida, um defeito de
+                        fechamento do tubo neural durante a gestação. Nela, parte da medula espinhal
+                        e das meninges fica exposta para fora da coluna vertebral, formando uma
+                        bolsa visível nas costas do bebê ao nascer.
+                    </p>
+                    <p>
+                        O grau de comprometimento varia conforme a localização e a extensão da lesão,
+                        podendo afetar a força e a sensibilidade das pernas, o controle da bexiga e
+                        do intestino, e estar associado à hidrocefalia em boa parte dos casos.
+                    </p>
+                </div>
+            </div>
+
+            <div class="condicao-secao inverter">
+                <img src="/images/mielomeningocele-cuidados.png" alt="Criança em fisioterapia">
+                <div class="condicao-secao-texto">
+                    <h3>Cuidados</h3>
+                    <p>
+                        O acompanhamento costuma envolver uma equipe multiprofissional ao longo de
+                        toda a vida:
+                    </p>
+                    <ul>
+                        <li>Correção cirúrgica da lesão, idealmente ainda nos primeiros dias de vida ou até no período pré-natal, em centros especializados;</li>
+                        <li>Acompanhamento neurocirúrgico para monitorar sinais de hidrocefalia associada;</li>
+                        <li>Fisioterapia motora para estimular mobilidade e prevenir deformidades;</li>
+                        <li>Manejo urológico e intestinal, com cateterismo e rotinas específicas quando necessário;</li>
+                        <li>Suporte psicossocial para a criança e a família diante dos desafios diários.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="condicao-secao">
+                <img src="/images/mielomeningocele-brasil.png" alt="Atendimento de saúde no Brasil">
+                <div class="condicao-secao-texto">
+                    <h3>Cenário atual no Brasil</h3>
+                    <p>
+                        No Brasil, o diagnóstico pré-natal por ultrassom tem melhorado o planejamento
+                        do parto e do tratamento inicial, mas o acesso à cirurgia fetal — disponível
+                        em poucos centros de referência — ainda é limitado pela alta complexidade e
+                        pelo custo. A maior parte do acompanhamento a longo prazo é feita pelo SUS,
+                        e famílias de regiões mais afastadas frequentemente precisam se deslocar para
+                        conseguir atendimento multiprofissional especializado.
+                    </p>
+                </div>
+            </div>
+
+            <div class="faixa-outras-info">
+                <h2>Outras informações e notícias</h2>
+            </div>
+
+            <% if (noticiasRelacionadas && noticiasRelacionadas.length > 0) { %>
+                <% noticiasRelacionadas.forEach(function(noticia) { %>
+                    <div class="card">
+                        <a href="/noticias/<%= noticia.id %>">
+                            <% if (noticia.foto) { %>
+                                <img src="data:image/jpeg;base64,<%= noticia.foto.toString('base64') %>" alt="<%= noticia.titulo %>">
+                            <% } else { %>
+                                <img src="/images/fotonot1.png" alt="<%= noticia.titulo %>">
+                            <% } %>
+                            <p class="textonoticias">
+                                <strong><%= noticia.titulo %></strong><br>
+                                <%= noticia.descricao || '' %>
+                            </p>
+                        </a>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p class="sem-noticias">Nenhuma notícia relacionada encontrada.</p>
+            <% } %>
+
+        </article>
+    </main>
+    <%- include('partials/modal-contato') %>
+    <%- include('partials/modal-feedback') %>
+    <%- include('partials/rodape') %>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="javascripts/menu.js"></script>
+    <script src="javascripts/modal-contato.js"></script>
+    <script src="javascripts/modal-feedback.js"></script>
+</body>
+</html>
