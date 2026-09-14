@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acessibilidade - Portal IncluaNeuro</title>
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/modals.css">
+    <script>
+      // Aplica o tema ANTES da página pintar, pra evitar o "flash" de tela clara
+      // aparecendo por uma fração de segundo antes do tema escolhido ligar.
+      // Isso PRECISA ficar no <head>, em script síncrono (sem defer/async).
+      (function () {
+        try {
+          var salvo = JSON.parse(localStorage.getItem('incluaneuro_acessibilidade'));
+          if (!salvo) return;
+          var raiz = document.documentElement;
+          if (salvo.tema === 'escuro') raiz.classList.add('tema-escuro');
+          else if (salvo.tema === 'contraste') raiz.classList.add('tema-contraste');
+          else if (salvo.tema === 'contrasteClaro') raiz.classList.add('tema-contraste-claro');
+          if (salvo.daltonismo && salvo.daltonismo !== 'nenhum') {
+            raiz.classList.add('daltonismo-' + salvo.daltonismo);
+          }
+          if (salvo.fonte === 'menor2') raiz.classList.add('fonte-menor2');
+          else if (salvo.fonte === 'menor') raiz.classList.add('fonte-menor');
+          else if (salvo.fonte === 'grande') raiz.classList.add('fonte-grande');
+          else if (salvo.fonte === 'maior') raiz.classList.add('fonte-maior');
+          if (salvo.fonteLeitura === 'opendyslexic') raiz.classList.add('leitura-fonte-opendyslexic');
+          else if (salvo.fonteLeitura === 'lexend') raiz.classList.add('leitura-fonte-lexend');
+          else if (salvo.fonteLeitura === 'hyperlegible') raiz.classList.add('leitura-fonte-hyperlegible');
+          if (salvo.destacarLinks) raiz.classList.add('destacar-links');
+          if (salvo.semAnimacao) raiz.classList.add('sem-animacao');
+          if (salvo.espacamentoTexto === 'media') raiz.classList.add('espacamento-media');
+          else if (salvo.espacamentoTexto === 'grande') raiz.classList.add('espacamento-grande');
+          if (salvo.cursorGrande) raiz.classList.add('cursor-grande');
+          if (salvo.monocromatico) raiz.classList.add('monocromatico');
+          if (salvo.contraste === 'elevado') raiz.classList.add('contraste-elevado');
+          else if (salvo.contraste === 'reduzido') raiz.classList.add('contraste-reduzido');
+          if (salvo.linha === 'media') raiz.classList.add('linha-media');
+          else if (salvo.linha === 'grande') raiz.classList.add('linha-grande');
+        } catch (e) { /* localStorage indisponível ou dado corrompido - ignora */ }
+      })();
+    </script></head>
+<body>
+    <header>
+         <%- include('partials/menu') %>
+         <%- include('partials/navbar') %>
+    </header>
+    <main>
+        <article>
+
+        <div class="faixa-titulo">
+            <h2>ACESSIBILIDADE</h2>
+        </div>
+
+        <section class="secao-acessibilidade">
+            <div class="cabecalho-acessibilidade">
+                <p>Personalize a exibição do site de acordo com sua necessidade</p>
+            </div>
+
+            <div class="abas-acessibilidade">
+                <button class="aba-btn ativa" data-aba="visual">VISUAL</button>
+                <button class="aba-btn" data-aba="leitura">LEITURA</button>
+                <button class="aba-btn" data-aba="navegacao">NAVEGAÇÃO</button>
+            </div>
+
+            <div class="painel-aba" data-painel="visual">
+                <div class="grade-cartoes">
+
+                    <div class="cartao-acesso">
+                        <h3>Tamanho da fonte</h3>
+                        <p>Aumenta ou diminui o texto do site inteiro</p>
+                        <div class="grupo-botoes">
+                            <button data-acao="fonte" data-valor="menor2">A--</button>
+                            <button data-acao="fonte" data-valor="menor">A-</button>
+                            <button data-acao="fonte" data-valor="normal">A</button>
+                            <button data-acao="fonte" data-valor="grande">A+</button>
+                            <button data-acao="fonte" data-valor="maior">A++</button>
+                        </div>
+                    </div>
+
+                    <div class="cartao-acesso">
+                        <h3>Alto contraste escuro</h3>
+                        <p>Fundo preto e texto em amarelo</p>
+                        <label class="interruptor">
+                            <input type="checkbox" role="switch" data-toggle="contrasteAlto" aria-label="Alto contraste escuro">
+                            <span class="deslizante"></span>
+                        </label>
+                    </div>
+
+                    <div class="cartao-acesso">
+                        <h3>Alto contraste claro</h3>
+                        <p>Fundo branco e texto preto</p>
+                        <label class="interruptor">
+                            <input type="checkbox" role="switch" data-toggle="contrasteClaro" aria-label="Alto contraste claro">
+                            <span class="deslizante"></span>
+                        </label>
+                    </div>
+
+                    <div class="cartao-acesso">
+                        <h3>Monocromático</h3>
+                        <p>Exibe a página em escala de cinza</p>
+                        <label class="interruptor">
+                            <input type="checkbox" role="switch" data-toggle="monocromatico" aria-label="Monocromático">
+                            <span class="deslizante"></span>
+                        </label>
+                    </div>
+
+                    <div class="cartao-acesso">
+                        <h3>Modo escuro</h3>
+                        <p>Reduz o brilho da tela</p>
+                        <label class="interruptor">
+                            <input type="checkbox" role="switch" data-toggle="escuro" aria-label="Modo escuro">
+                            <span class="deslizante"></span>
+                        </label>
+                    </div>
+
+                    <div class="cartao-acesso">
+                        <h3>Daltonismo</h3>
+                        <p>Ajusta cores de botões e links para uma paleta segura, sem alterar o resto do site</p>
+                        <select data-acao="daltonismo" class="seletor-daltonismo">
+                            <option value="nenhum">Nenhum</option>
+                            <option value="protanopia">Protanopia</option>
+                            <option value="deuteranopia">Deuteranopia</option>
+                            <option value="tritanopia">Tritanopia</option>
+                        </select>
+                    </div>
+
+                    <div class="cartao-acesso cartao-largo">
+                        <h3>Ajuste de contraste</h3>
+                        <p>Ajusta a intensidade do contraste, funciona junto com qualquer tema</p>
+                        <div class="grupo-botoes">
+                            <button data-acao="contraste" data-valor="reduzido">Reduzido</button>
+                            <button data-acao="contraste" data-valor="normal">Normal</button>
+                            <button data-acao="contraste" data-valor="elevado">Elevado</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="painel-aba oculto" data-painel="leitura">
+                <div class="grade-cartoes">
+
+                    <div class="cartao-acesso">
+                        <h3>Fonte para leitura</h3>
+                        <p>Troca a fonte do site para facilitar a leitura (dislexia e outras dificuldades)</p>
+                        <div class="grupo-botoes" role="group" aria-label="Fonte para leitura">
+                            <button data-acao="fonteLeitura" data-valor="normal">Padrão</button>
+                            <button data-acao="fonteLeitura" data-valor="opendyslexic">OpenDyslexic</button>
+                            <button data-acao="fonteLeitura" data-valor="lexend">Lexend</button>
+                            <button data-acao="fonteLeitura" data-valor="hyperlegible">Hyperlegible</button>
+                        </div>
+                    </div>
+
+                    <div class="cartao-acesso">
+                        <h3>Destacar links</h3>
+                        <p>Sublinha e destaca todos os links da página</p>
+                        <label class="interruptor">
+                            <input type="checkbox" role="switch" data-toggle="destacarLinks" aria-label="Destacar links">
+                            <span class="deslizante"></span>
+                        </label>
+                    </div>
+
+                    <div class="cartao-acesso">
+                        <h3>Espaçamento do texto</h3>
+                        <p>Aumenta o espaço entre linhas, letras e palavras</p>
+                        <div class="grupo-botoes" role="group" aria-label="Nível de espaçamento do texto">
+                            <button data-acao="espacamentoTexto" data-valor="normal">Normal</button>
+                            <button data-acao="espacamentoTexto" data-valor="media">Média</button>
+                            <button data-acao="espacamentoTexto" data-valor="grande">Grande</button>
+                        </div>
+                    </div>
+
+                    <div class="cartao-acesso">
+                        <h3>Cursor ampliado</h3>
+                        <p>Aumenta o tamanho do cursor do mouse</p>
+                        <label class="interruptor">
+                            <input type="checkbox" role="switch" data-toggle="cursorGrande" aria-label="Cursor ampliado">
+                            <span class="deslizante"></span>
+                        </label>
+                    </div>
+
+                    <div class="cartao-acesso">
+                        <h3>Altura da linha</h3>
+                        <p>Aumenta o espaço entre as linhas do texto</p>
+                        <div class="grupo-botoes">
+                            <button data-acao="linha" data-valor="normal">Normal</button>
+                            <button data-acao="linha" data-valor="media">Média</button>
+                            <button data-acao="linha" data-valor="grande">Grande</button>
+                        </div>
+                    </div>
+
+                    <div class="cartao-acesso">
+                        <h3>Régua de leitura</h3>
+                        <p>Escurece o resto da página, destacando uma faixa que acompanha o cursor</p>
+                        <label class="interruptor">
+                            <input type="checkbox" role="switch" data-toggle="reguaLeitura" aria-label="Régua de leitura">
+                            <span class="deslizante"></span>
+                        </label>
+                        <div class="grupo-botoes" role="group" aria-label="Intensidade da régua de leitura">
+                            <button data-acao="reguaIntensidade" data-valor="leve">Leve</button>
+                            <button data-acao="reguaIntensidade" data-valor="medio">Média</button>
+                            <button data-acao="reguaIntensidade" data-valor="forte">Forte</button>
+                        </div>
+                    </div>
+
+                    <div class="cartao-acesso">
+                        <h3>Guia de leitura</h3>
+                        <p>Uma linha fina que acompanha o cursor, sem escurecer o resto da página</p>
+                        <label class="interruptor">
+                            <input type="checkbox" role="switch" data-toggle="guiaLeitura" aria-label="Guia de leitura">
+                            <span class="deslizante"></span>
+                        </label>
+                    </div>
+
+                    <div class="cartao-acesso cartao-largo">
+                        <h3>Modo de foco</h3>
+                        <p>Escurece o restante da página, iluminando só a área sob o mouse. Atalho: Alt+Shift+F</p>
+                        <label class="interruptor">
+                            <input type="checkbox" role="switch" data-toggle="modoFoco" aria-label="Modo de foco">
+                            <span class="deslizante"></span>
+                        </label>
+                        <div class="grupo-botoes" role="group" aria-label="Formato da área iluminada">
+                            <button data-acao="modoFocoForma" data-valor="circular">Circular</button>
+                            <button data-acao="modoFocoForma" data-valor="retangular">Retangular</button>
+                        </div>
+                        <div class="grupo-botoes" role="group" aria-label="Tamanho da área iluminada">
+                            <button data-acao="modoFocoTamanho" data-valor="pequeno">Pequeno</button>
+                            <button data-acao="modoFocoTamanho" data-valor="medio">Médio</button>
+                            <button data-acao="modoFocoTamanho" data-valor="grande">Grande</button>
+                        </div>
+                        <div class="grupo-botoes" role="group" aria-label="Intensidade do escurecimento">
+                            <button data-acao="modoFocoIntensidade" data-valor="leve">Leve</button>
+                            <button data-acao="modoFocoIntensidade" data-valor="medio">Médio</button>
+                            <button data-acao="modoFocoIntensidade" data-valor="forte">Forte</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="painel-aba oculto" data-painel="navegacao">
+                <div class="grade-cartoes">
+
+                    <div class="cartao-acesso">
+                        <h3>Parar animações</h3>
+                        <p>Desativa carrosséis e transições automáticas</p>
+                        <label class="interruptor">
+                            <input type="checkbox" role="switch" data-toggle="semAnimacao" aria-label="Parar animações">
+                            <span class="deslizante"></span>
+                        </label>
+                    </div>
+
+                    <div class="cartao-acesso cartao-alerta">
+                        <h3>Restaurar padrão</h3>
+                        <p>Remove todas as personalizações aplicadas</p>
+                        <button class="botao-restaurar" id="btn-resetar-acessibilidade">Restaurar</button>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        </article>
+    </main>
+    <%- include('partials/modal-contato') %>
+    <%- include('partials/modal-feedback') %>
+    <%- include('partials/rodape') %>
+    <%- include('partials/script-acessibilidade') %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="javascripts/menu.js"></script>
+    <script src="javascripts/modal-contato.js"></script>
+    <script src="javascripts/modal-feedback.js"></script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+
+        // Lê o estado atual e atualiza TODOS os controles na tela pra refletir
+        // isso. Necessário porque escuro/contraste/daltonismo são mutuamente
+        // exclusivos: ligar um precisa "desmarcar" visualmente os outros dois,
+        // senão a tela mostra dois controles "ativos" ao mesmo tempo (o que
+        // parecia "mesclado" mesmo com o tema certo aplicado por baixo).
+        // Marca visualmente (.ativa) e pra leitor de tela (aria-pressed) qual
+        // botão está selecionado num grupo de botões de escolha única
+        function sincronizarGrupoBotoes(acao, valorAtivo) {
+          document.querySelectorAll(`[data-acao="${acao}"]`).forEach(b => {
+            const ativo = b.dataset.valor === valorAtivo;
+            b.classList.toggle('ativa', ativo);
+            b.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+          });
+        }
+
+        function sincronizarControles() {
+          const opcoes = window.acessibilidade.obter();
+
+          sincronizarGrupoBotoes('fonte', opcoes.fonte);
+          sincronizarGrupoBotoes('fonteLeitura', opcoes.fonteLeitura);
+          sincronizarGrupoBotoes('contraste', opcoes.contraste);
+          sincronizarGrupoBotoes('linha', opcoes.linha);
+          sincronizarGrupoBotoes('espacamentoTexto', opcoes.espacamentoTexto);
+          sincronizarGrupoBotoes('reguaIntensidade', opcoes.reguaIntensidade);
+          sincronizarGrupoBotoes('modoFocoForma', opcoes.modoFocoForma);
+          sincronizarGrupoBotoes('modoFocoTamanho', opcoes.modoFocoTamanho);
+          sincronizarGrupoBotoes('modoFocoIntensidade', opcoes.modoFocoIntensidade);
+
+          // Sincroniza .checked E aria-checked (role="switch") de TODOS os
+          // toggles de uma vez, lendo o nome de cada opção direto do
+          // data-toggle - cobre qualquer toggle atual ou futuro sem
+          // precisar listar um por um.
+          document.querySelectorAll('[data-toggle]').forEach(input => {
+            const valor = !!opcoes[input.dataset.toggle];
+            input.checked = valor;
+            input.setAttribute('aria-checked', valor ? 'true' : 'false');
+          });
+          document.querySelector('.seletor-daltonismo').value = opcoes.daltonismo;
+        }
+        // Exposta globalmente pro atalho de teclado (Alt+Shift+F) conseguir
+        // atualizar os botões na tela quando a aba de acessibilidade está aberta
+        window.sincronizarControlesAcessibilidade = sincronizarControles;
+
+        sincronizarControles();
+
+        document.querySelectorAll('.aba-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+            document.querySelectorAll('.aba-btn').forEach(b => b.classList.remove('ativa'));
+            document.querySelectorAll('.painel-aba').forEach(p => p.classList.add('oculto'));
+            btn.classList.add('ativa');
+            document.querySelector(`[data-painel="${btn.dataset.aba}"]`).classList.remove('oculto');
+          });
+        });
+
+        document.querySelectorAll('[data-acao="fonte"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            window.acessibilidade.definir('fonte', btn.dataset.valor);
+            sincronizarControles();
+          });
+        });
+
+        document.querySelectorAll('[data-acao="fonteLeitura"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            window.acessibilidade.definir('fonteLeitura', btn.dataset.valor);
+            sincronizarControles();
+          });
+        });
+
+        document.querySelectorAll('[data-acao="contraste"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            window.acessibilidade.definir('contraste', btn.dataset.valor);
+            sincronizarControles();
+          });
+        });
+
+        document.querySelectorAll('[data-acao="linha"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            window.acessibilidade.definir('linha', btn.dataset.valor);
+            sincronizarControles();
+          });
+        });
+
+        document.querySelectorAll('[data-acao="espacamentoTexto"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            window.acessibilidade.definir('espacamentoTexto', btn.dataset.valor);
+            sincronizarControles();
+          });
+        });
+
+        document.querySelectorAll('[data-acao="reguaIntensidade"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            window.acessibilidade.definir('reguaIntensidade', btn.dataset.valor);
+            sincronizarControles();
+          });
+        });
+
+        document.querySelectorAll('[data-acao="modoFocoForma"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            window.acessibilidade.definir('modoFocoForma', btn.dataset.valor);
+            sincronizarControles();
+          });
+        });
+
+        document.querySelectorAll('[data-acao="modoFocoTamanho"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            window.acessibilidade.definir('modoFocoTamanho', btn.dataset.valor);
+            sincronizarControles();
+          });
+        });
+
+        document.querySelectorAll('[data-acao="modoFocoIntensidade"]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            window.acessibilidade.definir('modoFocoIntensidade', btn.dataset.valor);
+            sincronizarControles();
+          });
+        });
+
+        document.querySelectorAll('[data-toggle]').forEach(input => {
+          input.addEventListener('change', () => {
+            window.acessibilidade.definir(input.dataset.toggle, input.checked);
+            sincronizarControles();
+          });
+        });
+
+        document.querySelector('[data-acao="daltonismo"]').addEventListener('change', (e) => {
+          window.acessibilidade.definir('daltonismo', e.target.value);
+          sincronizarControles();
+        });
+
+        document.getElementById('btn-resetar-acessibilidade').addEventListener('click', () => {
+          window.acessibilidade.resetar();
+          sincronizarControles();
+        });
+      });
+    </script>
+</body>
+</html>

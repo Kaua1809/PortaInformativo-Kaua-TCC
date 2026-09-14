@@ -6,557 +6,9 @@
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="stylesheet" href="/stylesheets/portalinclusao.css">
+    <link rel="stylesheet" href="/stylesheets/noticias.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> 
 
-    <style>
-        .editor-noticia-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            max-width: 1500px;
-            margin: 30px auto;
-            padding: 0 20px 60px;
-            align-items: start;
-        }
-
-        .coluna-editor {
-            background: #f8f9fa;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
-            padding: 25px;
-        }
-
-        .coluna-editor h1 {
-            margin-bottom: 20px;
-            color: var(--cor02);
-            font-size: 1.5rem;
-        }
-
-        .campo-noticia { margin-bottom: 18px; }
-        .campo-noticia label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 6px;
-            color: #333;
-            font-size: 0.9rem;
-        }
-        .campo-noticia input[type="text"] {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 0.95rem;
-            box-sizing: border-box;
-        }
-
-        .preview-capa-atual {
-            max-width: 100%;
-            max-height: 180px;
-            display: block;
-            margin-bottom: 8px;
-            border-radius: 8px;
-        }
-
-        .erro-noticia {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-            padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 15px;
-        }
-
-        .lista-blocos-editor { margin-top: 10px; }
-
-        .bloco-editor {
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 16px;
-            margin-bottom: 16px;
-            background: #fff;
-        }
-
-        .bloco-editor-topo {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .bloco-editor-topo-esquerda {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .bloco-editor-topo span.rotulo-bloco {
-            font-weight: 700;
-            color: var(--cor02);
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }
-
-        .bloco-tipo-select {
-            padding: 5px 8px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 0.82rem;
-            font-family: inherit;
-        }
-
-        .bloco-editor-acoes { display: flex; gap: 6px; }
-
-        .btn-icone-bloco {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #888;
-            font-size: 1rem;
-            padding: 4px 6px;
-            border-radius: 4px;
-        }
-        .btn-icone-bloco:hover { color: #2c4759; background: #eef2f5; }
-        .btn-icone-bloco.remover:hover { color: #e74c3c; background: #fdeaea; }
-
-        /* Tamanhos de imagem no preview */
-        .preview-bloco figure { margin: 0 0 8px 0; text-align: center; }
-        .preview-bloco figure img {
-            display: block;
-            margin: 0 auto;
-            object-fit: cover;
-            border-radius: 6px;
-        }
-        .img-orientacao-horizontal { width: 100%; }
-        .img-orientacao-horizontal.img-tamanho-pequena  { max-height: 180px; }
-        .img-orientacao-horizontal.img-tamanho-media    { max-height: 300px; }
-        .img-orientacao-horizontal.img-tamanho-grande   { max-height: 480px; }
-        .img-orientacao-horizontal.img-tamanho-gigante  { max-height: none; }
-
-        .img-orientacao-vertical { display: block; margin: 0 auto; object-fit: cover; }
-        .img-orientacao-vertical.img-tamanho-pequena  { width: 22%; min-height: 120px; max-height: 220px; }
-        .img-orientacao-vertical.img-tamanho-media    { width: 32%; min-height: 200px; max-height: 360px; }
-        .img-orientacao-vertical.img-tamanho-grande   { width: 45%; min-height: 300px; max-height: 520px; }
-        .img-orientacao-vertical.img-tamanho-gigante  { width: 60%; min-height: 400px; max-height: none; }
-
-        .legenda-imagem {
-            font-size: 0.78rem;
-            color: #888;
-            text-align: center;
-            margin-top: 4px;
-            font-style: italic;
-        }
-
-        .bloco-editor-imagem-preview {
-            max-width: 100%;
-            max-height: 160px;
-            display: block;
-            margin-bottom: 8px;
-            border-radius: 6px;
-        }
-
-        /* ── Galeria ── */
-        .galeria-editor {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 10px;
-        }
-        .galeria-editor-item {
-            position: relative;
-            width: 100px;
-            height: 80px;
-            border-radius: 6px;
-            overflow: hidden;
-            border: 2px solid #ddd;
-            flex-shrink: 0;
-        }
-        .galeria-editor-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-        .galeria-editor-item .btn-remover-img {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            background: rgba(0,0,0,0.6);
-            color: #fff;
-            border: none;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 10px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
-        }
-        .btn-add-img-galeria {
-            width: 100px;
-            height: 80px;
-            border: 2px dashed var(--cor02);
-            border-radius: 6px;
-            background: none;
-            color: var(--cor02);
-            font-size: 1.4rem;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .btn-add-img-galeria:hover { background: #eef2f5; }
-        .galeria-controles {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 8px;
-            font-size: 0.82rem;
-        }
-        .galeria-controles label { font-weight: 600; color: #555; }
-        .galeria-controles select {
-            height: 26px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            padding: 0 4px;
-        }
-        /* Preview galeria */
-        .preview-galeria {
-            display: grid;
-            gap: 6px;
-        }
-        .preview-galeria.cols-1 { grid-template-columns: 1fr; }
-        .preview-galeria.cols-2 { grid-template-columns: 1fr 1fr; }
-        .preview-galeria.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
-        .preview-galeria.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
-        .preview-galeria img {
-            width: 100%;
-            border-radius: 6px;
-            object-fit: cover;
-            display: block;
-        }
-        .preview-galeria.altura-pequena img  { height: 80px; }
-        .preview-galeria.altura-media img    { height: 130px; }
-        .preview-galeria.altura-grande img   { height: 200px; }
-
-        .bloco-imagem-controles {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 10px;
-            align-items: center;
-        }
-        .bloco-imagem-controles label {
-            font-size: 0.78rem;
-            font-weight: 600;
-            color: #555;
-            margin-right: 2px;
-        }
-        .bloco-imagem-controles select,
-        .bloco-imagem-controles input[type="text"] {
-            height: 28px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            padding: 0 6px;
-            font-family: inherit;
-            background: #fff;
-        }
-        .bloco-imagem-controles input[type="text"] {
-            flex: 1;
-            min-width: 120px;
-        }
-        .bloco-editor input[type="file"] {
-            font-size: 0.85rem;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        .bloco-toolbar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 4px;
-            margin-bottom: 8px;
-            padding: 6px;
-            background: #f1f3f5;
-            border-radius: 6px;
-        }
-
-        .bloco-toolbar .grupo-toolbar {
-            display: flex;
-            gap: 2px;
-            padding-right: 6px;
-            border-right: 1px solid #ddd;
-        }
-        .bloco-toolbar .grupo-toolbar:last-child { border-right: none; }
-
-        .bloco-toolbar button {
-            width: 28px;
-            height: 28px;
-            border: none;
-            background: #fff;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            color: #444;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .bloco-toolbar button:hover { background: #dde4e8; }
-        .bloco-toolbar button.ativo { background: var(--cor02); color: #fff; }
-
-        .bloco-toolbar select {
-            height: 28px;
-            border: none;
-            border-radius: 4px;
-            font-size: 0.78rem;
-            background: #fff;
-            cursor: pointer;
-        }
-
-        .dropdown-cor {
-            position: relative;
-            display: inline-block;
-        }
-        .painel-cores {
-            display: none;
-            position: absolute;
-            top: 32px;
-            left: 0;
-            background: #fff;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            padding: 6px;
-            gap: 4px;
-            grid-template-columns: repeat(6, 1fr);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-            z-index: 5;
-        }
-        .painel-cores.aberto { display: grid; }
-        .swatch-cor {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            border: 1px solid #ccc;
-        }
-
-        .bloco-texto-editavel {
-            width: 100%;
-            min-height: 70px;
-            padding: 10px 12px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-family: inherit;
-            font-size: 0.92rem;
-            box-sizing: border-box;
-            outline: none;
-            line-height: 1.6;
-            word-break: break-word;
-            overflow-wrap: break-word;
-            white-space: pre-wrap;
-            overflow: hidden;
-        }
-        .bloco-texto-editavel:focus { border-color: var(--cor02); }
-        .bloco-texto-editavel ul, .bloco-texto-editavel ol {
-            margin: 6px 0 6px 20px;
-        }
-        .bloco-texto-editavel li.tarefa {
-            list-style: none;
-            margin-left: -20px;
-        }
-        .bloco-texto-editavel li.tarefa input[type="checkbox"] {
-            margin-right: 6px;
-        }
-
-        .bloco-texto-editavel.modo-subtitulo {
-            font-weight: 700;
-            color: var(--cor02);
-            font-size: 1.1rem;
-        }
-        .bloco-texto-editavel.modo-citacao {
-            font-style: italic;
-            border-left: 4px solid var(--cor02);
-            background: #f7f9fa;
-        }
-
-        .campo-citacao-autor {
-            width: 100%;
-            margin-top: 8px;
-            padding: 7px 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            box-sizing: border-box;
-        }
-
-        .bloco-separador-preview-editor {
-            border: none;
-            border-top: 2px dashed #ccc;
-            margin: 10px 0;
-        }
-
-        .btn-add-bloco {
-            width: 100%;
-            padding: 12px;
-            border: 2px dashed var(--cor02);
-            background: none;
-            color: var(--cor02);
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 10px;
-        }
-        .btn-add-bloco:hover { background: #eef2f5; }
-
-        .coluna-preview {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
-            padding: 30px;
-            position: sticky;
-            top: 20px;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .preview-label {
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            font-weight: 700;
-            color: #999;
-            margin-bottom: 12px;
-            letter-spacing: 0.05em;
-        }
-
-        .preview-titulo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #222;
-            margin-bottom: 8px;
-            line-height: 1.2;
-        }
-
-        .preview-descricao {
-            font-size: 1.05rem;
-            color: #555;
-            font-weight: 600;
-            margin-bottom: 20px;
-        }
-
-        .preview-capa {
-            width: 100%;
-            max-height: 320px;
-            object-fit: cover;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .preview-bloco { margin-bottom: 22px; }
-
-        .preview-bloco img {
-            width: 100%;
-            max-height: 360px;
-            object-fit: cover;
-            border-radius: 8px;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .preview-bloco .conteudo-texto {
-            font-size: 1rem;
-            line-height: 1.7;
-            color: #333;
-            margin: 0;
-            word-break: break-word;
-            overflow-wrap: break-word;
-        }
-        .preview-bloco .conteudo-texto ul, .preview-bloco .conteudo-texto ol {
-            margin: 8px 0 8px 22px;
-        }
-        .preview-bloco .conteudo-texto li.tarefa { list-style: none; margin-left: -20px; }
-
-        .preview-bloco.tipo-subtitulo .conteudo-texto {
-            font-weight: 700;
-            color: var(--cor02);
-            font-size: 1.25rem;
-        }
-
-        .preview-bloco.tipo-citacao {
-            border-left: 4px solid var(--cor02);
-            background: #f7f9fa;
-            padding: 14px 18px;
-            border-radius: 0 8px 8px 0;
-        }
-        .preview-bloco.tipo-citacao .conteudo-texto {
-            font-style: italic;
-            font-size: 1.1rem;
-        }
-        .preview-bloco.tipo-citacao .autor-citacao {
-            display: block;
-            margin-top: 8px;
-            font-style: normal;
-            font-weight: 600;
-            color: #666;
-            font-size: 0.9rem;
-        }
-        .preview-bloco.tipo-citacao .autor-citacao::before { content: '— '; }
-
-        .preview-bloco.tipo-separador hr {
-            border: none;
-            border-top: 2px solid #ddd;
-            margin: 0;
-        }
-
-        .preview-vazio {
-            color: #aaa;
-            text-align: center;
-            padding: 40px 0;
-            font-style: italic;
-        }
-
-        .cor-preto { color: #111111; }
-        .cor-vermelho { color: #c0392b; }
-        .cor-azul { color: #2980b9; }
-        .cor-verde { color: #27ae60; }
-        .cor-laranja { color: #e67e22; }
-        .cor-roxo { color: #8e44ad; }
-        .cor-cinza { color: #7f8c8d; }
-
-        .marca-amarelo { background-color: #fff3a0; }
-        .marca-verde { background-color: #c8f7c5; }
-        .marca-azul { background-color: #bee3f8; }
-        .marca-rosa { background-color: #fbd1e3; }
-
-        .fonte-padrao { font-family: var(--fonte-padrao); }
-        .fonte-destaque { font-family: var(--fonte-destaque); }
-        .fonte-serifada { font-family: 'Times New Roman', serif; }
-        .fonte-monoespacada { font-family: 'Courier New', monospace; }
-
-        .texto-pequeno { font-size: 0.78rem; }
-        .texto-medio { font-size: 1rem; }
-        .texto-grande { font-size: 1.3rem; }
-        .texto-extra-grande { font-size: 1.7rem; }
-
-        .alinhar-esquerda { text-align: left; display: block; }
-        .alinhar-centro { text-align: center; display: block; }
-        .alinhar-direita { text-align: right; display: block; }
-        .alinhar-justificado { text-align: justify; display: block; }
-
-        @media (max-width: 900px) {
-            .editor-noticia-wrapper { grid-template-columns: 1fr; }
-            .coluna-preview { position: static; max-height: none; }
-        }
-    </style>
 </head>
 <body>
 
@@ -973,6 +425,7 @@
             const editavel = wrapper.querySelector('.bloco-texto-editavel');
             if (editavel) {
                 editavel.addEventListener('input', function() {
+                    limparSpansVazios(editavel);
                     atualizarPreviewBloco(wrapper, previewBloco);
                 });
                 // Salva seleção ao perder foco (blur) para que botões da toolbar possam usá-la
@@ -1001,22 +454,20 @@
                 });
             });
 
-            const selectFonte = wrapper.querySelector('.select-fonte');
+                        const selectFonte = wrapper.querySelector('.select-fonte');
             if (selectFonte) {
                 selectFonte.addEventListener('change', function() {
                     if (!editavel) return;
                     aplicarSpanNaSelecao(editavel, selectFonte.value);
                     atualizarPreviewBloco(wrapper, previewBloco);
-                    selectFonte.value = '';
                 });
             }
-            const selectTamanho = wrapper.querySelector('.select-tamanho');
+                        const selectTamanho = wrapper.querySelector('.select-tamanho');
             if (selectTamanho) {
                 selectTamanho.addEventListener('change', function() {
                     if (!editavel) return;
                     aplicarSpanNaSelecao(editavel, selectTamanho.value);
                     atualizarPreviewBloco(wrapper, previewBloco);
-                    selectTamanho.value = '';
                 });
             }
 
@@ -1210,17 +661,17 @@
                 case 'lista-tarefa':
                     inserirListaTarefa(editavel);
                     break;
-                case 'alinhar-esquerda':
-                    aplicarSpanNaSelecao(editavel, 'alinhar-esquerda');
+                                case 'alinhar-esquerda':
+                    aplicarAlinhamento(editavel, 'alinhar-esquerda');
                     break;
                 case 'alinhar-centro':
-                    aplicarSpanNaSelecao(editavel, 'alinhar-centro');
+                    aplicarAlinhamento(editavel, 'alinhar-centro');
                     break;
                 case 'alinhar-direita':
-                    aplicarSpanNaSelecao(editavel, 'alinhar-direita');
+                    aplicarAlinhamento(editavel, 'alinhar-direita');
                     break;
                 case 'alinhar-justificado':
-                    aplicarSpanNaSelecao(editavel, 'alinhar-justificado');
+                    aplicarAlinhamento(editavel, 'alinhar-justificado');
                     break;
                 case 'link':
                     inserirLink(editavel);
@@ -1272,6 +723,106 @@
             });
         }
 
+        // Remove spans de formatação (marca-texto, cor, etc.) que ficaram
+        // sem nenhum texto dentro, para não deixar "casca" vazia nem herdar
+        // a formatação ao digitar de novo naquele ponto.
+                function limparSpansVazios(editavel) {
+            // Se o campo ficou totalmente vazio mas ainda sobrou algum
+            // <span> de formatação, zera tudo e força o navegador a
+            // esquecer o "typing style" (bug conhecido do Chromium que
+            // não é resolvido só mexendo no DOM via JS).
+            const textoTotal = editavel.textContent.replace(/\u200B/g, '').trim();
+            if (textoTotal.length === 0 && editavel.querySelector('span')) {
+                editavel.innerHTML = '';
+                editavel.blur();
+                setTimeout(function() {
+                    editavel.focus();
+                    const selVazio = window.getSelection();
+                    const rangeVazio = document.createRange();
+                    rangeVazio.selectNodeContents(editavel);
+                    rangeVazio.collapse(true);
+                    selVazio.removeAllRanges();
+                    selVazio.addRange(rangeVazio);
+                }, 0);
+                return;
+            }
+
+            const sel = window.getSelection();
+            let cursorNode = null;
+            if (sel && sel.rangeCount) {
+                cursorNode = sel.getRangeAt(0).startContainer;
+            }
+
+            const spans = Array.from(editavel.querySelectorAll('span'));
+            spans.forEach(function(span) {
+                const conteudo = span.textContent.replace(/\u200B/g, '').trim();
+                if (conteudo.length === 0) {
+                    const cursorEstavaDentro = cursorNode && span.contains(cursorNode);
+                    const pai = span.parentNode;
+                    const proximoIrmao = span.nextSibling;
+                    span.remove();
+
+                    if (cursorEstavaDentro) {
+                        // Coloca o cursor num nó de texto neutro, fora de
+                        // qualquer span, para o navegador esquecer a cor/estilo
+                        // que estava "grudado" no cursor.
+                        const textoNeutro = document.createTextNode('');
+                        if (proximoIrmao) {
+                            pai.insertBefore(textoNeutro, proximoIrmao);
+                        } else {
+                            pai.appendChild(textoNeutro);
+                        }
+                        const novoRange = document.createRange();
+                        novoRange.setStart(textoNeutro, 0);
+                        novoRange.collapse(true);
+                        sel.removeAllRanges();
+                        sel.addRange(novoRange);
+                    }
+                }
+            });
+            editavel.normalize();
+        }
+
+        // Corta (divide) qualquer elemento ancestral do marcador, até chegar
+        // em `root`, movendo tudo que vem depois do marcador para um clone
+        // irmão. Isso garante que nenhum span fique "atravessado" pela
+        // fronteira exata da seleção — essencial para marcar/desmarcar
+        // apenas parte de um trecho já formatado.
+        function dividirAncestraisNoMarcador(marcador, root) {
+            let node = marcador;
+            let parent = node.parentNode;
+            while (parent && parent !== root) {
+                const proximosIrmaos = [];
+                let irmao = node.nextSibling;
+                while (irmao) {
+                    proximosIrmaos.push(irmao);
+                    irmao = irmao.nextSibling;
+                }
+                if (proximosIrmaos.length > 0) {
+                    const clone = parent.cloneNode(false);
+                    proximosIrmaos.forEach(function(ir) { clone.appendChild(ir); });
+                    parent.parentNode.insertBefore(clone, parent.nextSibling);
+                }
+                node = parent;
+                parent = node.parentNode;
+            }
+        }
+
+        // Percorre, em ordem do documento, todo elemento <span> que esteja
+        // inteiramente entre os dois marcadores (agora sempre inteiro, nunca
+        // parcial, graças à divisão feita acima).
+        function percorrerEntreMarcadores(root, marcadorInicio, marcadorFim, callback) {
+            const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT, null);
+            let dentro = false;
+            let node = walker.nextNode();
+            while (node) {
+                if (node === marcadorInicio) { dentro = true; node = walker.nextNode(); continue; }
+                if (node === marcadorFim) { break; }
+                if (dentro && node.tagName === 'SPAN') callback(node);
+                node = walker.nextNode();
+            }
+        }
+
         function aplicarSpanNaSelecao(editavel, classe) {
             if (!classe) return;
 
@@ -1291,17 +842,48 @@
             }
 
             const grupoAtual = GRUPOS_EXCLUSIVOS.find(g => g.includes(classe)) || null;
-            const fragmento = range.extractContents();
+            const classesMarca = ['marca-amarelo', 'marca-verde', 'marca-azul', 'marca-rosa'];
+
+            const marcadorFim = document.createElement('span');
+            marcadorFim.setAttribute('data-marcador', '1');
+            const rangeFim = range.cloneRange();
+            rangeFim.collapse(false);
+            rangeFim.insertNode(marcadorFim);
+
+            const marcadorInicio = document.createElement('span');
+            marcadorInicio.setAttribute('data-marcador', '1');
+            const rangeInicio = range.cloneRange();
+            rangeInicio.collapse(true);
+            rangeInicio.insertNode(marcadorInicio);
+
+            dividirAncestraisNoMarcador(marcadorInicio, editavel);
+            dividirAncestraisNoMarcador(marcadorFim, editavel);
+
+            if (classesMarca.includes(classe)) {
+                percorrerEntreMarcadores(editavel, marcadorInicio, marcadorFim, function(span) {
+                    classesMarca.forEach(function(c) { span.classList.remove(c); });
+                });
+            }
+
+            const novoRangeSelecao = document.createRange();
+            novoRangeSelecao.setStartAfter(marcadorInicio);
+            novoRangeSelecao.setEndBefore(marcadorFim);
+            const fragmento = novoRangeSelecao.extractContents();
 
             if (grupoAtual) {
                 limparGrupoNoFragmento(fragmento, grupoAtual);
-                achatarSpansVazios(fragmento);
             }
+            achatarSpansVazios(fragmento);
 
             const span = document.createElement('span');
             span.className = classe;
             span.appendChild(fragmento);
-            range.insertNode(span);
+            novoRangeSelecao.insertNode(span);
+
+            marcadorInicio.remove();
+            marcadorFim.remove();
+            editavel.normalize();
+            limparSpansVazios(editavel);
 
             const novoRange = document.createRange();
             novoRange.setStartAfter(span);
@@ -1310,10 +892,29 @@
             sel.addRange(novoRange);
         }
 
+        function aplicarAlinhamento(editavel, classe) {
+    const classesAlinhamento = ['alinhar-esquerda', 'alinhar-centro', 'alinhar-direita', 'alinhar-justificado'];
+
+    // Garante uma única "casca" envolvendo todo o conteúdo do bloco.
+    // Se já existe, só troca a classe dela — nunca cria uma nova por
+    // cima, o que evita o aninhamento que travava ao alternar.
+    let wrapper = editavel.querySelector(':scope > span[data-alinhamento]');
+    if (!wrapper) {
+        wrapper = document.createElement('span');
+        wrapper.setAttribute('data-alinhamento', '1');
+        while (editavel.firstChild) {
+            wrapper.appendChild(editavel.firstChild);
+        }
+        editavel.appendChild(wrapper);
+    }
+
+    classesAlinhamento.forEach(function(c) { wrapper.classList.remove(c); });
+    wrapper.classList.add(classe);
+}
+
         function limparMarcaTexto(editavel) {
             const classesMarca = ['marca-amarelo', 'marca-verde', 'marca-azul', 'marca-rosa'];
 
-            // Pega seleção atual ou salva
             let range = null;
             const sel = window.getSelection();
             if (sel && sel.rangeCount && !sel.isCollapsed && editavel.contains(sel.getRangeAt(0).commonAncestorContainer)) {
@@ -1323,28 +924,29 @@
             }
             if (!range) { alert('Selecione o texto marcado para remover o destaque.'); return; }
 
-            // Percorre todos os spans do editavel e remove marca dos que intersectam a selecao
-            const spans = Array.from(editavel.querySelectorAll('span'));
-            spans.forEach(function(span) {
-                const temMarca = classesMarca.some(function(c) { return span.classList.contains(c); });
-                if (!temMarca) return;
+            const marcadorFim = document.createElement('span');
+            marcadorFim.setAttribute('data-marcador', '1');
+            const rangeFim = range.cloneRange();
+            rangeFim.collapse(false);
+            rangeFim.insertNode(marcadorFim);
 
-                const spanRange = document.createRange();
-                spanRange.selectNodeContents(span);
-                const intersecta = !(
-                    range.compareBoundaryPoints(Range.END_TO_START, spanRange) >= 0 ||
-                    range.compareBoundaryPoints(Range.START_TO_END, spanRange) <= 0
-                );
-                if (!intersecta) return;
+            const marcadorInicio = document.createElement('span');
+            marcadorInicio.setAttribute('data-marcador', '1');
+            const rangeInicio = range.cloneRange();
+            rangeInicio.collapse(true);
+            rangeInicio.insertNode(marcadorInicio);
 
+            dividirAncestraisNoMarcador(marcadorInicio, editavel);
+            dividirAncestraisNoMarcador(marcadorFim, editavel);
+
+            percorrerEntreMarcadores(editavel, marcadorInicio, marcadorFim, function(span) {
                 classesMarca.forEach(function(c) { span.classList.remove(c); });
-
-                if (!span.className || span.className.trim() === '') {
-                    const pai = span.parentNode;
-                    while (span.firstChild) pai.insertBefore(span.firstChild, span);
-                    pai.removeChild(span);
-                }
             });
+
+            marcadorInicio.remove();
+            marcadorFim.remove();
+            editavel.normalize();
+            limparSpansVazios(editavel);
         }
 
         function inserirListaTarefa(editavel) {
@@ -1532,6 +1134,7 @@
             });
         });
     </script>
-
+<%- include('partials/script-acessibilidade') %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -49,6 +49,7 @@ var contaRouter = require('./routes/conta');
 var verifyRouter = require('./routes/verify'); // Importe a nova rota de verificação
 const contatoRouter = require('./routes/contato'); // ajuste o caminho conforme sua estrutura
 var noticiasRouter = require('./routes/noticias');
+var acessibilidadeRouter = require('./routes/acessibilidade');
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -63,6 +64,7 @@ app.use('/conta', contaRouter);
 app.use('/', contatoRouter);
 app.use('/verify', verifyRouter); // Use a rota de verificação
 app.use('/noticias', noticiasRouter);
+app.use('/acessibilidade', acessibilidadeRouter);
 
 // 7. TRATAMENTO DE ERROS
 app.use(function(req, res, next) {

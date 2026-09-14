@@ -1,3 +1,53 @@
 <footer>
         <p id="rodape">Site criado por Kauã Martins Pereira</p>
     </footer>
+
+    <!-- VLibras - intérprete de Libras, sempre ativo no portal -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>
+        new window.VLibras.Widget('https://vlibras.gov.br/app');
+    </script>
+
+    <!-- Lembra se o painel do VLibras estava aberto antes de navegar pra
+         outra página, e reabre sozinho na página seguinte - sem isso, a
+         pessoa precisaria clicar na mãozinha de novo toda vez que trocasse
+         de página, já que o site recarrega tudo do zero a cada navegação. -->
+    <script>
+        (function () {
+            var CHAVE_PAINEL_VLIBRAS = 'incluaneuro_vlibras_painel_aberto';
+
+            function aguardarBotaoVLibras(callback) {
+                var tentativas = 0;
+                var intervalo = setInterval(function () {
+                    tentativas++;
+                    var botao = document.querySelector('[vw-access-button]');
+                    if (botao) {
+                        clearInterval(intervalo);
+                        callback(botao);
+                    } else if (tentativas > 50) { // ~10s tentando, desiste
+                        clearInterval(intervalo);
+                    }
+                }, 200);
+            }
+
+            aguardarBotaoVLibras(function (botao) {
+                // Cada clique no botão alterna o painel aberto/fechado -
+                // guarda esse estado pra saber se deve reabrir na próxima página
+                botao.addEventListener('click', function () {
+                    var estaAberto = localStorage.getItem(CHAVE_PAINEL_VLIBRAS) === 'true';
+                    localStorage.setItem(CHAVE_PAINEL_VLIBRAS, estaAberto ? 'false' : 'true');
+                });
+
+                // Se estava aberto na página anterior, reabre sozinho aqui
+                if (localStorage.getItem(CHAVE_PAINEL_VLIBRAS) === 'true') {
+                    botao.click();
+                }
+            });
+        })();
+    </script>
