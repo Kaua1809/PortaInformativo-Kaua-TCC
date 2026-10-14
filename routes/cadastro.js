@@ -34,7 +34,7 @@ db.query(sql, [login, login, email, hashedSenha], (err, result) => {
                         <p style="font-size: 16px; color: #555;">Olá, <strong>${login}</strong>!</p>
                         <p style="font-size: 16px; color: #555;">Obrigado por se cadastrar no nosso portal. Para garantir a segurança da sua conta, precisamos que você confirme seu endereço de e-mail.</p>
                         <div style="text-align: center; margin: 30px 0;">
-                            <a href="http://localhost:3000/verify?email=${email}" 
+                          <a href="${process.env.BASE_URL || 'http://localhost:3000'}/verify?email=${encodeURIComponent(email)}"
                                style="background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
                                Confirmar meu E-mail
                             </a>

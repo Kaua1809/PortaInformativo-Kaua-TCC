@@ -96,7 +96,7 @@ router.post('/esqueci-senha', function(req, res) {
         return res.json({ sucesso: true, mensagem: mensagemPadrao });
       }
 
-      const link = `http://localhost:3000/redefinir-senha/${tokenBruto}`;
+const link = `${process.env.BASE_URL || 'http://localhost:3000'}/redefinir-senha/${tokenBruto}`;
 
       transporter.sendMail({
         from: '"Portal Informativo" <portal.informativo02@gmail.com>',

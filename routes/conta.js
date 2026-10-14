@@ -183,7 +183,7 @@ router.post('/redefinir-senha', function(req, res) {
   db.query('UPDATE usuario SET reset_token = ?, reset_token_expira = ? WHERE id = ?', [tokenHash, expira, id], (errUpdate) => {
     if (errUpdate) return res.json({ sucesso: false, mensagem: 'Erro ao gerar link de restauração.' });
 
-    const link = `http://localhost:3000/redefinir-senha/${tokenBruto}`;
+const link = `${process.env.BASE_URL || 'http://localhost:3000'}/redefinir-senha/${tokenBruto}`;
 
     const mailOptions = {
       from: '"Portal Informativo" <Portal.Informativo02@gmail.com>',
