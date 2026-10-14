@@ -9,7 +9,7 @@ router.get('/', (req, res) => {
     if (!email) return res.send('Link inválido');
 
     // ATUALIZA O STATUS NO BANCO PARA TRUE
-    const sql = 'UPDATE Usuario SET is_verified = true WHERE email = ?';
+    const sql = 'UPDATE usuario SET is_verified = true WHERE email = ?';
 
     db.query(sql, [email], (err, result) => {
         if (err) return res.send('Erro ao verificar');
