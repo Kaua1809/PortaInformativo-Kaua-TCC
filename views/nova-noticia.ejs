@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css">
+       <link rel="stylesheet" href="/stylesheets/acessibilidade.css">
     <link rel="stylesheet" href="/stylesheets/portalinclusao.css">
     <link rel="stylesheet" href="/stylesheets/noticias.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"> 
@@ -233,12 +234,15 @@
         }
 
         function camposOcultosSeparador() {
-            // Separador nao tem controles de imagem no HTML, entao precisa de campos hidden
-            return '<input type="hidden" name="blocos_imagem_tamanho[]" value="grande">' +
-                   '<input type="hidden" name="blocos_imagem_orientacao[]" value="horizontal">' +
-                   '<input type="hidden" name="blocos_imagem_alt[]" value="">' +
-                   '<input type="hidden" name="blocos_imagem_fonte[]" value="">';
-        }
+    // Separador/galeria nao tem controles de imagem nem citacao no HTML,
+    // entao precisa de campos hidden para manter os arrays alinhados por
+    // indice com blocos_texto[] e blocos_tipo[] no backend.
+    return '<input type="hidden" name="blocos_imagem_tamanho[]" value="grande">' +
+           '<input type="hidden" name="blocos_imagem_orientacao[]" value="horizontal">' +
+           '<input type="hidden" name="blocos_imagem_alt[]" value="">' +
+           '<input type="hidden" name="blocos_imagem_fonte[]" value="">' +
+           '<input type="hidden" name="blocos_citacao_autor[]" value="">';
+}
 
         function montarEditorGaleria(index, dados) {
             // Ao editar, imagens vêm de dados.galeriaImagens (banco); ao criar, de galData
@@ -998,9 +1002,10 @@
             const imgEditor = wrapper.querySelector('.bloco-editor-imagem-preview');
             const campoAutor = wrapper.querySelector('.campo-citacao-autor');
 
-            if (textareaOculta) {
-                textareaOculta.value = editavel ? editavel.innerHTML : '';
-            }
+
+if (textareaOculta && editavel) {
+    textareaOculta.value = editavel.innerHTML;
+}
 
             const selectTam = wrapper.querySelector('.select-img-tamanho');
             const selectOri = wrapper.querySelector('.select-img-orientacao');

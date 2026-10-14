@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+       <link rel="stylesheet" href="/stylesheets/acessibilidade.css">
+    <link rel="stylesheet" href="/stylesheets/modals.css">
+    <link rel="stylesheet" href="/stylesheets/conta.css">
+</head>
+<body>
+    <header>
+        <%- include('partials/menu') %>
+        <%- include('partials/navbar') %>
+    </header>
+
+    <main class="main-content">
+
+        <div class="section-divider">
+            <span id="tab-denuncias" class="active">Denúncias (<%= denuncias.length %>)</span>
+            <span id="tab-contatos">Contatos (<%= contatos.length %>)</span>
+            <span id="tab-feedbacks">Feedbacks (<%= feedbacks.length %>)</span>
+        </div>
+
+        <!-- ================= DENÚNCIAS ================= -->
+        <section id="sec-denuncias" class="content-section active">
+            <% if (denuncias.length === 0) { %>
+                <p style="text-align:center; color:#666;">Nenhuma denúncia pendente.</p>
+            <% } %>
+
+            <% denuncias.forEach(function(d) { %>
+                <div class="custom-card" style="flex-direction: column; align-items: flex-start; gap: 10px;">
+                    <div class="card-info" style="width: 100%;">
+                        <span class="label">
+                            <%= d.postagem_id ? 'Postagem' : 'Comentário' %> denunciada
+                            <% if (d.denunciado_banido) { %> · <span style="color:#e74c3c;">Já banido</span><% } %>
+                        </span>
+                        <p><strong>Denunciado:</strong> <%= d.denunciado_nome || 'Desconhecido' %> (@<%= d.denunciado_login || '—' %>)</p>
+                        <p><strong>Denunciante:</strong> <%= d.reporter_nome %> (@<%= d.reporter_login %>)</p>
+                        <p><strong>Motivo:</strong> <%= d.motivo %></p>
+                        <% if (d.conteudo_preview) { %>
+                            <p style="background:#f4f4f4; padding:8px; border-radius:6px;"><em>"<%= d.conteudo_preview %>"</em></p>
+                        <% } %>
+                        <p style="color:#999; font-size:0.85rem;"><%= new Date(d.data_denuncia).toLocaleString('pt-BR') %></p>
+                    </div>
+
+                    <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                        <button class="btn-action btn-avisar" data-id="<%= d.id %>">Avisar</button>
+                        <button class="btn-action btn-suspender" data-id="<%= d.id %>">Suspender</button>
+                        <button class="btn-action danger btn-banir" data-id="<%= d.id %>">Banir</button>
+                        <button class="btn-action btn-descartar" data-id="<%= d.id %>" style="background:#ccc; color:#333;">Descartar (falsa)</button>
+                        <% if (d.postagem_id) { %>
+                            <button class="btn-action btn-excluir-conteudo" data-id="<%= d.postagem_id %>" data-tipo="postagem" style="background:#e74c3c;">Excluir Postagem</button>
+                        <% } else { %>
+                            <button class="btn-action btn-excluir-conteudo" data-id="<%= d.comentario_id %>" data-tipo="comentario" style="background:#e74c3c;">Excluir Comentário</button>
+                        <% } %>
+                    </div>
+                </div>
+            <% }) %>
+        </section>
+
+        <!-- ================= CONTATOS ================= -->
+        <section id="sec-contatos" class="content-section">
+            <% if (contatos.length === 0) { %>
+                <p style="text-align:center; color:#666;">Nenhuma mensagem de contato.</p>
+            <% } %>
+            <% contatos.forEach(function(c) { %>
+                <div class="custom-card" style="flex-direction: column; align-items: flex-start; gap: 6px;" id="msg-<%= c.id %>">
+                    <p><strong><%= c.nome %> <%= c.sobrenome || '' %></strong> — <%= c.email %></p>
+                    <% if (c.telefone) { %><p>Telefone: <%= c.telefone %></p><% } %>
+                    <p><%= c.relato %></p>
+                    <button class="btn-action btn-excluir-msg" data-id="<%= c.id %>" style="background:#e74c3c;">Excluir</button>
+                </div>
+            <% }) %>
+        </section>
+
+        <!-- ================= FEEDBACKS ================= -->
+        <section id="sec-feedbacks" class="content-section">
+            <% if (feedbacks.length === 0) { %>
+                <p style="text-align:center; color:#666;">Nenhum feedback.</p>
+            <% } %>
+            <% feedbacks.forEach(function(f) { %>
+                <div class="custom-card" style="flex-direction: column; align-items: flex-start; gap: 6px;" id="msg-<%= f.id %>">
+                    <p><%= f.mensagem %></p>
+                    <button class="btn-action btn-excluir-msg" data-id="<%= f.id %>" style="background:#e74c3c;">Excluir</button>
+                </div>
+            <% }) %>
+        </section>
+    </main>
+
+    <!-- Modal: suspender (pede dias) -->
+    <div id="modal-suspender" class="modal-container">
+        <div class="modal-box" style="max-width: 400px;">
+            <h1><i class="bi bi-clock-history"></i> Suspender Conta</h1>
+            <p>Por quantos dias essa conta ficará suspensa?</p>
+            <div class="campo-contato">
+                <label class="label-contato" for="dias-suspensao">Dias:</label>
+                <input class="input-contato" type="number" id="dias-suspensao" min="1" value="7">
+            </div>
+            <div class="acoes-modal">
+                <button class="enviar" id="confirmar-suspender" type="button">Confirmar</button>
+                <button class="fechar" id="fechar" type="button">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal genérico de confirmação (substitui os confirm() do navegador) -->
+    <div id="modal-confirmar-acao" class="modal-container">
+        <div class="modal-box" style="max-width: 400px;">
+            <h1><i class="bi bi-question-circle"></i> Confirmar</h1>
+            <p id="texto-confirmar-acao">Tem certeza?</p>
+            <div class="acoes-modal">
+                <button class="enviar" id="confirmar-acao-sim" type="button">Sim, confirmar</button>
+                <button class="fechar" id="fechar" type="button">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast (substitui os alert() do navegador) -->
+    <div id="toast-aviso" style="
+        position: fixed; bottom: 30px; right: 30px; z-index: 2000;
+        background: var(--cor02, #34495e); color: #fff; padding: 14px 22px;
+        border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        font-family: var(--fonte-padrao); font-size: 0.95rem;
+        display: none; max-width: 320px;">
+    </div>
+
+    <script src="/javascripts/modal-contato.js"></script>
+    <script>
+        // Abas
+        const abas = { denuncias: 'tab-denuncias', contatos: 'tab-contatos', feedbacks: 'tab-feedbacks' };
+        Object.keys(abas).forEach(function(chave) {
+            document.getElementById(abas[chave]).addEventListener('click', function() {
+                Object.keys(abas).forEach(function(outra) {
+                    document.getElementById(abas[outra]).classList.toggle('active', outra === chave);
+                    document.getElementById('sec-' + outra).classList.toggle('active', outra === chave);
+                });
+            });
+        });
+
+        /* ---------- Toast (substitui alert()) ---------- */
+        function mostrarToast(mensagem, sucesso) {
+            const toast = document.getElementById('toast-aviso');
+            toast.textContent = mensagem;
+            toast.style.background = sucesso ? 'var(--cor02, #34495e)' : '#e74c3c';
+            toast.style.display = 'block';
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => { toast.style.display = 'none'; }, 4000);
+        }
+
+        /* ---------- Confirmação (substitui confirm()) ---------- */
+        function pedirConfirmacao(texto, aoConfirmar) {
+            document.getElementById('texto-confirmar-acao').textContent = texto;
+            openModal('modal-confirmar-acao');
+
+            const botaoSim = document.getElementById('confirmar-acao-sim');
+            const novoBotao = botaoSim.cloneNode(true); // remove listeners antigos
+            botaoSim.parentNode.replaceChild(novoBotao, botaoSim);
+
+            novoBotao.addEventListener('click', function() {
+                document.getElementById('modal-confirmar-acao').classList.remove('mostrar');
+                aoConfirmar();
+            });
+        }
+
+        let denunciaAtual = null;
+
+        document.querySelectorAll('.btn-suspender').forEach(function(botao) {
+            botao.addEventListener('click', function() {
+                denunciaAtual = botao.getAttribute('data-id');
+                openModal('modal-suspender');
+            });
+        });
+
+        document.getElementById('confirmar-suspender').addEventListener('click', function() {
+            const dias = document.getElementById('dias-suspensao').value;
+            document.getElementById('modal-suspender').classList.remove('mostrar');
+            fetch('/admin/denuncias/' + denunciaAtual + '/suspender', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ dias: dias })
+            })
+            .then(r => r.json())
+            .then(d => {
+                mostrarToast(d.mensagem, d.sucesso);
+                if (d.sucesso) setTimeout(() => window.location.reload(), 1200);
+            });
+        });
+
+        document.querySelectorAll('.btn-banir').forEach(function(botao) {
+            botao.addEventListener('click', function() {
+                pedirConfirmacao('Banir esta conta permanentemente?', function() {
+                    fetch('/admin/denuncias/' + botao.getAttribute('data-id') + '/banir', { method: 'POST' })
+                        .then(r => r.json())
+                        .then(d => {
+                            mostrarToast(d.mensagem, d.sucesso);
+                            if (d.sucesso) setTimeout(() => window.location.reload(), 1200);
+                        });
+                });
+            });
+        });
+
+        document.querySelectorAll('.btn-avisar').forEach(function(botao) {
+            botao.addEventListener('click', function() {
+                pedirConfirmacao('Enviar aviso de infração por e-mail?', function() {
+                    fetch('/admin/denuncias/' + botao.getAttribute('data-id') + '/avisar', { method: 'POST' })
+                        .then(r => r.json())
+                        .then(d => {
+                            mostrarToast(d.mensagem, d.sucesso);
+                            if (d.sucesso) setTimeout(() => window.location.reload(), 1200);
+                        });
+                });
+            });
+        });
+
+        document.querySelectorAll('.btn-descartar').forEach(function(botao) {
+            botao.addEventListener('click', function() {
+                pedirConfirmacao('Descartar esta denúncia como falsa? Ela será removida.', function() {
+                    fetch('/admin/denuncias/' + botao.getAttribute('data-id'), { method: 'DELETE' })
+                        .then(r => r.json())
+                        .then(d => {
+                            if (d.sucesso) { mostrarToast('Denúncia descartada.', true); setTimeout(() => window.location.reload(), 1000); }
+                            else mostrarToast('Erro ao descartar.', false);
+                        });
+                });
+            });
+        });
+
+                document.querySelectorAll('.btn-excluir-conteudo').forEach(function(botao) {
+            botao.addEventListener('click', function() {
+                const id = botao.getAttribute('data-id');
+                const tipo = botao.getAttribute('data-tipo'); // 'postagem' ou 'comentario'
+                const rotulo = tipo === 'postagem' ? 'esta postagem' : 'este comentário';
+
+                pedirConfirmacao('Excluir ' + rotulo + ' permanentemente? Essa ação não pode ser desfeita.', function() {
+                    fetch('/admin/' + tipo + '/' + id, { method: 'DELETE' })
+                        .then(r => r.json())
+                        .then(d => {
+                            mostrarToast(d.mensagem, d.sucesso);
+                            if (d.sucesso) setTimeout(() => window.location.reload(), 1200);
+                        });
+                });
+            });
+        });
+
+        document.querySelectorAll('.btn-excluir-msg').forEach(function(botao) {
+            botao.addEventListener('click', function() {
+                const id = botao.getAttribute('data-id');
+                pedirConfirmacao('Excluir esta mensagem?', function() {
+                    fetch('/admin/mensagens/' + id, { method: 'DELETE' })
+                        .then(r => r.json())
+                        .then(d => {
+                            if (d.sucesso) { document.getElementById('msg-' + id).remove(); mostrarToast('Mensagem excluída.', true); }
+                            else mostrarToast('Erro ao excluir.', false);
+                        });
+                });
+            });
+        });
+    </script>
+    <script src="/javascripts/menu.js"></script>
+</body>
+</html>

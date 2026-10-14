@@ -1,0 +1,288 @@
+/* ---------- MODAL: Verificar / Trocar senha ---------- */
+/* Cole este bloco no final do seu conta.css */
+
+.modal-senha-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-senha-overlay.aberto {
+    display: flex;
+}
+
+.modal-senha-box {
+    background: #fff;
+    border-radius: 10px;
+    padding: var(--espacamento-xl);
+    width: 90%;
+    max-width: 1000px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    font-family: var(--fonte-padrao, sans-serif);
+}
+
+.modal-senha-fechar {
+    position: absolute;
+    top: 10px; right: 14px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    color: #888;
+}
+.modal-senha-fechar:hover { color: #333; }
+
+.modal-senha-box h3 {
+    margin: 0 0 6px;
+    color: #333;
+    font-size: 20px;
+    text-align: center;
+}
+
+.modal-senha-sub {
+    color: #777;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 18px;
+}
+
+.modal-senha-erro {
+    color: #e74c3c;
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.modal-senha-esqueci {
+    text-align: center;
+    font-size: 13px;
+    color: #777;
+    margin-top: 16px;
+}
+
+.modal-senha-esqueci a {
+    color: var(--cor03, #2c7be5);
+    font-weight: 600;
+    text-decoration: none;
+}
+.modal-senha-esqueci a:hover { text-decoration: underline; }
+
+/* ---------- Adições: campo de senha, botão e responsividade ---------- */
+
+.modal-senha-box .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.modal-senha-box .form-label {
+    font-family: var(--fonte-padrao, sans-serif);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #444;
+}
+
+.modal-senha-box .password-wrapper {
+    position: relative;
+    width: 100%;
+    display: block;
+}
+
+.modal-senha-box .form-input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 15px;
+    font-size: 1rem;
+    font-family: var(--fonte-padrao, sans-serif);
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+}
+
+.modal-senha-box .form-input:focus {
+    border-color: var(--cor02, #34495e);
+    background-color: #fff;
+}
+
+.modal-senha-box .form-input-password {
+    padding-right: 45px;
+}
+
+.modal-senha-box .toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #666;
+    z-index: 10;
+    transition: color 0.3s;
+}
+
+.modal-senha-box .toggle-password:hover {
+    color: #333;
+}
+
+.modal-senha-confirmar {
+    width: 100%;
+    padding: 12px 15px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--cor02, #34495e);
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: var(--fonte-padrao, sans-serif);
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.modal-senha-confirmar:hover {
+    filter: brightness(0.92);
+    transform: translateY(-2px);
+}
+
+@media (max-width: 480px) {
+    .modal-senha-box {
+        padding: 22px;
+        width: 92%;
+    }
+}
+
+/* ---------- Página: Redefinir Senha (auth.css) ---------- */
+
+.form-error {
+    font-family: var(--fonte-padrao);
+    color: #e74c3c;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+/* ---------- Estrutura da página Redefinir Senha (visual igual ao auth.css) ---------- */
+
+.redefinir-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 420px;
+    margin: 100px auto;
+    padding: 40px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.redefinir-wrap h2 {
+    font-family: var(--fonte-destaque);
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.redefinir-wrap label {
+    width: 100%;
+    font-family: var(--fonte-padrao);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 8px;
+}
+
+.redefinir-wrap input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 12px 15px;
+    font-size: 1rem;
+    font-family: var(--fonte-padrao);
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    outline: none;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+    margin-bottom: 16px;
+}
+
+.redefinir-wrap input:focus {
+    border-color: var(--cor02);
+    background-color: white;
+    box-shadow: 0 0 0 3px rgba(40, 75, 99, 0.1);
+}
+
+.redefinir-wrap form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.redefinir-wrap button {
+    width: 100%;
+    padding: 14px 20px;
+    font-size: 1rem;
+    font-family: var(--fonte-destaque);
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background-color: var(--cor02);
+    color: white;
+}
+
+.redefinir-wrap button:hover {
+    background-color: var(--cor03);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(40, 75, 99, 0.3);
+}
+
+.redefinir-wrap .erro-msg {
+    width: 100%;
+    font-family: var(--fonte-padrao);
+    color: #e74c3c;
+    font-size: 0.85rem;
+    text-align: center;
+    margin-bottom: 14px;
+}
+
+.redefinir-wrap .invalido-msg {
+    font-family: var(--fonte-padrao);
+    color: #666;
+    text-align: center;
+    line-height: 1.6;
+}
+
+@media (max-width: 480px) {
+    .redefinir-wrap {
+        margin: 40px auto;
+        padding: 25px;
+        max-width: 90%;
+    }
+
+    .redefinir-wrap h2 {
+        font-size: 1.5rem;
+    }
+
+    .redefinir-wrap input {
+        padding: 10px 12px;
+        font-size: 16px;
+    }
+
+    .redefinir-wrap button {
+        padding: 11px 15px;
+        font-size: 0.9rem;
+    }
+}

@@ -8,13 +8,16 @@
     <a href="/">Início</a>
     <a href="/mielomeningocele">Mielomeningocele</a>
     <a href="/hidrocefalia">Hidrocefalia</a>
-    <a href="/responsavel">Portal do responsável</a>
+    <a href="/responsavel">Portal da inclusão</a>
     <a href="/legislacao">Legislação</a>
     <a href="#" id="abrirContatoMenu" onclick="openModal('modal-contato')">Contato</a>
     <a href="#" onclick="openModal('modal-feedback')">Feedback</a>
     <a href="/acessibilidade">Acessibilidade</a>
     <a href="/ajuda">Ajuda</a>
-    <a href="/ajuda">Sobre</a>
+
+    <% if (usuarioLogado && usuarioLogado.is_admin) { %>
+        <a href="/admin/denuncias"><i class="bi bi-shield-exclamation"></i> Painel de Moderação</a>
+    <% } %>
 
     <!-- SEÇÃO DE CONTA DINÂMICA -->
     <div class="secao-conta">
@@ -25,7 +28,7 @@
 <img src="<%= usuarioLogado.foto_perfil || '/images/default-avatar.png' %>" alt="Foto de Perfil" class="foto-perfil">
 
                 </div>
-                <span class="nome-usuario2"><%= usuarioLogado.login %></span>
+                <span class="nome-usuario2"><%= usuarioLogado.nome_exibicao %></span>
             </a>
         <% } else { %>
             <!-- APARECE APENAS SE NÃO ESTIVER LOGADO -->

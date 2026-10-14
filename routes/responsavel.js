@@ -38,6 +38,7 @@ router.get('/', verificarLogin, function(req, res, next) {
       pp.data_postagem,
       u.id as usuario_id,
       u.login,
+      u.nome_exibicao,
       u.foto_perfil,
       (SELECT COUNT(*) FROM curtidas WHERE postagem_id = pp.id) as total_curtidas,
       (SELECT COUNT(*) FROM comentarios WHERE postagem_id = pp.id) as total_comentarios,
@@ -69,7 +70,7 @@ router.get('/comentario/:id', verificarLogin, function(req, res, next) {
   const sqlPostagem = `
     SELECT 
       pp.id, pp.id_portal, pp.comentarios, pp.fotos, pp.data_postagem,
-      u.login, u.foto_perfil,
+      u.login, u.nome_exibicao, u.foto_perfil,
       (SELECT COUNT(*) FROM curtidas WHERE postagem_id = pp.id) as total_curtidas,
       (SELECT COUNT(*) FROM curtidas WHERE postagem_id = pp.id AND usuario_id = ?) as usuario_curtiu
     FROM postagem_pais pp
@@ -84,9 +85,9 @@ router.get('/comentario/:id', verificarLogin, function(req, res, next) {
     // pode_excluir = true quando o usuário logado é o autor do comentário OU o dono da postagem.
     const donoPostagemId = postagens[0].id_portal;
     const sqlComentarios = `
-      SELECT 
+        SELECT 
         c.*,
-        u.login, u.foto_perfil,
+        u.login, u.nome_exibicao, u.foto_perfil,
         (SELECT COUNT(*) FROM comentarios r WHERE r.comentario_pai_id = c.id) as total_respostas,
         (SELECT COUNT(*) FROM curtidas WHERE comentario_id = c.id) as total_curtidas,
         (SELECT COUNT(*) FROM curtidas WHERE comentario_id = c.id AND usuario_id = ?) as usuario_curtiu,
@@ -120,9 +121,9 @@ router.get('/respostas/:comentarioId', verificarLogin, function(req, res) {
   // pode_excluir = true quando o usuário logado é o autor da resposta OU o dono da postagem
   // (descobre o dono da postagem via JOIN: resposta -> comentario_pai -> postagem_pais.id_portal)
   const sql = `
-    SELECT 
+      SELECT 
       c.*,
-      u.login, u.foto_perfil,
+      u.login, u.nome_exibicao, u.foto_perfil,
       (SELECT COUNT(*) FROM curtidas WHERE comentario_id = c.id) as total_curtidas,
       (SELECT COUNT(*) FROM curtidas WHERE comentario_id = c.id AND usuario_id = ?) as usuario_curtiu,
       (c.usuario_id = ? OR ? = pp.id_portal) as pode_excluir
@@ -299,6 +300,39 @@ router.post('/criar-postagem', verificarLogin, upload.single('imagem'), function
         return res.json({ sucesso: false, mensagem: 'Erro ao salvar postagem: ' + err.message });
       }
       res.json({ sucesso: true });
+    });
+  });
+});
+
+/* GET - Perfil público de um usuário (clicável a partir do nome em postagens/comentários) */
+router.get('/perfil/:id', verificarLogin, function(req, res) {
+  const perfilId = req.params.id;
+  const usuarioLogado = req.session.usuarioLogado;
+
+  const sqlUsuario = 'SELECT id, login, nome_exibicao, foto_perfil, bio, data_nascimento, genero FROM usuario WHERE id = ?';
+  db.query(sqlUsuario, [perfilId], (err, resultados) => {
+    if (err || resultados.length === 0) return res.send('Usuário não encontrado');
+
+    const usuarioPerfil = resultados[0];
+
+    const sqlPublicacoes = `
+      SELECT
+        pp.id,
+        pp.comentarios,
+        pp.fotos,
+        pp.data_postagem,
+        (SELECT COUNT(*) FROM curtidas WHERE postagem_id = pp.id) as total_curtidas,
+        (SELECT COUNT(*) FROM comentarios WHERE postagem_id = pp.id) as total_comentarios
+      FROM postagem_pais pp
+      WHERE pp.id_portal = ? AND pp.oculta = 0
+      ORDER BY pp.data_postagem DESC
+    `;
+    db.query(sqlPublicacoes, [perfilId], (err2, publicacoes) => {
+      if (err2) {
+        console.error(err2);
+        return res.render('perfil', { usuarioPerfil, publicacoes: [], usuarioLogado, title: 'Perfil' });
+      }
+      res.render('perfil', { usuarioPerfil, publicacoes, usuarioLogado, title: 'Perfil' });
     });
   });
 });

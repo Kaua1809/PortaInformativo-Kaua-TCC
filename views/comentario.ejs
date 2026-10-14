@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= title %></title>
     <link rel="stylesheet" href="/stylesheets/style.css">
+       <link rel="stylesheet" href="/stylesheets/acessibilidade.css">
     <link rel="stylesheet" href="/stylesheets/portalinclusao.css">
+    <link rel="stylesheet" href="/stylesheets/modals.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
@@ -22,7 +24,7 @@
             <div class="post-col-info">
                 <div class="perfil-header">
                     <img src="<%= postagem.foto_perfil || '/img/perfil-padrao.png' %>" class="avatar-img" alt="Avatar">
-                    <span class="nome-autor"><%= postagem.login %></span>
+                    <span class="nome-autor"><a href="/responsavel/perfil/<%= postagem.id_portal %>" style="color: inherit; text-decoration: none;"><%= postagem.nome_exibicao %></a></span>
                 </div>
                 <p class="texto-post"><%= postagem.comentarios %></p>
             </div>
@@ -51,7 +53,7 @@
                     <div class="comentario-card" id="comentario-card-<%= comentario.id %>">
                         <img src="<%= comentario.foto_perfil || '/img/perfil-padrao.png' %>" class="avatar-img" alt="Avatar">
                         <div class="comentario-corpo">
-                            <strong><%= comentario.login %></strong>
+                            <strong><a href="/responsavel/perfil/<%= comentario.usuario_id %>" style="color: inherit; text-decoration: none;"><%= comentario.nome_exibicao %></a></strong>
                             <p><%= comentario.texto_comentario %></p>
                             <div class="comentario-acoes">
                                 <button type="button" class="btn-resp" data-comentario-id="<%= comentario.id %>">Responder</button>
@@ -86,6 +88,14 @@
                                         title="Excluir">
                                         <i class="fas fa-trash"></i>
                                     </button>
+                                <% } else if (usuarioLogado.is_admin) { %>
+                                    <button type="button"
+                                        class="acao-icone btn-excluir-comentario-admin"
+                                        data-id="<%= comentario.id %>"
+                                        title="Excluir (Admin)"
+                                        style="color: #e74c3c;">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
                                 <% } %>
                             </div>
 
@@ -106,12 +116,128 @@
             <% } %>
         </div>
 
+        <!-- Modal para Denúncia (mesmo padrão visual do modal de Contato/Feedback) -->
+        <div id="modal-denuncia-comentario" class="modal-container">
+            <div class="modal-box">
+
+                <h1><i class="fas fa-exclamation-triangle"></i> Denunciar</h1>
+
+                <p>Selecione o motivo da denúncia. Sua denúncia será analisada pela nossa equipe.</p>
+
+                <form class="form-contato" id="form-denuncia-comentario">
+
+                    <div class="campo-mensagem">
+                        <label class="label-contato" for="denuncia-comentario-motivo">Motivo:</label>
+                        <select class="input-contato" id="denuncia-comentario-motivo" name="motivo" required>
+                            <option value="">Selecione um motivo</option>
+                            <option value="conteudo-ofensivo">Conteúdo ofensivo</option>
+                            <option value="spam">Spam</option>
+                            <option value="conteudo-inapropriado">Conteúdo inapropriado</option>
+                            <option value="outro">Outro</option>
+                        </select>
+                    </div>
+
+                    <div class="campo-mensagem">
+                        <label class="label-contato" for="denuncia-comentario-descricao">Descrição (opcional):</label>
+                        <textarea class="input-mensagem" id="denuncia-comentario-descricao" name="descricao"></textarea>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button class="enviar" id="enviar-denuncia-comentario" type="button">Denunciar</button>
+                        <button class="fechar" id="fechar" type="button">Fechar</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+        <!-- Modal genérico de confirmação (substitui os confirm() do navegador) -->
+        <div id="modal-confirmar-acao" class="modal-container">
+            <div class="modal-box" style="max-width: 400px;">
+                <h1><i class="fas fa-question-circle"></i> Confirmar</h1>
+                <p id="texto-confirmar-acao">Tem certeza?</p>
+                <div class="modal-footer">
+                    <button class="enviar" id="confirmar-acao-sim" type="button">Sim, confirmar</button>
+                    <button class="fechar" id="fechar" type="button">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast (substitui os alert() do navegador) -->
+        <div id="toast-aviso" style="
+            position: fixed; bottom: 30px; right: 30px; z-index: 2000;
+            background: #34495e; color: #fff; padding: 14px 22px;
+            border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 0.95rem; display: none; max-width: 320px;">
+        </div>
+
     </main>
 
+    <script src="/javascripts/modal-contato.js"></script>
     <script>
         const POSTAGEM_ID = <%= postagem.id %>;
-        const NOME_USUARIO_LOGADO = <%- JSON.stringify(usuarioLogado.login) %>;
+        const NOME_USUARIO_LOGADO = <%- JSON.stringify(usuarioLogado.nome_exibicao) %>;
         const FOTO_USUARIO_LOGADO = <%- JSON.stringify(usuarioLogado.foto_perfil || '/img/perfil-padrao.png') %>;
+        const USUARIO_LOGADO_ADMIN = <%- JSON.stringify(!!usuarioLogado.is_admin) %>;
+
+        let idDenunciaAtual = null;
+        let tipoDenunciaAtual = null;
+
+        /* ---------- Toast (substitui alert()) ---------- */
+        function mostrarToast(mensagem, sucesso) {
+            const toast = document.getElementById('toast-aviso');
+            toast.textContent = mensagem;
+            toast.style.background = sucesso ? '#34495e' : '#e74c3c';
+            toast.style.display = 'block';
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => { toast.style.display = 'none'; }, 4000);
+        }
+
+        /* ---------- Confirmação (substitui confirm()) ---------- */
+        function pedirConfirmacao(texto, aoConfirmar) {
+            document.getElementById('texto-confirmar-acao').textContent = texto;
+            openModal('modal-confirmar-acao');
+
+            const botaoSim = document.getElementById('confirmar-acao-sim');
+            const novoBotao = botaoSim.cloneNode(true); // remove listeners antigos
+            botaoSim.parentNode.replaceChild(novoBotao, botaoSim);
+
+            novoBotao.addEventListener('click', function() {
+                if (novoBotao.disabled) return;
+                novoBotao.disabled = true;
+                document.getElementById('modal-confirmar-acao').classList.remove('mostrar');
+                aoConfirmar();
+            });
+        }
+
+        document.getElementById('enviar-denuncia-comentario').addEventListener('click', function() {
+            const motivo = document.getElementById('denuncia-comentario-motivo').value;
+            const descricao = document.getElementById('denuncia-comentario-descricao').value;
+
+            if (!motivo) {
+                mostrarToast('Por favor, selecione um motivo.', false);
+                return;
+            }
+
+            fetch('/responsavel/denunciar/' + idDenunciaAtual, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    tipo: tipoDenunciaAtual,
+                    motivo: motivo + (descricao ? ' - ' + descricao : '')
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                mostrarToast(data.mensagem || (data.sucesso ? 'Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.' : 'Não foi possível enviar a denúncia.'), data.sucesso);
+                if (data.sucesso) {
+                    document.getElementById('modal-denuncia-comentario').classList.remove('mostrar');
+                    document.getElementById('form-denuncia-comentario').reset();
+                }
+            })
+            .catch(() => mostrarToast('Erro de conexão ao denunciar.', false));
+        });
 
         /* ---------- Abrir/fechar caixa de novo comentário (raiz) ---------- */
         const triggerComentario = document.getElementById('trigger-comentario');
@@ -219,10 +345,10 @@
                 if (data.sucesso) {
                     if (aoSucesso) aoSucesso(data);
                 } else {
-                    alert('Não foi possível enviar. Tente novamente.');
+                    mostrarToast('Não foi possível enviar. Tente novamente.', false);
                 }
             })
-            .catch(() => alert('Erro de conexão ao enviar.'));
+            .catch(() => mostrarToast('Erro de conexão ao enviar.', false));
         }
 
         /* ---------- Ativa as caixas de resposta já renderizadas pelo EJS ---------- */
@@ -336,12 +462,16 @@
                 ? `<button type="button" class="acao-icone btn-excluir-comentario" data-id="${resposta.id}" title="Excluir">
                        <i class="fas fa-trash"></i>
                    </button>`
-                : '';
+                : (USUARIO_LOGADO_ADMIN
+                    ? `<button type="button" class="acao-icone btn-excluir-comentario-admin" data-id="${resposta.id}" title="Excluir (Admin)" style="color: #e74c3c;">
+                           <i class="fas fa-trash"></i>
+                       </button>`
+                    : '');
             return `
                 <div class="resposta-card" id="comentario-card-${resposta.id}">
                     <img src="${avatar}" class="avatar-img" alt="Avatar">
                     <div class="comentario-corpo">
-                        <strong>${escapeHtml(resposta.login)}</strong>
+                        <strong><a href="/responsavel/perfil/${resposta.usuario_id}" style="color: inherit; text-decoration: none;">${escapeHtml(resposta.nome_exibicao)}</a></strong>
                         <p>${escapeHtml(resposta.texto_comentario)}</p>
                         <div class="comentario-acoes">
                             <button type="button" class="acao-icone btn-denunciar" data-id="${resposta.id}" data-tipo="comentario" title="Denunciar">
@@ -364,7 +494,32 @@
             return div.innerHTML;
         }
 
-        /* ---------- Curtir / Denunciar (funciona em comentários e respostas carregadas dinamicamente) ---------- */
+        // Remove um comentário/resposta da tela e atualiza o contador "Respostas (N)" do pai, se houver
+        function removerCardComentario(id) {
+            const card = document.getElementById('comentario-card-' + id);
+            if (!card) return;
+
+            const listaPai = card.closest('.lista-respostas');
+            if (listaPai) {
+                const idComentarioPai = listaPai.id.replace('lista-respostas-', '');
+                const cardPai = document.getElementById('comentario-card-' + idComentarioPai);
+                const btnVer = cardPai ? cardPai.querySelector('.btn-ver-respostas') : null;
+                if (btnVer) {
+                    const match = btnVer.textContent.match(/\d+/);
+                    const totalAtual = match ? parseInt(match[0], 10) : 1;
+                    const novoTotal = Math.max(0, totalAtual - 1);
+                    if (novoTotal === 0) {
+                        btnVer.remove();
+                    } else {
+                        btnVer.textContent = 'Respostas (' + novoTotal + ')';
+                    }
+                }
+            }
+
+            card.remove();
+        }
+
+        /* ---------- Curtir / Denunciar / Excluir (funciona em comentários e respostas carregadas dinamicamente) ---------- */
         function ativarAcoesIcones(escopo) {
             escopo.querySelectorAll('.btn-curtir').forEach(function(botao) {
                 if (botao.dataset.ativado === 'true') return;
@@ -382,7 +537,7 @@
                     .then(res => res.json())
                     .then(data => {
                         if (!data.sucesso) {
-                            alert('Não foi possível curtir.');
+                            mostrarToast('Não foi possível curtir.', false);
                             return;
                         }
                         const curtiu = data.acao === 'curtida';
@@ -392,7 +547,7 @@
                         total = curtiu ? total + 1 : Math.max(0, total - 1);
                         span.textContent = total > 0 ? total : '';
                     })
-                    .catch(() => alert('Erro de conexão ao curtir.'));
+                    .catch(() => mostrarToast('Erro de conexão ao curtir.', false));
                 });
             });
 
@@ -401,25 +556,9 @@
                 botao.dataset.ativado = 'true';
 
                 botao.addEventListener('click', function() {
-                    const id = botao.getAttribute('data-id');
-                    const tipo = botao.getAttribute('data-tipo');
-                    const motivo = prompt('Descreva o motivo da denúncia:');
-                    if (!motivo || !motivo.trim()) return;
-
-                    fetch('/responsavel/denunciar/' + id, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ motivo: motivo.trim(), tipo: tipo })
-                    })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.sucesso) {
-                            alert('Denúncia enviada. Obrigado por ajudar a manter a comunidade segura.');
-                        } else {
-                            alert('Não foi possível enviar a denúncia.');
-                        }
-                    })
-                    .catch(() => alert('Erro de conexão ao denunciar.'));
+                    idDenunciaAtual = botao.getAttribute('data-id');
+                    tipoDenunciaAtual = botao.getAttribute('data-tipo');
+                    openModal('modal-denuncia-comentario');
                 });
             });
 
@@ -430,40 +569,44 @@
 
                 botao.addEventListener('click', function() {
                     const id = botao.getAttribute('data-id');
-                    if (!confirm('Excluir este comentário?')) return;
 
-                    fetch('/responsavel/comentario/' + id, { method: 'DELETE' })
-                        .then(res => res.json())
-                        .then(data => {
-                            if (!data.sucesso) {
-                                alert('Não foi possível excluir o comentário.');
-                                return;
-                            }
-
-                            const card = document.getElementById('comentario-card-' + id);
-                            if (!card) return;
-
-                            // Se for uma resposta, atualiza o contador "Respostas (N)" do comentário-pai
-                            const listaPai = card.closest('.lista-respostas');
-                            if (listaPai) {
-                                const idComentarioPai = listaPai.id.replace('lista-respostas-', '');
-                                const cardPai = document.getElementById('comentario-card-' + idComentarioPai);
-                                const btnVer = cardPai ? cardPai.querySelector('.btn-ver-respostas') : null;
-                                if (btnVer) {
-                                    const match = btnVer.textContent.match(/\d+/);
-                                    const totalAtual = match ? parseInt(match[0], 10) : 1;
-                                    const novoTotal = Math.max(0, totalAtual - 1);
-                                    if (novoTotal === 0) {
-                                        btnVer.remove();
-                                    } else {
-                                        btnVer.textContent = 'Respostas (' + novoTotal + ')';
-                                    }
+                    pedirConfirmacao('Excluir este comentário?', function() {
+                        fetch('/responsavel/comentario/' + id, { method: 'DELETE' })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (!data.sucesso) {
+                                    mostrarToast('Não foi possível excluir o comentário.', false);
+                                    return;
                                 }
-                            }
+                                removerCardComentario(id);
+                                mostrarToast('Comentário excluído.', true);
+                            })
+                            .catch(() => mostrarToast('Erro de conexão ao excluir.', false));
+                    });
+                });
+            });
 
-                            card.remove();
-                        })
-                        .catch(() => alert('Erro de conexão ao excluir.'));
+            /* ---------- Excluir (Admin): funciona mesmo sem ser autor/dono da postagem ---------- */
+            escopo.querySelectorAll('.btn-excluir-comentario-admin').forEach(function(botao) {
+                if (botao.dataset.ativado === 'true') return;
+                botao.dataset.ativado = 'true';
+
+                botao.addEventListener('click', function() {
+                    const id = botao.getAttribute('data-id');
+
+                    pedirConfirmacao('Excluir este comentário permanentemente? (ação de administrador)', function() {
+                        fetch('/admin/comentario/' + id, { method: 'DELETE' })
+                            .then(res => res.json())
+                            .then(data => {
+                                if (!data.sucesso) {
+                                    mostrarToast(data.mensagem || 'Não foi possível excluir o comentário.', false);
+                                    return;
+                                }
+                                removerCardComentario(id);
+                                mostrarToast(data.mensagem || 'Comentário excluído.', true);
+                            })
+                            .catch(() => mostrarToast('Erro de conexão ao excluir.', false));
+                    });
                 });
             });
         }

@@ -2,10 +2,6 @@ var express = require('express');
 var router = express.Router();
 const db = require('../db');
 
-// Função simples de similaridade: retorna true se termo2 contém pelo menos
-// 60% dos caracteres sequenciais de termo1 (busca fuzzy básica via LIKE fragmentado)
-// No MySQL usamos SOUNDEX + LIKE com partes do termo para resultados relacionados.
-
 router.get('/resultado', (req, res) => {
     const termo = (req.query.q || '').trim();
 
@@ -15,11 +11,11 @@ router.get('/resultado', (req, res) => {
             busca: '',
             resultados: [],
             relacionados: [],
+            usuarios: [],
             usuarioLogado: req.session.usuarioLogado || null
         });
     }
 
-    // Fragmentos do termo para busca fuzzy (cada palavra vira um LIKE)
     const palavras = termo.split(/\s+/).filter(p => p.length >= 2);
     const termoBusca = '%' + termo + '%';
 
@@ -40,28 +36,19 @@ router.get('/resultado', (req, res) => {
     db.query(sqlExatos, [termoBusca, termoBusca, termoBusca], (err, resultados) => {
         if (err) {
             console.error('Erro na busca:', err);
-            return res.render('resultado', {
-                title: 'Pesquisa',
-                busca: termo,
-                resultados: [],
-                relacionados: [],
-                usuarioLogado: req.session.usuarioLogado || null
-            });
+            resultados = [];
         }
 
         const idsJaEncontrados = resultados.map(r => r.id);
 
         // ── Busca relacionada: SOUNDEX (soa parecido) ou fragmentos de palavras ──
-        // Monta condições para cada palavra do termo
         let condicoesFuzzy = [];
         let paramsFuzzy = [];
 
         palavras.forEach(palavra => {
-            // SOUNDEX: captura palavras que soam parecido (ex: "batismo" ~ "autismo")
             condicoesFuzzy.push('SOUNDEX(p.titulo) = SOUNDEX(?)');
             paramsFuzzy.push(palavra);
 
-            // LIKE com fragmento de 3+ letras dentro do título
             if (palavra.length >= 3) {
                 condicoesFuzzy.push('p.titulo LIKE ?');
                 paramsFuzzy.push('%' + palavra + '%');
@@ -70,7 +57,6 @@ router.get('/resultado', (req, res) => {
             }
         });
 
-        // Adicionar busca por blocos de texto da notícia
         if (palavras.length > 0) {
             condicoesFuzzy.push(`p.id IN (
                 SELECT DISTINCT nb.id_noticia FROM noticia_blocos nb
@@ -79,17 +65,39 @@ router.get('/resultado', (req, res) => {
             palavras.forEach(p => paramsFuzzy.push('%' + p + '%'));
         }
 
-        if (condicoesFuzzy.length === 0) {
-            return res.render('resultado', {
-                title: 'Pesquisa',
-                busca: termo,
-                resultados,
-                relacionados: [],
-                usuarioLogado: req.session.usuarioLogado || null
+        const continuarComUsuarios = (relacionados) => {
+            // ── Busca de usuários (login OU nome de exibição contém o termo) ──
+            const sqlUsuarios = `
+                SELECT id, login, nome_exibicao, foto_perfil, bio
+                FROM usuario
+                WHERE login LIKE ? OR nome_exibicao LIKE ?
+                ORDER BY
+                    (nome_exibicao LIKE ?) DESC,
+                    nome_exibicao ASC
+                LIMIT 20
+            `;
+
+            db.query(sqlUsuarios, [termoBusca, termoBusca, termoBusca], (errUsuarios, usuarios) => {
+                if (errUsuarios) {
+                    console.error('Erro na busca de usuários:', errUsuarios);
+                    usuarios = [];
+                }
+
+                res.render('resultado', {
+                    title: 'Pesquisa',
+                    busca: termo,
+                    resultados,
+                    relacionados,
+                    usuarios,
+                    usuarioLogado: req.session.usuarioLogado || null
+                });
             });
+        };
+
+        if (condicoesFuzzy.length === 0) {
+            return continuarComUsuarios([]);
         }
 
-        // Exclui os já encontrados na busca exata
         const exclusao = idsJaEncontrados.length > 0
             ? `AND p.id NOT IN (${idsJaEncontrados.map(() => '?').join(',')})`
             : '';
@@ -113,14 +121,7 @@ router.get('/resultado', (req, res) => {
                 console.error('Erro na busca relacionada:', err2);
                 relacionados = [];
             }
-
-            res.render('resultado', {
-                title: 'Pesquisa',
-                busca: termo,
-                resultados,
-                relacionados,
-                usuarioLogado: req.session.usuarioLogado || null
-            });
+            continuarComUsuarios(relacionados);
         });
     });
 });

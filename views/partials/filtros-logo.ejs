@@ -1,0 +1,84 @@
+<%#
+  Filtros SVG da logo nos modos de daltonismo (duotone).
+  Salvar como views/partials/filtros-logo.ejs e incluir UMA vez em cada página,
+  por exemplo no começo do partial navbar (já incluído em todas as páginas),
+  usando o mesmo include dos outros partials, com o nome filtros-logo.
+
+  Como funciona: feColorMatrix converte a logo para tons de cinza (mantém o
+  alpha, então fundo transparente continua transparente) e feComponentTransfer
+  mapeia o preto para a 1ª cor e o branco para a 2ª, canal por canal.
+  tableValues="ESCURO CLARO" em cada canal, valores de 0 a 1 (hex ÷ 255).
+  Pra ajustar: mude o 1º número (sombras) e o 2º (luzes) de R, G e B.
+
+  Importante: não use display:none no <svg>, alguns navegadores ignoram
+  filtros de um SVG escondido assim. Por isso width/height 0 + position absolute.
+%>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+
+    <!-- ===== Daltonismo sozinho (header na cor de destaque: logo em tons claros) ===== -->
+
+    <!-- protanopia: #00263D -> #EFF7FC -->
+    <filter id="logo-protanopia" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0"/>
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0 0.937"/>
+        <feFuncG type="table" tableValues="0.149 0.969"/>
+        <feFuncB type="table" tableValues="0.239 0.988"/>
+      </feComponentTransfer>
+    </filter>
+
+    <!-- deuteranopia: #3D1B31 -> #FBF3F9 -->
+    <filter id="logo-deuteranopia" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0"/>
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0.239 0.984"/>
+        <feFuncG type="table" tableValues="0.106 0.953"/>
+        <feFuncB type="table" tableValues="0.192 0.976"/>
+      </feComponentTransfer>
+    </filter>
+
+    <!-- tritanopia: #00291D -> #EFFAF5 -->
+    <filter id="logo-tritanopia" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0"/>
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0 0.937"/>
+        <feFuncG type="table" tableValues="0.161 0.980"/>
+        <feFuncB type="table" tableValues="0.114 0.961"/>
+      </feComponentTransfer>
+    </filter>
+
+    <!-- ===== Tema escuro + daltonismo (header escuro: logo na cor clara do tipo) ===== -->
+
+    <!-- protanopia escuro: #1E5F82 -> #7DD3FC -->
+    <filter id="logo-protanopia-escuro" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0"/>
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0.118 0.490"/>
+        <feFuncG type="table" tableValues="0.373 0.827"/>
+        <feFuncB type="table" tableValues="0.510 0.988"/>
+      </feComponentTransfer>
+    </filter>
+
+    <!-- deuteranopia escuro: #8C3F6F -> #FAC4E3 -->
+    <filter id="logo-deuteranopia-escuro" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0"/>
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0.549 0.980"/>
+        <feFuncG type="table" tableValues="0.247 0.769"/>
+        <feFuncB type="table" tableValues="0.435 0.890"/>
+      </feComponentTransfer>
+    </filter>
+
+    <!-- tritanopia escuro: #1E8F6B -> #6EE7B7 -->
+    <filter id="logo-tritanopia-escuro" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0.2126 0.7152 0.0722 0 0  0 0 0 1 0"/>
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0.118 0.431"/>
+        <feFuncG type="table" tableValues="0.561 0.906"/>
+        <feFuncB type="table" tableValues="0.420 0.718"/>
+      </feComponentTransfer>
+    </filter>
+
+  </defs>
+</svg>

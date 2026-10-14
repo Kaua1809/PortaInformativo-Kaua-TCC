@@ -6,8 +6,11 @@
     <title>Conta - Portal do Responsável</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="/stylesheets/style.css">
+       <link rel="stylesheet" href="/stylesheets/acessibilidade.css">
     <link rel="stylesheet" href="/stylesheets/modals.css">
+    <link rel="stylesheet" href="/stylesheets/auth.css">
     <link rel="stylesheet" href="/stylesheets/conta.css">
+    <link rel="stylesheet" href="/stylesheets/conta-modal-senha.css">
 </head>
 <body>
     <header>
@@ -23,9 +26,10 @@
                     <img src="<%= usuario.foto_perfil || '/images/avatar-padrao.png' %>" alt="Foto">
                 </div>
                 <div class="profile-info">
-                    <h2 style="justify-content: center;"><%= usuario.login %> <a href="/conta/editar" style="color: #888;"><i class="bi bi-pencil"></i></a></h2>
-                    <p style="padding: 0; display: inline-block;"><%= usuario.bio || 'Adicione uma biografia.' %></p>
-                </div>
+    <h2 style="justify-content: center;"><%= usuario.nome_exibicao %> <a href="/conta/editar" style="color: #888;"><i class="bi bi-pencil"></i></a></h2>
+    <p class="usuario-arroba" style="color: #888; font-size: 0.9rem; margin: -10px 0 12px;">@<%= usuario.login %></p>
+    <p style="padding: 0; display: inline-block;"><%= usuario.bio || 'Adicione uma biografia.' %></p>
+</div>
             </section>
 
             <!-- ABAS CENTRALIZADAS -->
@@ -38,10 +42,10 @@
             <section id="sec-info" class="content-section active">
                 <div class="custom-card">
                     <div class="card-info">
-                        <span class="label">Senha de Acesso</span>
+                        <span class="label">Trocar senha</span>
                         <p id="txt-senha" class="password-display">************</p>
                     </div>
-                    <i id="btn-olho" class="bi bi-eye" style="cursor: pointer; font-size: 22px; color: #34495e;"></i>
+                    <i id="btn-olho" class="bi bi-eye" style="cursor: pointer; font-size: 22px; color: #34495e;" title="Trocar senha"></i>
                 </div>
 
                 <div class="custom-card">
@@ -149,6 +153,83 @@
                 <% } %>
             </section>
 
+            <!-- MODAL: Verificar senha -> Trocar senha (visual igual ao login/cadastro) -->
+            <div id="modal-senha-overlay" class="modal-senha-overlay">
+                <div class="modal-senha-box">
+
+                    <!-- Passo 1: confirmar senha atual -->
+                    <div id="modal-senha-passo1">
+                        <div class="modal-senha-topo">
+                            <button type="button" class="modal-senha-fechar" data-fechar>&times;</button>
+                            <h3>Confirme sua Senha</h3>
+                        </div>
+                        <div class="modal-senha-corpo">
+                            <p class="modal-senha-sub">Por segurança, digite sua senha atual para continuar.</p>
+                            <p id="modal-senha-erro1" class="modal-senha-erro" style="display:none;"></p>
+
+                            <div class="form-group">
+                                <label class="form-label" for="input-senha-atual">Senha atual</label>
+                                <div class="password-wrapper">
+                                    <input type="password" id="input-senha-atual" class="form-control form-input form-input-password" placeholder="Digite sua senha">
+                                    <i class="bi bi-eye toggle-password" data-target="input-senha-atual"></i>
+                                </div>
+                            </div>
+
+                            <button type="button" id="btn-confirmar-senha" class="btn-auth btn-auth-primary">Confirmar</button>
+
+                            <p class="modal-senha-esqueci">
+                                Esqueceu sua senha?
+                                <a id="link-esqueci-senha">Enviar link por e-mail</a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Passo 2: definir nova senha (liberado após confirmar a atual) -->
+                    <div id="modal-senha-passo2" style="display:none;">
+                        <div class="modal-senha-topo">
+                            <button type="button" class="modal-senha-fechar" data-fechar>&times;</button>
+                            <h3>Nova Senha</h3>
+                        </div>
+                        <div class="modal-senha-corpo">
+                            <p class="modal-senha-sub">Identidade confirmada. Defina sua nova senha.</p>
+                            <p id="modal-senha-erro2" class="modal-senha-erro" style="display:none;"></p>
+
+                            <div class="form-group">
+                                <label class="form-label" for="input-nova-senha">Nova senha</label>
+                                <div class="password-wrapper">
+                                    <input type="password" id="input-nova-senha" class="form-control form-input form-input-password" placeholder="Mínimo 6 caracteres">
+                                    <i class="bi bi-eye toggle-password" data-target="input-nova-senha"></i>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="input-confirmar-senha">Confirmar nova senha</label>
+                                <div class="password-wrapper">
+                                    <input type="password" id="input-confirmar-senha" class="form-control form-input form-input-password" placeholder="Repita a nova senha">
+                                    <i class="bi bi-eye toggle-password" data-target="input-confirmar-senha"></i>
+                                </div>
+                            </div>
+
+                            <button type="button" id="btn-salvar-nova-senha" class="btn-auth btn-auth-primary">Salvar Nova Senha</button>
+                        </div>
+                    </div>
+
+                    <!-- Mensagem final -->
+                    <div id="modal-senha-sucesso" style="display:none;">
+                        <div class="modal-senha-topo">
+                            <button type="button" class="modal-senha-fechar" data-fechar>&times;</button>
+                            <h3>Tudo certo!</h3>
+                        </div>
+                        <div class="modal-senha-corpo modal-senha-sucesso">
+                            <i class="bi bi-check-circle"></i>
+                            <p id="modal-senha-sucesso-texto"></p>
+                            <button type="button" id="btn-fechar-sucesso" class="btn-auth btn-auth-primary">Fechar</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
         <% } else { %>
             <!-- MODO EDIÇÃO (MANTIDO) -->
             <form action="/conta/editar" method="POST" enctype="multipart/form-data">
@@ -161,8 +242,10 @@
                         </div>
                     </div>
                     <div class="profile-info" style="flex: 1;">
-                        <label>Nome de Usuário:</label>
-                        <input type="text" name="login" class="edit-input" value="<%= usuario.login %>" required>
+                        <label>Nome de Usuário (permanente):</label>
+<input type="text" class="edit-input" value="<%= usuario.login %>" readonly style="background: #f4f4f4;">
+<label>Nome de Exibição:</label>
+<input type="text" name="nome_exibicao" class="edit-input" value="<%= usuario.nome_exibicao %>" required>
                         <label>Email:</label>
                         <input type="email" class="edit-input" value="<%= usuario.email %>" readonly style="background: #f4f4f4;">
                         <div style="display: flex; gap: 20px;">
@@ -179,6 +262,47 @@
                 </section>
             </form>
         <% } %>
+
+                <!-- Modal genérico de confirmação (Sair / Restaurar senha) -->
+        <div id="modal-confirmar-acao" class="modal-container">
+            <div class="modal-box" style="max-width: 400px;">
+                <h1><i class="bi bi-question-circle"></i> Confirmar</h1>
+                <p id="texto-confirmar-acao">Tem certeza?</p>
+                <div class="acoes-modal">
+                    <button class="enviar" id="confirmar-acao-sim" type="button">Sim, confirmar</button>
+                    <button class="fechar" id="fechar" type="button">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de confirmação para Excluir conta (pede a senha) -->
+        <div id="modal-confirmar-exclusao" class="modal-container">
+            <div class="modal-box" style="max-width: 420px;">
+                <h1><i class="bi bi-exclamation-triangle" style="color:#e74c3c;"></i> Excluir Conta</h1>
+                <p>Essa ação é permanente. Digite sua senha atual para confirmar a exclusão.</p>
+                <p id="erro-exclusao" style="display:none; color:#e74c3c; font-size:0.9rem;"></p>
+                <div class="form-group">
+                    <label class="form-label" for="input-senha-exclusao" style="color: #fff;">Senha</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="input-senha-exclusao" class="form-control form-input form-input-password" placeholder="Digite sua senha">
+                        <i class="bi bi-eye toggle-password" data-target="input-senha-exclusao"></i>
+                    </div>
+                </div>
+                <div class="acoes-modal">
+                    <button class="enviar" id="confirmar-exclusao-sim" type="button" style="background:#e74c3c;">Excluir</button>
+                    <button class="fechar" id="fechar" type="button">Cancelar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast (substitui os alert() do navegador) -->
+        <div id="toast-aviso" style="
+            position: fixed; bottom: 30px; right: 30px; z-index: 2000;
+            background: #34495e; color: #fff; padding: 14px 22px;
+            border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 0.95rem; display: none; max-width: 320px;">
+        </div>
+
     </main>
 
     <script>
@@ -194,23 +318,6 @@
                 tConf.onclick = () => { tConf.classList.add('active'); tInfo.classList.remove('active'); sConf.classList.add('active'); sInfo.classList.remove('active'); };
             }
 
-            // Olhinho da Senha Real
-            const btnOlho = document.getElementById('btn-olho');
-            const txtSenha = document.getElementById('txt-senha');
-            let isVis = false;
-            if(btnOlho) {
-                btnOlho.onclick = () => {
-                    isVis = !isVis;
-                    if(isVis) {
-                        txtSenha.innerText = '<%= usuario.senha %>';
-                        btnOlho.classList.replace('bi-eye', 'bi-eye-slash');
-                    } else {
-                        txtSenha.innerText = '************';
-                        btnOlho.classList.replace('bi-eye-slash', 'bi-eye');
-                    }
-                };
-            }
-
             // Notificações AJAX
             const swNotif = document.getElementById('sw-notif');
             if(swNotif) {
@@ -223,14 +330,42 @@
                 };
             }
 
-            // Restaurar Senha (Simulação)
+            /* ---------- Toast (substitui alert()) ---------- */
+            function mostrarToast(mensagem, sucesso) {
+                const toast = document.getElementById('toast-aviso');
+                toast.textContent = mensagem;
+                toast.style.background = sucesso ? '#34495e' : '#e74c3c';
+                toast.style.display = 'block';
+                clearTimeout(toast._timeout);
+                toast._timeout = setTimeout(() => { toast.style.display = 'none'; }, 4000);
+            }
+
+            /* ---------- Confirmação genérica (substitui confirm()) ---------- */
+            function pedirConfirmacao(texto, aoConfirmar) {
+                document.getElementById('texto-confirmar-acao').textContent = texto;
+                openModal('modal-confirmar-acao');
+
+                const botaoSim = document.getElementById('confirmar-acao-sim');
+                const novoBotao = botaoSim.cloneNode(true);
+                botaoSim.parentNode.replaceChild(novoBotao, botaoSim);
+
+                novoBotao.addEventListener('click', function() {
+                    if (novoBotao.disabled) return;
+                    novoBotao.disabled = true;
+                    document.getElementById('modal-confirmar-acao').classList.remove('mostrar');
+                    aoConfirmar();
+                });
+            }
+
+            // Restaurar Senha (manda link seguro por e-mail)
             const btnRest = document.getElementById('btn-restore');
             if(btnRest) {
                 btnRest.onclick = () => {
-                    if(confirm('Enviar link de restauração para <%= usuario.email %>?')) {
+                    pedirConfirmacao('Enviar link de restauração para <%= usuario.email %>?', function() {
                         fetch('/conta/redefinir-senha', { method: 'POST' })
-                        .then(r => r.json()).then(d => alert(d.mensagem));
-                    }
+                            .then(r => r.json())
+                            .then(d => mostrarToast(d.mensagem, d.sucesso));
+                    });
                 };
             }
 
@@ -238,25 +373,192 @@
             const btnLogout = document.getElementById('btn-logout');
             if(btnLogout) {
                 btnLogout.onclick = () => {
-                    if(confirm('Tem certeza que deseja sair da sua conta?')) {
+                    pedirConfirmacao('Tem certeza que deseja sair da sua conta?', function() {
                         window.location.href = '/conta/logout';
-                    }
+                    });
                 };
             }
 
-            // Excluir Conta
+            // Excluir Conta (pede senha no próprio modal)
             const btnDel = document.getElementById('btn-del');
             if(btnDel) {
                 btnDel.onclick = () => {
-                    if(confirm('Excluir conta permanentemente?')) {
-                        const s = prompt('Confirme sua senha:');
-                        if(s) fetch('/conta/deletar', {
-                            method: 'POST',
-                            headers: {'Content-Type': 'application/json'},
-                            body: JSON.stringify({ senha: s })
-                        }).then(r => r.json()).then(d => { if(d.sucesso) window.location.href='/login'; else alert('Senha incorreta'); });
-                    }
+                    document.getElementById('input-senha-exclusao').value = '';
+                    document.getElementById('erro-exclusao').style.display = 'none';
+                    openModal('modal-confirmar-exclusao');
                 };
+            }
+
+            document.getElementById('confirmar-exclusao-sim').addEventListener('click', function() {
+                const senha = document.getElementById('input-senha-exclusao').value;
+                const erro = document.getElementById('erro-exclusao');
+                erro.style.display = 'none';
+
+                if (!senha) {
+                    erro.textContent = 'Digite sua senha.';
+                    erro.style.display = 'block';
+                    return;
+                }
+
+                fetch('/conta/deletar', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ senha })
+                })
+                .then(r => r.json())
+                .then(d => {
+                    if (d.sucesso) {
+                        window.location.href = '/login';
+                    } else {
+                        erro.textContent = d.mensagem || 'Senha incorreta.';
+                        erro.style.display = 'block';
+                    }
+                })
+                .catch(() => {
+                    erro.textContent = 'Erro de conexão. Tente novamente.';
+                    erro.style.display = 'block';
+                });
+            });
+
+            /* ---------- Olho de mostrar/ocultar senha dentro do modal (mesmo padrão do login) ---------- */
+            document.querySelectorAll('.modal-senha-box .toggle-password, #modal-confirmar-exclusao .toggle-password').forEach(function(icone) {
+                icone.addEventListener('click', function() {
+                    const alvo = document.getElementById(icone.getAttribute('data-target'));
+                    if (!alvo) return;
+                    if (alvo.type === 'password') {
+                        alvo.type = 'text';
+                        icone.classList.replace('bi-eye', 'bi-eye-slash');
+                    } else {
+                        alvo.type = 'password';
+                        icone.classList.replace('bi-eye-slash', 'bi-eye');
+                    }
+                });
+            });
+
+            /* ---------- MODAL DE SENHA: verificar -> trocar ---------- */
+            const modalOverlay = document.getElementById('modal-senha-overlay');
+
+            if (modalOverlay) {
+                const btnOlho = document.getElementById('btn-olho');
+                const passo1 = document.getElementById('modal-senha-passo1');
+                const passo2 = document.getElementById('modal-senha-passo2');
+                const blocoSucesso = document.getElementById('modal-senha-sucesso');
+
+                const inputSenhaAtual = document.getElementById('input-senha-atual');
+                const erro1 = document.getElementById('modal-senha-erro1');
+                const erro2 = document.getElementById('modal-senha-erro2');
+
+                let senhaAtualConfirmada = '';
+
+                function abrirModalSenha() {
+                    passo1.style.display = 'block';
+                    passo2.style.display = 'none';
+                    blocoSucesso.style.display = 'none';
+                    inputSenhaAtual.value = '';
+                    erro1.style.display = 'none';
+                    senhaAtualConfirmada = '';
+                    modalOverlay.classList.add('aberto');
+                }
+                function fecharModalSenha() {
+                    modalOverlay.classList.remove('aberto');
+                }
+
+                if (btnOlho) btnOlho.addEventListener('click', abrirModalSenha);
+
+                document.querySelectorAll('.modal-senha-fechar').forEach(function(botao) {
+                    botao.addEventListener('click', fecharModalSenha);
+                });
+
+                modalOverlay.addEventListener('click', function(e) {
+                    if (e.target === modalOverlay) fecharModalSenha();
+                });
+
+                // Passo 1 -> confirmar senha atual
+                document.getElementById('btn-confirmar-senha').addEventListener('click', function() {
+                    const senha = inputSenhaAtual.value;
+                    erro1.style.display = 'none';
+                    if (!senha) {
+                        erro1.textContent = 'Digite sua senha.';
+                        erro1.style.display = 'block';
+                        return;
+                    }
+                    fetch('/conta/verificar-senha', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ senha })
+                    })
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d.sucesso) {
+                            senhaAtualConfirmada = senha;
+                            passo1.style.display = 'none';
+                            passo2.style.display = 'block';
+                            document.getElementById('input-nova-senha').value = '';
+                            document.getElementById('input-confirmar-senha').value = '';
+                            erro2.style.display = 'none';
+                        } else {
+                            erro1.textContent = d.mensagem || 'Senha incorreta.';
+                            erro1.style.display = 'block';
+                        }
+                    })
+                    .catch(() => {
+                        erro1.textContent = 'Erro de conexão. Tente novamente.';
+                        erro1.style.display = 'block';
+                    });
+                });
+
+                // Esqueci a senha (dentro do modal) -> reaproveita o mesmo envio de e-mail
+                document.getElementById('link-esqueci-senha').addEventListener('click', function() {
+                    fetch('/conta/redefinir-senha', { method: 'POST' })
+                        .then(r => r.json())
+                        .then(d => {
+                            erro1.style.display = 'block';
+                            erro1.style.color = d.sucesso ? '#1e7e34' : '#c0392b';
+                            erro1.style.backgroundColor = d.sucesso ? '#e6f4ea' : '#fdecea';
+                            erro1.textContent = d.mensagem;
+                        });
+                });
+
+                // Passo 2 -> salvar nova senha
+                document.getElementById('btn-salvar-nova-senha').addEventListener('click', function() {
+                    const novaSenha = document.getElementById('input-nova-senha').value;
+                    const confirmarSenha = document.getElementById('input-confirmar-senha').value;
+                    erro2.style.display = 'none';
+
+                    if (!novaSenha || novaSenha.length < 6) {
+                        erro2.textContent = 'A nova senha deve ter pelo menos 6 caracteres.';
+                        erro2.style.display = 'block';
+                        return;
+                    }
+                    if (novaSenha !== confirmarSenha) {
+                        erro2.textContent = 'As senhas não coincidem.';
+                        erro2.style.display = 'block';
+                        return;
+                    }
+
+                    fetch('/conta/alterar-senha', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({ senhaAtual: senhaAtualConfirmada, novaSenha })
+                    })
+                    .then(r => r.json())
+                    .then(d => {
+                        if (d.sucesso) {
+                            passo2.style.display = 'none';
+                            blocoSucesso.style.display = 'block';
+                            document.getElementById('modal-senha-sucesso-texto').textContent = d.mensagem;
+                        } else {
+                            erro2.textContent = d.mensagem || 'Não foi possível trocar a senha.';
+                            erro2.style.display = 'block';
+                        }
+                    })
+                    .catch(() => {
+                        erro2.textContent = 'Erro de conexão. Tente novamente.';
+                        erro2.style.display = 'block';
+                    });
+                });
+
+                document.getElementById('btn-fechar-sucesso').addEventListener('click', fecharModalSenha);
             }
 
             /* ---------- Menu de opções de cada publicação (Excluir / Editar / Ocultar / Fechar) ---------- */
@@ -321,7 +623,6 @@
                             card.classList.toggle('esta-oculta', d.oculta);
                             botao.textContent = d.oculta ? 'Tornar visível' : 'Ocultar';
 
-                            // Adiciona ou remove a etiqueta "Oculta" no canto do card
                             let tag = card.querySelector('.publicacao-tag-oculta');
                             if (d.oculta && !tag) {
                                 tag = document.createElement('div');
@@ -343,7 +644,6 @@
     <%- include('partials/modal-contato') %> 
     <%- include('partials/modal-feedback') %> 
     <%- include('partials/script-acessibilidade') %>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="javascripts/menu.js"></script>
     <script src="javascripts/modal-contato.js"></script>

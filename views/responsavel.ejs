@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="stylesheets/style.css">
+       <link rel="stylesheet" href="stylesheets/acessibilidade.css">
     <link rel="stylesheet" href="/stylesheets/modals.css">
     <link rel="stylesheet" href="/stylesheets/responsavel.css">
 
@@ -51,7 +52,7 @@
                     <div class="avatar"></div>
                 <% } %>
                 <div>
-                    <h4 class="nome-usuario"><%= post.login %></h4>
+                    <h4 class="nome-usuario"><a href="/responsavel/perfil/<%= post.usuario_id %>" style="color: inherit; text-decoration: none;"><%= post.nome_exibicao %></a></h4>
                     <small class="data-postagem"><%= new Date(post.data_postagem).toLocaleDateString('pt-BR') %></small>
                 </div>
             </div>
@@ -79,6 +80,12 @@
         <button class="btn-acao btn-denunciar" onclick="abrirModalDenuncia('<%= post.id %>')">
             <i class="fas fa-exclamation-triangle"></i> Denunciar
         </button>
+
+        <% if (usuarioLogado.is_admin) { %>
+            <button class="btn-acao btn-excluir-admin" onclick="excluirPostagemAdmin('<%= post.id %>')" title="Excluir postagem (Admin)" style="color: #e74c3c;">
+                <i class="fas fa-trash"></i>
+            </button>
+        <% } %>
     </div>
 </article>
                 <% }); %>
@@ -99,9 +106,9 @@
                     <div class="avatar-grande"></div>
                 <% } %>
 
-                <h4><%= usuarioLogado.login %></h4>
+                <h4><%= usuarioLogado.nome_exibicao %></h4>
 
-                <p><%= usuarioLogado.bio || 'Bem-vindo ao portal' %></p>
+              
 
             </div>
 
@@ -129,38 +136,60 @@
 <%- include('partials/modal-contato') %> 
 <%- include('partials/modal-feedback') %> 
 
-<!-- Modal para Denúncia -->
-<div class="modal fade" id="modal-denuncia" tabindex="-1" aria-labelledby="denunciaLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="denunciaLabel">Denunciar Postagem</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<!-- Modal para Denúncia (mesmo padrão visual do modal de Contato/Feedback) -->
+<div id="modal-denuncia-postagem" class="modal-container">
+    <div class="modal-box">
+
+        <h1><i class="fas fa-exclamation-triangle"></i> Denunciar Postagem</h1>
+
+        <p>Selecione o motivo da denúncia. Sua denúncia será analisada pela nossa equipe.</p>
+
+        <form class="form-contato" id="form-denuncia-postagem">
+
+            <div class="campo-mensagem">
+                <label class="label-contato" for="denuncia-postagem-motivo">Motivo:</label>
+                <select class="input-contato" id="denuncia-postagem-motivo" name="motivo" required>
+                    <option value="">Selecione um motivo</option>
+                    <option value="conteudo-ofensivo">Conteúdo ofensivo</option>
+                    <option value="spam">Spam</option>
+                    <option value="conteudo-inapropriado">Conteúdo inapropriado</option>
+                    <option value="outro">Outro</option>
+                </select>
             </div>
-            <div class="modal-body">
-                <form id="form-denuncia">
-                    <div class="mb-3">
-                        <label for="motivo-denuncia" class="form-label">Motivo da denúncia:</label>
-                        <select class="form-select" id="motivo-denuncia" name="motivo" required>
-                            <option value="">Selecione um motivo</option>
-                            <option value="conteudo-ofensivo">Conteúdo ofensivo</option>
-                            <option value="spam">Spam</option>
-                            <option value="conteudo-inapropriado">Conteúdo inapropriado</option>
-                            <option value="outro">Outro</option>
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label for="descricao-denuncia" class="form-label">Descrição (opcional):</label>
-                        <textarea class="form-control" id="descricao-denuncia" rows="3"></textarea>
-                    </div>
-                </form>
+
+            <div class="campo-mensagem">
+                <label class="label-contato" for="denuncia-postagem-descricao">Descrição (opcional):</label>
+                <textarea class="input-mensagem" id="denuncia-postagem-descricao" name="descricao"></textarea>
             </div>
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-danger" onclick="enviarDenuncia()">Denunciar</button>
+                <button class="enviar" id="enviar-denuncia-postagem" type="button">Denunciar</button>
+                <button class="fechar" id="fechar" type="button">Fechar</button>
             </div>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- Modal genérico de confirmação (substitui os confirm() do navegador) -->
+<div id="modal-confirmar-acao" class="modal-container">
+    <div class="modal-box" style="max-width: 400px;">
+        <h1><i class="fas fa-question-circle"></i> Confirmar</h1>
+        <p id="texto-confirmar-acao">Tem certeza?</p>
+        <div class="modal-footer">
+            <button class="enviar" id="confirmar-acao-sim" type="button">Sim, confirmar</button>
+            <button class="fechar" id="fechar" type="button">Cancelar</button>
         </div>
     </div>
+</div>
+
+<!-- Toast (substitui os alert() do navegador) -->
+<div id="toast-aviso" style="
+    position: fixed; bottom: 30px; right: 30px; z-index: 2000;
+    background: #34495e; color: #fff; padding: 14px 22px;
+    border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    font-size: 0.95rem; display: none; max-width: 320px;">
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -171,6 +200,33 @@
 
 <script>
     let postIdAtual = null;
+
+    /* ---------- Toast (substitui alert()) ---------- */
+    function mostrarToast(mensagem, sucesso) {
+        const toast = document.getElementById('toast-aviso');
+        toast.textContent = mensagem;
+        toast.style.background = sucesso ? '#34495e' : '#e74c3c';
+        toast.style.display = 'block';
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => { toast.style.display = 'none'; }, 4000);
+    }
+
+    /* ---------- Confirmação (substitui confirm()) ---------- */
+    function pedirConfirmacao(texto, aoConfirmar) {
+        document.getElementById('texto-confirmar-acao').textContent = texto;
+        openModal('modal-confirmar-acao');
+
+        const botaoSim = document.getElementById('confirmar-acao-sim');
+        const novoBotao = botaoSim.cloneNode(true); // remove listeners antigos
+        botaoSim.parentNode.replaceChild(novoBotao, botaoSim);
+
+        novoBotao.addEventListener('click', function() {
+            if (novoBotao.disabled) return;
+            novoBotao.disabled = true;
+            document.getElementById('modal-confirmar-acao').classList.remove('mostrar');
+            aoConfirmar();
+        });
+    }
 
     // Função para curtir/descurtir postagem (instantâneo, sem reload — igual comentario.ejs)
     function curtirPostagem(postId, botao) {
@@ -184,7 +240,7 @@
         .then(response => response.json())
         .then(data => {
             if (!data.sucesso) {
-                alert(data.mensagem || 'Não foi possível curtir.');
+                mostrarToast('Não foi possível curtir.', false);
                 return;
             }
 
@@ -215,17 +271,16 @@
     // Função para abrir modal de denúncia
     function abrirModalDenuncia(postId) {
         postIdAtual = postId;
-        const modal = new bootstrap.Modal(document.getElementById('modal-denuncia'));
-        modal.show();
+        openModal('modal-denuncia-postagem');
     }
 
-    // Função para enviar denúncia
-    function enviarDenuncia() {
-        const motivo = document.getElementById('motivo-denuncia').value;
-        const descricao = document.getElementById('descricao-denuncia').value;
+    // Envio da denúncia de postagem
+    document.getElementById('enviar-denuncia-postagem').addEventListener('click', function() {
+        const motivo = document.getElementById('denuncia-postagem-motivo').value;
+        const descricao = document.getElementById('denuncia-postagem-descricao').value;
 
         if (!motivo) {
-            alert('Por favor, selecione um motivo');
+            mostrarToast('Por favor, selecione um motivo.', false);
             return;
         }
 
@@ -241,15 +296,28 @@
         })
         .then(response => response.json())
         .then(data => {
+            mostrarToast(data.mensagem || (data.sucesso ? 'Denúncia enviada.' : 'Não foi possível enviar a denúncia.'), data.sucesso);
             if (data.sucesso) {
-                alert(data.mensagem || 'Denúncia enviada.');
-                bootstrap.Modal.getInstance(document.getElementById('modal-denuncia')).hide();
-                document.getElementById('form-denuncia').reset();
-            } else {
-                alert(data.mensagem || 'Não foi possível enviar a denúncia.');
+                document.getElementById('modal-denuncia-postagem').classList.remove('mostrar');
+                document.getElementById('form-denuncia-postagem').reset();
             }
         })
         .catch(error => console.error('Erro:', error));
+    });
+
+    // Excluir postagem (ação de administrador)
+    function excluirPostagemAdmin(postId) {
+        pedirConfirmacao('Excluir esta postagem permanentemente? (ação de administrador)', function() {
+            fetch('/admin/postagem/' + postId, { method: 'DELETE' })
+                .then(response => response.json())
+                .then(data => {
+                    mostrarToast(data.mensagem || (data.sucesso ? 'Postagem excluída.' : 'Não foi possível excluir.'), data.sucesso);
+                    if (data.sucesso) {
+                        document.querySelector('.post-completo[data-post-id="' + postId + '"]').remove();
+                    }
+                })
+                .catch(error => console.error('Erro:', error));
+        });
     }
 </script>
 <%- include('partials/script-acessibilidade') %>

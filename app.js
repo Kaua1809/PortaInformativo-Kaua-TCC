@@ -46,11 +46,14 @@ var legislacaoRouter = require('./routes/legislacao');
 var loginRouter = require('./routes/login');
 var cadastroRouter = require('./routes/cadastro');
 var contaRouter = require('./routes/conta');
+var redefinirSenhaRouter = require('./routes/redefinir-senha'); // Rota pública do link de redefinição de senha
 var verifyRouter = require('./routes/verify'); // Importe a nova rota de verificação
 const contatoRouter = require('./routes/contato'); // ajuste o caminho conforme sua estrutura
 var noticiasRouter = require('./routes/noticias');
 var acessibilidadeRouter = require('./routes/acessibilidade');
+var adminRouter = require('./routes/admin');
 
+app.use('/admin', require('./routes/admin'));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/mielomeningocele', mielomeningoceleRouter);
@@ -61,6 +64,7 @@ app.use('/legislacao', legislacaoRouter);
 app.use('/login', loginRouter);
 app.use('/cadastro', cadastroRouter);
 app.use('/conta', contaRouter);
+app.use('/redefinir-senha', redefinirSenhaRouter); // Fica fora de /conta: o usuário ainda não está logado ao clicar no link do e-mail
 app.use('/', contatoRouter);
 app.use('/verify', verifyRouter); // Use a rota de verificação
 app.use('/noticias', noticiasRouter);

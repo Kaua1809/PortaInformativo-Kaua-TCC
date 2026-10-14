@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <link rel="stylesheet" href="/stylesheets/style.css">
+       <link rel="stylesheet" href="/stylesheets/acessibilidade.css">
     <link rel="stylesheet" href="/stylesheets/portalinclusao.css">
     <link rel="stylesheet" href="/stylesheets/portalinclusao_atualizado.css">
 </head>
@@ -47,8 +48,9 @@
                             <% } %>
                         </div>
                         <span class="post-user-name">
-                            <%= locals.usuarioLogado ? usuarioLogado.login : 'Utilizador' %>
-                        </span>
+    <%= locals.usuarioLogado ? usuarioLogado.nome_exibicao : 'Utilizador' %>
+</span>
+                        
                     </div>
 
                     <textarea
@@ -82,6 +84,37 @@
     const textareaTexto = document.getElementById('texto');
     const btnPublicar = document.getElementById('btn-publicar');
     const contadorTexto = document.getElementById('char-count');
+
+        document.getElementById('form-postagem').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        btnPublicar.disabled = true;
+        btnPublicar.textContent = 'SALVANDO...';
+
+        try {
+            const resp = await fetch(this.action, {
+                method: 'POST',
+                body: new FormData(this)
+            });
+
+            // Se a rota respondeu com redirect, o fetch já seguiu: só navega para lá
+            if (resp.redirected) {
+                window.location.href = resp.url;
+                return;
+            }
+
+            const dados = await resp.json();
+            if (dados.sucesso) {
+                window.location.href = '/conta';
+            } else {
+                throw new Error(dados.mensagem);
+            }
+        } catch (erro) {
+            alert(erro.message || 'Erro ao salvar. Tente novamente.');
+            btnPublicar.disabled = false;
+            btnPublicar.textContent = 'SALVAR';
+        }
+    });
 
     function validarFormulario() {
         // Na edição a imagem é OPCIONAL: se não enviar uma nova, mantém a imagem já salva.

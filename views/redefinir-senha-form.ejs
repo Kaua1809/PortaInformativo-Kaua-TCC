@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+        <link rel="stylesheet" href="/stylesheets/style.css">
+           <link rel="stylesheet" href="/stylesheets/acessibilidade.css">
+    <link rel="stylesheet" href="/stylesheets/conta-modal-senha.css">
+</head>
+<body>
+    <div class="redefinir-wrap">
+        <% if (valido) { %>
+            <h2>Criar Nova Senha</h2>
+            <% if (typeof erro !== 'undefined' && erro) { %>
+                <p class="erro-msg"><%= erro %></p>
+            <% } %>
+            <form action="/redefinir-senha/<%= token %>" method="POST">
+                <label>Nova senha:</label>
+                <input type="password" name="novaSenha" minlength="6" required>
+                <label>Confirmar nova senha:</label>
+                <input type="password" name="confirmarSenha" minlength="6" required>
+                <button type="submit">Salvar Nova Senha</button>
+            </form>
+        <% } else { %>
+            <h2>Link Inválido</h2>
+            <p class="invalido-msg">Este link de redefinição de senha é inválido ou já expirou.<br>Solicite um novo link e tente novamente.</p>
+        <% } %>
+    </div>
+</body>
+</html>

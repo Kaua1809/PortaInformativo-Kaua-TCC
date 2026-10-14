@@ -7,6 +7,7 @@
     <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="stylesheets/style.css">
+       <link rel="stylesheet" href="stylesheets/acessibilidade.css">
     <link rel="stylesheet" href="/stylesheets/modals.css">
 </head>
 <body>
@@ -23,21 +24,22 @@
 
     <!-- Slide 1 -->
     <div class="carousel-item active">
-      <img class="carrosel" src="/images/deficiencia.png" alt="Imagem de uma mulher sentada em uma cadeira de rodas">
+      <img class="carrosel" src="/images/carrosel-1.png" alt="Imagem de uma mulher estudando um cerébro humano">
       <div class="overlay"></div>
       <div class="carousel-caption">
         <h3>Bem-vindo ao IncluaNeuro</h3>
-        <p>Um espaço dedicado à informação sobre hidrocefalia e mielomeningocele</p>
+        <p>Site dedicado a ensinar sobre a hidrocefalia e a mielomeningocele através de noticias e informações.</p>
+        </p>
       </div>
     </div>
 
     <!-- Slide 2 -->
     <div class="carousel-item">
-      <img class="carrosel" src="/images/fotonot1.png" alt="Imagem de uma menina com síndrome de down">
+      <img class="carrosel" src="/images/carrosel-2.jpg" alt="Imagem de 4 mãos segurando pedaços de quebra cabeça e juntando-os">
       <div class="overlay"></div>
       <div class="carousel-caption">
-        <h3>Informação que acolhe</h3>
-        <p>Conteúdo pensado para famílias, cuidadores e profissionais</p>
+        <h3>Sensibilização</h3>
+        <p>Conheça a importância da sensibilização sobre hidrocefalia e mielomeningocele, bem como outras deficiências.</p>
       </div>
     </div>
 
@@ -47,7 +49,7 @@
       <div class="overlay"></div>
       <div class="carousel-caption">
         <h3>Acessibilidade e apoio</h3>
-        <p>Conheça, entenda e encontre suporte em cada etapa</p>
+        <p>Sistema pensado em ser acessível e servir de apoio a diversas famílias através do fórum disponível na plataforma</p>
       </div>
     </div>
 
@@ -64,24 +66,72 @@
 
 </div>
 
-        <div class="faixa-titulo">
+                <div class="faixa-titulo">
         <h2>SOBRE</h2>
         </div>
 
-        <!-- Texto curto sobre o que o portal aborda -->
-        <div class="apresentacao-portal">
-            <p>
-                O portal IncluaNeuro reúne informações confiáveis e acessíveis sobre hidrocefalia
-                e mielomeningocele, com o objetivo de apoiar famílias, cuidadores e profissionais
-                no entendimento dessas condições, seus tratamentos e formas de cuidado no dia a dia.
-            </p>
+        <!-- Cards sobre o portal e as condições -->
+        <section class="apresentacao-portal" aria-label="Sobre o portal e as condições">
+            <div class="grade-sobre">
+
+                <article class="card-lei">
+                    <div class="card-body">
+                        <h3 class="card-title">O que são essas condições?</h3>
+                        <p class="card-text">
+                            A <strong>hidrocefalia</strong> é o acúmulo de líquido cefalorraquidiano (líquor) dentro do cérebro, o que aumenta a pressão sobre ele. Pode estar presente desde o nascimento ou surgir depois, e o tratamento mais comum é a colocação de uma válvula de derivação.
+                        </p>
+                        <p class="card-text">
+                            A <strong>mielomeningocele</strong> é a forma mais grave de espinha bífida: a coluna não se fecha por completo durante a gestação, e parte da medula e das meninges fica exposta. Ela costuma vir acompanhada de hidrocefalia.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="card-lei">
+                    <div class="card-body">
+                        <h3 class="card-title">Como afetam as pessoas e as famílias?</h3>
+                        <p class="card-text">
+                            Dependendo do caso, podem causar dificuldades de locomoção, alterações no controle da bexiga e do intestino e, em alguns casos, dificuldades de aprendizagem e atenção. O acompanhamento é contínuo e envolve vários profissionais de saúde.
+                        </p>
+                        <p class="card-text">
+                            Para as famílias, isso muda a rotina e traz desafios emocionais e financeiros. Por isso, informação confiável e uma rede de apoio fazem muita diferença.
+                        </p>
+                    </div>
+                </article>
+
+                <article class="card-lei">
+                    <div class="card-body">
+                        <h3 class="card-title">Sobre o IncluaNeuro</h3>
+                        <p class="card-text">
+                            O IncluaNeuro é uma plataforma dedicada a fornecer informações confiáveis e acessíveis sobre hidrocefalia e mielomeningocele. Nosso objetivo é apoiar famílias, cuidadores e profissionais de saúde no entendimento dessas condições, seus tratamentos e formas de cuidado no dia a dia.
+                        </p>
+                        <p class="card-text">
+                            Aqui você encontra notícias, um fórum de apoio entre famílias e recursos de acessibilidade para personalizar a leitura.
+                        </p>
+                    </div>
+                </article>
+
+            </div>
+        </section>
+
+                <!-- Apresentação das páginas de condições -->
+        <div class="faixa-titulo">
+            <h2>INFORME-SE</h2>
         </div>
+
+        <section class="apresentacao-condicoes" aria-label="Aprenda sobre as condições">
+            <p>
+                Conheça tudo sobre a hidrocefalia e a mielomeningocele: o que são, as causas,
+                o diagnóstico, o tratamento, a prevenção, os números no Brasil e no mundo,
+                a vida no dia a dia e como incluir e respeitar quem vive com cada uma delas.
+                Escolha uma das condições abaixo para começar.
+            </p>
+        </section>
 
         <!-- Cards de acesso às condições -->
         <div class="area-condicoes">
             <div class="condicoes-grid">
                 <a href="/hidrocefalia" class="card-condicao">
-                    <img src="/images/Amputação.jpg" alt="Ilustração representando hidrocefalia">
+                    <img src="/images/hidrocefalia.webp" alt="Ilustração representando hidrocefalia">
                     <div class="card-condicao-texto">
                         <h3>Hidrocefalia</h3>
                         <p>Entenda o que é, causas, tratamentos e cuidados relacionados à hidrocefalia.</p>
@@ -89,10 +139,36 @@
                 </a>
 
                 <a href="/mielomeningocele" class="card-condicao">
-                    <img src="/images/mielomeningocele.png" alt="Ilustração representando mielomeningocele">
+                    <img src="/images/mielomeningocele.jfif" alt="Ilustração representando mielomeningocele">
                     <div class="card-condicao-texto">
                         <h3>Mielomeningocele</h3>
                         <p>Saiba mais sobre a mielomeningocele, seu diagnóstico e acompanhamento.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+                <!-- Fórum -->
+        <div class="faixa-titulo">
+            <h2>FÓRUM</h2>
+        </div>
+
+        <section class="apresentacao-condicoes" aria-label="Fórum de apoio">
+            <p>
+                O fórum do IncluaNeuro é um espaço de apoio onde pais, responsáveis,
+                pessoas com deficiência e profissionais da saúde podem conversar,
+                tirar dúvidas, compartilhar experiências e se ajudar mutuamente.
+                Para acessar e participar, é necessário fazer login.
+            </p>
+        </section>
+
+        <div class="area-condicoes">
+            <div class="condicoes-grid">
+                <a href="/responsavel" class="card-condicao">
+                    <img src="/images/forum.png" alt="Logo do fórum do IncluaNeuro">
+                    <div class="card-condicao-texto">
+                        <h3>Portal da Inclusão</h3>
+                        <p>Entre no fórum, converse com outras famílias e profissionais e compartilhe experiências.</p>
                     </div>
                 </a>
             </div>

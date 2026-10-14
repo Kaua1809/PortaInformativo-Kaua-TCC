@@ -4,6 +4,8 @@ const db = require('../db');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
+const bcrypt = require('bcryptjs');
 const transporter = require('../mailer'); // Importando seu mailer existente
 
 // 1. Configuração do Multer (foto de perfil - salva em disco)
@@ -39,9 +41,6 @@ router.get('/', function(req, res) {
 
     const usuario = results[0];
 
-    // 'id_portal' em postagem_pais guarda o id do próprio usuário (não é uma FK para portal_pais).
-    // total_comentarios soma comentários raiz + respostas (todas as linhas da postagem na tabela comentarios).
-    // Aqui trazemos TODAS as publicações do usuário, incluindo as ocultas (ele precisa vê-las pra poder desocultar).
     const sqlPublicacoes = `
       SELECT
         pp.id,
@@ -90,26 +89,26 @@ router.get('/editar', function(req, res) {
 router.post('/editar', upload.single('foto_perfil'), function(req, res) {
   if (!req.session.usuarioLogado) return res.redirect('/login');
   const userId = req.session.usuarioLogado.id;
-  const { login, bio, data_nascimento, genero } = req.body;
-  const nascimentoFinal = (data_nascimento && data_nascimento !== "") ? data_nascimento : null;
-  const generoFinal = (genero && genero !== "") ? genero : null;
+  const { nome_exibicao, bio, data_nascimento, genero } = req.body;
+const nascimentoFinal = (data_nascimento && data_nascimento !== "") ? data_nascimento : null;
+const generoFinal = (genero && genero !== "") ? genero : null;
 
-  let sql, params;
-  if (req.file) {
+let sql, params;
+if (req.file) {
     const fotoCaminho = '/uploads/' + req.file.filename;
-    sql = "UPDATE usuario SET login = ?, bio = ?, foto_perfil = ?, data_nascimento = ?, genero = ? WHERE id = ?";
-    params = [login, bio, fotoCaminho, nascimentoFinal, generoFinal, userId];
+    sql = "UPDATE usuario SET nome_exibicao = ?, bio = ?, foto_perfil = ?, data_nascimento = ?, genero = ? WHERE id = ?";
+    params = [nome_exibicao, bio, fotoCaminho, nascimentoFinal, generoFinal, userId];
     req.session.usuarioLogado.foto_perfil = fotoCaminho;
-  } else {
-    sql = "UPDATE usuario SET login = ?, bio = ?, data_nascimento = ?, genero = ? WHERE id = ?";
-    params = [login, bio, nascimentoFinal, generoFinal, userId];
-  }
+} else {
+    sql = "UPDATE usuario SET nome_exibicao = ?, bio = ?, data_nascimento = ?, genero = ? WHERE id = ?";
+    params = [nome_exibicao, bio, nascimentoFinal, generoFinal, userId];
+}
 
-  db.query(sql, params, (err) => {
+db.query(sql, params, (err) => {
     if (err) return res.status(500).send("Erro ao salvar: " + err.message);
-    req.session.usuarioLogado.login = login;
+    req.session.usuarioLogado.nome_exibicao = nome_exibicao;
     res.redirect("/conta");
-  });
+});
 });
 
 // 5. POST /conta/notificacoes - AJAX
@@ -122,40 +121,99 @@ router.post('/notificacoes', function(req, res) {
   });
 });
 
-// 6. POST /conta/redefinir-senha - ENVIO DE E-MAIL REAL
+// 5b. POST /conta/verificar-senha - confere a senha atual (abre o passo 2 do modal, "trocar senha")
+router.post('/verificar-senha', function(req, res) {
+  if (!req.session.usuarioLogado) return res.json({ sucesso: false, mensagem: 'Sessão expirada, faça login novamente.' });
+  const { senha } = req.body;
+  const userId = req.session.usuarioLogado.id;
+
+  if (!senha) return res.json({ sucesso: false, mensagem: 'Digite sua senha.' });
+
+  db.query('SELECT senha FROM usuario WHERE id = ?', [userId], async (err, results) => {
+    if (err || !results[0]) return res.json({ sucesso: false, mensagem: 'Erro ao verificar senha.' });
+    try {
+      const confere = await bcrypt.compare(senha, results[0].senha);
+      res.json({ sucesso: confere, mensagem: confere ? '' : 'Senha incorreta.' });
+    } catch (e) {
+      res.json({ sucesso: false, mensagem: 'Erro ao verificar senha.' });
+    }
+  });
+});
+
+// 5c. POST /conta/alterar-senha - efetiva a troca (chamado depois de /verificar-senha)
+router.post('/alterar-senha', function(req, res) {
+  if (!req.session.usuarioLogado) return res.json({ sucesso: false, mensagem: 'Sessão expirada, faça login novamente.' });
+  const { senhaAtual, novaSenha } = req.body;
+  const userId = req.session.usuarioLogado.id;
+
+  if (!novaSenha || novaSenha.length < 6) {
+    return res.json({ sucesso: false, mensagem: 'A nova senha deve ter pelo menos 6 caracteres.' });
+  }
+
+  db.query('SELECT senha FROM usuario WHERE id = ?', [userId], async (err, results) => {
+    if (err || !results[0]) return res.json({ sucesso: false, mensagem: 'Erro ao localizar usuário.' });
+    try {
+      // Confere a senha atual de novo por segurança (defesa em profundidade)
+      const confere = await bcrypt.compare(senhaAtual, results[0].senha);
+      if (!confere) return res.json({ sucesso: false, mensagem: 'Senha atual incorreta.' });
+
+      const novoHash = await bcrypt.hash(novaSenha, 10);
+      db.query('UPDATE usuario SET senha = ? WHERE id = ?', [novoHash, userId], (err2) => {
+        if (err2) return res.json({ sucesso: false, mensagem: 'Erro ao salvar nova senha.' });
+        res.json({ sucesso: true, mensagem: 'Senha alterada com sucesso!' });
+      });
+    } catch (e) {
+      res.json({ sucesso: false, mensagem: 'Erro ao alterar senha.' });
+    }
+  });
+});
+
+// 6. POST /conta/redefinir-senha - ENVIO DE E-MAIL REAL (agora com token seguro de verdade)
 router.post('/redefinir-senha', function(req, res) {
   if (!req.session.usuarioLogado) return res.json({ sucesso: false });
-  
-  const { email, login } = req.session.usuarioLogado;
 
-  const mailOptions = {
-    from: '"Portal Informativo" <Portal.Informativo02@gmail.com>',
-    to: email,
-    subject: 'Restauração de Senha - Portal Informativo',
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
-          <h2 style="color: #333; text-align: center;">Restauração de Senha</h2>
-          <p style="font-size: 16px; color: #555;">Olá, <strong>${login}</strong>!</p>
-          <p style="font-size: 16px; color: #555;">Você solicitou a restauração de sua senha no nosso portal. Clique no botão abaixo para criar uma nova senha:</p>
-          <div style="text-align: center; margin: 30px 0;">
-              <a href="http://localhost:3000/redefinir-senha?email=${email}" 
-                 style="background-color: #28a745; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
-                 Criar Nova Senha
-              </a>
-          </div>
-          <p style="font-size: 14px; color: #888; text-align: center;">Se você não solicitou isso, pode ignorar este e-mail com segurança.</p>
-          <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-          <p style="font-size: 12px; color: #aaa; text-align: center;">&copy; 2026 Portal Informativo - TCC</p>
-      </div>
-    `
-  };
+  const { email, login, id } = req.session.usuarioLogado;
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log('Erro ao enviar e-mail de restauração:', error);
-      return res.json({ sucesso: false, mensagem: 'Erro ao enviar o e-mail.' });
-    }
-    res.json({ sucesso: true, mensagem: 'E-mail de restauração enviado com sucesso!' });
+  // Gera um token aleatório. Só o HASH dele fica salvo no banco -
+  // assim, mesmo quem tiver acesso ao banco não consegue usar o link sozinho.
+  const tokenBruto = crypto.randomBytes(32).toString('hex');
+  const tokenHash = crypto.createHash('sha256').update(tokenBruto).digest('hex');
+  const expira = new Date(Date.now() + 60 * 60 * 1000); // válido por 1 hora
+
+  db.query('UPDATE usuario SET reset_token = ?, reset_token_expira = ? WHERE id = ?', [tokenHash, expira, id], (errUpdate) => {
+    if (errUpdate) return res.json({ sucesso: false, mensagem: 'Erro ao gerar link de restauração.' });
+
+    const link = `http://localhost:3000/redefinir-senha/${tokenBruto}`;
+
+    const mailOptions = {
+      from: '"Portal Informativo" <Portal.Informativo02@gmail.com>',
+      to: email,
+      subject: 'Restauração de Senha - Portal Informativo',
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+            <h2 style="color: #333; text-align: center;">Restauração de Senha</h2>
+            <p style="font-size: 16px; color: #555;">Olá, <strong>${login}</strong>!</p>
+            <p style="font-size: 16px; color: #555;">Você solicitou a restauração de sua senha no nosso portal. Clique no botão abaixo para criar uma nova senha. Este link é válido por 1 hora e só pode ser usado uma vez:</p>
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="${link}"
+                   style="background-color: #28a745; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
+                   Criar Nova Senha
+                </a>
+            </div>
+            <p style="font-size: 14px; color: #888; text-align: center;">Se você não solicitou isso, pode ignorar este e-mail com segurança.</p>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+            <p style="font-size: 12px; color: #aaa; text-align: center;">&copy; 2026 Portal Informativo - TCC</p>
+        </div>
+      `
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log('Erro ao enviar e-mail de restauração:', error);
+        return res.json({ sucesso: false, mensagem: 'Erro ao enviar o e-mail.' });
+      }
+      res.json({ sucesso: true, mensagem: 'E-mail de restauração enviado com sucesso!' });
+    });
   });
 });
 
@@ -168,10 +226,8 @@ router.post('/deletar', function(req, res) {
   const sqlBusca = "SELECT senha FROM usuario WHERE id = ?";
   db.query(sqlBusca, [userId], async (err, results) => {
     if (results[0]) {
-        // Usando bcryptjs conforme seu arquivo de cadastro
-        const bcrypt = require('bcryptjs');
         const senhaValida = await bcrypt.compare(senha, results[0].senha);
-        
+
         if (senhaValida) {
             db.query("DELETE FROM usuario WHERE id = ?", [userId], (err) => {
                 req.session.destroy();
@@ -193,7 +249,6 @@ router.delete('/publicacoes/:id', function(req, res) {
   const postagemId = req.params.id;
   const userId = req.session.usuarioLogado.id;
 
-  // Confere se a publicação pertence ao usuário logado antes de excluir
   const sqlVerifica = 'SELECT id FROM postagem_pais WHERE id = ? AND id_portal = ?';
   db.query(sqlVerifica, [postagemId, userId], (err, results) => {
     if (err) return res.json({ sucesso: false, mensagem: 'Erro ao verificar publicação.' });
@@ -219,7 +274,6 @@ router.get('/publicacoes/:id/editar', function(req, res) {
     if (!results[0]) return res.send('Publicação não encontrada.');
 
     const publicacao = results[0];
-    // Converte o BLOB para base64 para exibir como prévia na tela de edição (mesmo padrão usado em comentario.ejs)
     const imagemBase64 = publicacao.fotos ? publicacao.fotos.toString('base64') : null;
 
     res.render('editar-publicacao', {
@@ -232,7 +286,6 @@ router.get('/publicacoes/:id/editar', function(req, res) {
 });
 
 // 10. POST /conta/publicacoes/:id/editar - Salvar edição da publicação
-// Imagem é opcional: se o usuário não enviar um arquivo novo, mantém a imagem (fotos) já salva.
 router.post('/publicacoes/:id/editar', uploadPublicacao.single('imagem'), function(req, res) {
   if (!req.session.usuarioLogado) return res.redirect('/login');
 
@@ -257,8 +310,6 @@ router.post('/publicacoes/:id/editar', uploadPublicacao.single('imagem'), functi
 });
 
 // 11. POST /conta/publicacoes/:id/ocultar - Alterna entre oculta/visível (toggle)
-// Quando oculta, a postagem não aparece no feed do fórum (responsavel.js) nem na lista de "Suas publicações"... 
-// na verdade ela continua aparecendo aqui em "Suas publicações" (marcada como oculta), só não aparece pro resto dos usuários.
 router.post('/publicacoes/:id/ocultar', function(req, res) {
   if (!req.session.usuarioLogado) return res.json({ sucesso: false });
 

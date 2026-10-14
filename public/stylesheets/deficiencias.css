@@ -70,3 +70,34 @@
     color: var(--cor01);
     font-size: 1.3rem;
 }
+
+.condicao-secao-imagens {
+    display: flex;
+    flex-direction: column;
+    gap: var(--espacamento-medio);
+    flex-shrink: 0;
+    max-width: 100%;
+}
+
+@media (max-width: 900px) {
+    .condicao-secao-imagens {
+        flex-direction: row;
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .condicao-secao-imagens img {
+        flex: 1 1 0;
+        min-width: 0;
+        width: 100%;
+        height: auto;
+    }
+}
+
+@media (min-width: 901px) {
+    .condicao-secao-imagens,
+    .condicao-secao.inverter > img {
+        position: sticky;
+        top: 20px;
+    }
+}

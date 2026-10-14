@@ -16,9 +16,9 @@ router.post('/', async (req, res) => {
     try {
         const hashedSenha = await bcrypt.hash(senha, 10);
 
-        const sql = 'INSERT INTO Usuario (login, email, senha, is_verified) VALUES (?, ?, ?, false)';
-        
-        db.query(sql, [login, email, hashedSenha], (err, result) => {
+        const sql = 'INSERT INTO Usuario (login, nome_exibicao, email, senha, is_verified) VALUES (?, ?, ?, ?, false)';
+
+db.query(sql, [login, login, email, hashedSenha], (err, result) => {
             if (err) {
                 console.log(err);
                 return res.render('cadastro', { erro: 'Erro ao cadastrar. Tente outro usuário ou e-mail.' });

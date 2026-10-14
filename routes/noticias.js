@@ -297,8 +297,8 @@ function salvarBlocos(req, idNoticia, callback) {
       }
     }
 
-    let textoFinal = null;
-    if (tipoFinal !== 'separador') {
+  let textoFinal = null;
+if (tipoFinal !== 'separador' && tipoFinal !== 'galeria') {
       const textoBruto = textos[index] ? textos[index].trim() : '';
       const textoLimpo = textoBruto ? sanitizarHtmlBloco(textoBruto) : '';
       textoFinal = (textoLimpo && textoLimpo !== '<br>' && textoLimpo !== '<p></p>') ? textoLimpo : null;
@@ -317,8 +317,14 @@ function salvarBlocos(req, idNoticia, callback) {
     // Galeria: montar JSON com metadados + imagens coletadas dos campos hidden
     let galeriaJsonFinal = null;
     if (tipoFinal === 'galeria') {
-      let galMeta = { cols: '3', altura: 'media', imagens: [] };
-      try { if (textoFinal) galMeta = JSON.parse(textoFinal); } catch(e) {}
+let galMeta = { cols: '3', altura: 'media', imagens: [] };
+try {
+  // O texto da galeria é JSON, não HTML: não passa pelo sanitize-html.
+  // Em vez disso, só aceitamos valores de uma lista fixa.
+  const bruto = JSON.parse(textos[index] || '{}');
+  if (['1', '2', '3', '4'].includes(String(bruto.cols))) galMeta.cols = String(bruto.cols);
+  if (['pequena', 'media', 'grande'].includes(bruto.altura)) galMeta.altura = bruto.altura;
+} catch(e) {}
       // Coletar imagens: galeria_img_{index}_0, galeria_img_{index}_1, ...
       const imgBuffers = [];
       let i = 0;

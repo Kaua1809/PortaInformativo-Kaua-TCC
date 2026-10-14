@@ -4,9 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= typeof title !== 'undefined' ? title : noticia.titulo %></title>
+    <link rel="stylesheet" href="/stylesheets/acessibilidade.css">
     <link rel="stylesheet" href="/stylesheets/style.css">
     <link rel="stylesheet" href="/stylesheets/portalinclusao.css">
     <link rel="stylesheet" href="/stylesheets/noticias.css">
+    <link rel="stylesheet" href="/stylesheets/modals.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     
@@ -92,20 +94,70 @@
 
     </main>
 
-    <script>
-        function excluirNoticia(id) {
-            if (!confirm('Excluir esta notícia permanentemente?')) return;
+    <!-- Modal genérico de confirmação -->
+    <div id="modal-confirmar-acao" class="modal-container">
+        <div class="modal-box" style="max-width: 400px;">
+            <h1><i class="fas fa-question-circle"></i> Confirmar</h1>
+            <p id="texto-confirmar-acao">Tem certeza?</p>
+           <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+                <button class="enviar" id="confirmar-acao-sim" type="button">Sim, confirmar</button>
+               <button class="fechar" id="fechar" type="button" onclick="fecharModalConfirmacao()">Cancelar</button>
+            </div>
+        </div>
+    </div>
 
-            fetch('/noticias/' + id, { method: 'DELETE' })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.sucesso) {
-                        window.location.href = '/';
-                    } else {
-                        alert(data.mensagem || 'Não foi possível excluir.');
-                    }
-                })
-                .catch(() => alert('Erro de conexão ao excluir.'));
+    <!-- Toast -->
+    <div id="toast-aviso" style="
+        position: fixed; bottom: 30px; right: 30px; z-index: 2000;
+        background: #34495e; color: #fff; padding: 14px 22px;
+        border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        font-size: 0.95rem; display: none; max-width: 320px;">
+    </div>
+
+    <script>
+        function mostrarToast(mensagem, sucesso) {
+            const toast = document.getElementById('toast-aviso');
+            toast.textContent = mensagem;
+            toast.style.background = sucesso ? '#34495e' : '#e74c3c';
+            toast.style.display = 'block';
+            clearTimeout(toast._timeout);
+            toast._timeout = setTimeout(() => { toast.style.display = 'none'; }, 4000);
+        }
+
+        function fecharModalConfirmacao() {
+            document.getElementById('modal-confirmar-acao').classList.remove('mostrar');
+        }
+
+        function pedirConfirmacao(texto, aoConfirmar) {
+            document.getElementById('texto-confirmar-acao').textContent = texto;
+            document.getElementById('modal-confirmar-acao').classList.add('mostrar');
+
+            const botaoSim = document.getElementById('confirmar-acao-sim');
+            const novoBotao = botaoSim.cloneNode(true); // remove listeners antigos
+            botaoSim.parentNode.replaceChild(novoBotao, botaoSim);
+
+            novoBotao.addEventListener('click', function () {
+                if (novoBotao.disabled) return;
+                novoBotao.disabled = true;
+                fecharModalConfirmacao();
+                aoConfirmar();
+            });
+        }
+
+        function excluirNoticia(id) {
+            pedirConfirmacao('Excluir esta notícia permanentemente?', function () {
+                fetch('/noticias/' + id, { method: 'DELETE' })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.sucesso) {
+                            mostrarToast('Notícia excluída.', true);
+                            setTimeout(() => { window.location.href = '/'; }, 1000);
+                        } else {
+                            mostrarToast(data.mensagem || 'Não foi possível excluir.', false);
+                        }
+                    })
+                    .catch(() => mostrarToast('Erro de conexão ao excluir.', false));
+            });
         }
     </script>
     <%- include('partials/script-acessibilidade') %>

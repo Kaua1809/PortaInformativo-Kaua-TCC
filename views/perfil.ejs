@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+<link rel="stylesheet" href="/stylesheets/style.css">
+   <link rel="stylesheet" href="/stylesheets/acessibilidade.css">
+<link rel="stylesheet" href="/stylesheets/modals.css">
+<link rel="stylesheet" href="/stylesheets/conta.css">
+<link rel="stylesheet" href="/stylesheets/portalinclusao.css">
+</head>
+<body>
+    <header>
+        <%- include('partials/menu') %>
+        <%- include('partials/navbar') %>
+    </header>
+
+    <main class="main-content">
+        <div class="area-voltar-topo" style="justify-content: flex-start; margin-bottom: 15px;">
+            <a href="#" onclick="history.back(); return false;" class="btn-voltar-custom">VOLTAR</a>
+        </div>
+
+        <section class="profile-section" style="justify-content: center; text-align: center; flex-direction: column; align-items: center; margin-bottom: 40px;">
+            <div class="profile-avatar" style="margin: 0 auto 20px;">
+                <img src="<%= usuarioPerfil.foto_perfil || '/images/avatar-padrao.png' %>" alt="Foto">
+            </div>
+            <div class="profile-info">
+                <h2 style="justify-content: center;">
+                    <%= usuarioPerfil.nome_exibicao %>
+                    <% if (usuarioLogado && usuarioLogado.id === usuarioPerfil.id) { %>
+                        <a href="/conta/editar" style="color: #888;"><i class="bi bi-pencil"></i></a>
+                    <% } %>
+                </h2>
+                <p class="usuario-arroba" style="color: #888; font-size: 0.9rem; margin: -10px 0 12px;">@<%= usuarioPerfil.login %></p>
+                <p style="padding: 0; display: inline-block;"><%= usuarioPerfil.bio || 'Sem biografia.' %></p>
+            </div>
+        </section>
+
+    <div class="section-divider">
+        <span class="active">Informações</span>
+    </div>
+
+        <section id="sec-info" class="content-section active" style="margin-bottom: 30px;">
+            <div class="custom-card">
+                <div class="card-info">
+                    <span class="label">Data de Nascimento</span>
+                    <p><%= usuarioPerfil.data_nascimento ? new Date(usuarioPerfil.data_nascimento).toLocaleDateString('pt-BR', {timeZone: 'UTC'}) : 'Não informado' %></p>
+                </div>
+                <i class="bi bi-calendar-event" style="color: #888; font-size: 20px;"></i>
+            </div>
+
+            <div class="custom-card">
+                <div class="card-info">
+                    <span class="label">Gênero</span>
+                    <p><%= usuarioPerfil.genero || 'Não informado' %></p>
+                </div>
+                <i class="bi bi-person-arms-up" style="color: #888; font-size: 20px;"></i>
+            </div>
+        </section>
+
+        <h3 class="publicacoes-titulo">Publicações</h3>
+
+        <section class="publicacoes-grid">
+            <% if (publicacoes && publicacoes.length > 0) { %>
+                <% publicacoes.forEach(publicacao => { %>
+                    <a href="/responsavel/comentario/<%= publicacao.id %>" class="publicacao-card" id="publicacao-card-<%= publicacao.id %>" style="text-decoration: none; color: inherit; cursor: pointer;">
+                        <div class="publicacao-linha">
+                            <div class="publicacao-imagem-wrapper">
+                                <% if (publicacao.fotos) { %>
+                                    <img src="data:image/jpeg;base64,<%= publicacao.fotos.toString('base64') %>" alt="Publicação">
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="publicacao-info">
+                            <span><i class="bi bi-chat"></i> <%= publicacao.total_comentarios || 0 %></span>
+                            <span><i class="bi bi-heart-fill"></i> <%= publicacao.total_curtidas || 0 %></span>
+                        </div>
+                    </a>
+                <% }) %>
+            <% } else { %>
+                <p style="grid-column: 1 / -1; text-align: center; color: #666;">Nenhuma publicação ainda.</p>
+            <% } %>
+        </section>
+    </main>
+
+    <%- include('partials/modal-contato') %>
+    <%- include('partials/modal-feedback') %>
+    <%- include('partials/script-acessibilidade') %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/javascripts/menu.js"></script>
+    <script src="/javascripts/modal-contato.js"></script>
+    <script src="/javascripts/modal-feedback.js"></script>
+</body>
+</html>
