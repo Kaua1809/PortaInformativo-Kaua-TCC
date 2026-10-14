@@ -421,3 +421,31 @@ header {
         height: 46px;
     }
 }
+
+/* =====================================================================
+   AJUSTE RESPONSIVO (bloco no FINAL). Para desfazer, apague daqui.
+   ===================================================================== */
+@media (max-width: 767px) {
+    /* No celular o header quebra em 2 linhas (>110px) e invadia o feed.
+       Agora o header cresce e o feed/sidebar ocupam o que sobrar. */
+    #main-portal { height: 100vh; height: 100dvh; min-height: 0; overflow: hidden; }
+    header { height: auto; min-height: 110px; }
+    /* A linha do grid fica travada na altura que sobra (minmax(0,1fr)),
+       assim quem rola é o #feed-completo e não a página inteira. */
+    #container-portal {
+        height: auto;
+        flex: 1 1 0;
+        min-height: 0;
+        grid-template-rows: minmax(0, 1fr);
+    }
+    #feed-completo, #sidebar-completo { min-height: 0; }
+
+    .post-completo { padding: 16px; margin-bottom: 24px; }
+    .nome-usuario { font-size: 1.05rem; }
+    .data-postagem { font-size: 0.8rem; }
+    .post-corpo p { font-size: 0.95rem; line-height: 1.5; }
+    .post-acoes { margin-top: 14px; padding-top: 12px; }
+    .btn-acao { font-size: 0.9rem; }
+    .avatar { width: 46px; height: 46px; }
+    .pesquisa { font-size: 1.4rem; }
+}

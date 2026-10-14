@@ -286,3 +286,29 @@
         font-size: 0.9rem;
     }
 }
+
+/* =====================================================================
+   AJUSTE RESPONSIVO (bloco no FINAL). Para desfazer, apague daqui.
+   ===================================================================== */
+@media (max-width: 768px) {
+    .modal-senha-box { padding: 24px; }
+    .modal-senha-box h3 { font-size: 1.1rem; }
+    .modal-senha-sub { font-size: 0.85rem; margin-bottom: 12px; }
+    .modal-senha-erro, .modal-senha-esqueci { font-size: 0.8rem; }
+    .modal-senha-box .form-group { margin-bottom: 12px; }
+    .modal-senha-box .form-label { font-size: 0.85rem; }
+    /* botão do modal de senha: deixa de ocupar 100% da largura */
+    .modal-senha-confirmar {
+        display: block;
+        width: auto;
+        min-width: 120px;
+        margin: 10px auto 0;
+        font-size: 0.85rem;
+        padding: 8px 18px;
+    }
+
+    /* margin:100px auto deixava a página enorme para baixo entre 481 e 768px */
+    .redefinir-wrap { margin: 40px auto; padding: 28px; max-width: 92%; }
+    .redefinir-wrap h2 { font-size: clamp(1.3rem, 5.5vw, 1.6rem); margin-bottom: 14px; }
+    .redefinir-wrap label { font-size: 0.88rem; }
+}

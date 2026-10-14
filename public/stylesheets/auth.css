@@ -1,5 +1,3 @@
-
-
 /* CONTAINER PRINCIPAL */
 .auth-container {
     display: flex;
@@ -357,4 +355,29 @@
     .auth-link-secondary {
         font-size: 0.8rem;
     }
+}
+
+/* =====================================================================
+   AJUSTE RESPONSIVO (bloco no FINAL). Para desfazer, apague daqui.
+   ===================================================================== */
+
+/* Antes: width:1000px fixo estourava entre 481px e ~1040px de tela */
+.auth-box { width: 100%; }
+/* Antes: height:100vh cortava o topo do formulário quando ele passava da tela */
+.auth-container { height: auto; min-height: 100vh; min-height: 100dvh; }
+
+@media (max-width: 768px) {
+    .auth-header { padding: 12px 15px; }
+    .auth-header h1 { font-size: clamp(1.4rem, 6vw, 2rem); }
+    .auth-content { padding: 14px 16px; }
+    .auth-logo { margin-bottom: 12px; }
+    .auth-logo img { width: 56px; height: 56px; }
+    .auth-subtitle { font-size: 0.88rem; margin-bottom: 18px; }
+    .auth-form { gap: 14px; }
+    .form-label { font-size: 0.88rem; }
+    .form-input { padding: 10px 12px; }
+    .btn-auth { padding: 11px 15px; font-size: 0.95rem; }
+    .form-remember, .form-terms { font-size: 0.82rem; }
+    .auth-divider { margin: 12px 0; }
+    .auth-link { font-size: 0.88rem; }
 }

@@ -7224,3 +7224,32 @@ html.daltonismo-tritanopia:not(.tema-escuro) .logo   { filter: url(#logo-tritano
 html.tema-escuro.daltonismo-protanopia .logo   { filter: url(#logo-protanopia-escuro); }
 html.tema-escuro.daltonismo-deuteranopia .logo { filter: url(#logo-deuteranopia-escuro); }
 html.tema-escuro.daltonismo-tritanopia .logo   { filter: url(#logo-tritanopia-escuro); }
+
+/* =====================================================================
+   AJUSTE: FONTE/ESPAÇAMENTO + TELAS PEQUENAS (bloco no FINAL)
+   Para desfazer, apague daqui até o fim do arquivo.
+   ===================================================================== */
+
+/* #searchInput tem height:20px (4px úteis, por causa do padding) e o
+   line-height 2.2 do "espaçamento" / fonte maior cortavam o texto. */
+html.espacamento-media #searchInput,
+html.espacamento-grande #searchInput,
+html.fonte-grande #searchInput,
+html.fonte-maior #searchInput {
+    height: auto;
+    min-height: 20px;
+    line-height: normal !important;
+}
+
+@media (max-width: 768px) {
+    .secao-acessibilidade { margin: 24px auto; padding: 0 14px; }
+    .cabecalho-acessibilidade { margin-bottom: 18px; }
+    .abas-acessibilidade { margin-bottom: 18px; }
+    .aba-btn { padding: 10px 6px; font-size: 0.8rem; letter-spacing: 0.02em; }
+    .grade-cartoes { gap: 12px; }
+    .cartao-acesso { padding: 14px; min-height: 0; }
+    .cartao-acesso h3 { font-size: 1rem; }
+    .cartao-acesso p { font-size: 0.85rem; margin-bottom: 10px; }
+    .grupo-botoes button { font-size: 0.8rem; }
+    .botao-restaurar { font-size: 0.9rem; padding: 8px 14px; }
+}

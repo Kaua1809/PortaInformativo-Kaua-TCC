@@ -101,3 +101,26 @@
         top: 20px;
     }
 }
+
+
+/* =====================================================================
+   AJUSTE RESPONSIVO (bloco no FINAL). Para desfazer, apague daqui.
+   ===================================================================== */
+@media (max-width: 900px) {
+    /* row-reverse + wrap deixava a imagem encostada à direita */
+    .condicao-secao,
+    .condicao-secao.inverter { flex-direction: column; gap: var(--espacamento-medio); }
+}
+
+@media (max-width: 768px) {
+    .titulo-condicao { font-size: clamp(1.4rem, 6vw, 1.75rem); }
+    .condicao-secao { margin-bottom: var(--espacamento-grande); }
+    .condicao-secao img { width: 100%; max-height: 240px; border-radius: 12px; }
+    .condicao-secao-texto { min-width: 0; }
+    .condicao-secao-texto h3 { font-size: 1.1rem; }
+    .condicao-secao-texto p,
+    .condicao-secao-texto li { font-size: 0.93rem; line-height: 1.6; }
+    .condicao-secao-texto li { margin-bottom: 6px; }
+    .faixa-outras-info { font-size: clamp(1.05rem, 4.5vw, 1.2rem); padding: var(--espacamento-medio); }
+    .faixa-outras-info h2 { font-size: clamp(1.05rem, 4.5vw, 1.2rem); }
+}

@@ -46,11 +46,7 @@
         <!-- Lado Direito: Perfil e Legenda -->
         <div class="post-coluna-conteudo">
             <div class="post-topo">
-                <% if (post.foto_perfil) { %>
-                    <img src="<%= post.foto_perfil %>" alt="Avatar" class="avatar">
-                <% } else { %>
-                    <div class="avatar"></div>
-                <% } %>
+                <img src="<%= post.foto_perfil || FOTO_PADRAO %>" alt="Avatar" class="avatar">
                 <div>
                     <h4 class="nome-usuario"><a href="/responsavel/perfil/<%= post.usuario_id %>" style="color: inherit; text-decoration: none;"><%= post.nome_exibicao %></a></h4>
                     <small class="data-postagem"><%= new Date(post.data_postagem).toLocaleDateString('pt-BR') %></small>
@@ -100,11 +96,7 @@
 
             <div class="perfil-box">
 
-                <% if (usuarioLogado.foto_perfil) { %>
-                    <img src="<%= usuarioLogado.foto_perfil %>" alt="Avatar" class="avatar-grande">
-                <% } else { %>
-                    <div class="avatar-grande"></div>
-                <% } %>
+                <img src="<%= usuarioLogado.foto_perfil || FOTO_PADRAO %>" alt="Avatar" class="avatar-grande">
 
                 <h4><%= usuarioLogado.nome_exibicao %></h4>
 

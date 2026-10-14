@@ -1,5 +1,4 @@
-   
-       /*NOTICIA */ 
+/*NOTICIA */ 
    
    /* Container Principal */
         .noticia-container {
@@ -796,4 +795,49 @@
     aspect-ratio: auto;
     object-fit: contain;
     background: #fff;
+}
+
+/* =====================================================================
+   AJUSTE RESPONSIVO (bloco no FINAL). Para desfazer, apague daqui.
+   ===================================================================== */
+@media (max-width: 768px) {
+    .noticia-container { margin: 16px auto; padding: 0 14px 24px; }
+    .noticia-foto { max-height: 240px; margin-bottom: 14px; }
+    .noticia-titulo { font-size: clamp(1.5rem, 6.5vw, 2rem); margin-bottom: 10px; }
+    .noticia-meta { font-size: 0.8rem; margin-bottom: 18px; padding-bottom: 10px; flex-wrap: wrap; gap: 6px 12px; }
+    .noticia-descricao { font-size: clamp(1rem, 4vw, 1.1rem); margin-bottom: 20px; line-height: 1.5; }
+    .noticia-bloco { font-size: 0.95rem; line-height: 1.65; margin-bottom: 18px; }
+    .noticia-bloco img { max-height: 300px; margin: 12px 0; }
+    .noticia-subtitulo { font-size: clamp(1.2rem, 5vw, 1.4rem); margin-top: 24px; margin-bottom: 10px; }
+    .bloco-tipo-citacao { padding: 12px 14px; margin: 16px 0; }
+    .bloco-tipo-citacao .conteudo-texto-view { font-size: 1.05rem; line-height: 1.55; }
+    .autor-citacao-view { font-size: 0.9rem; margin-top: 10px; }
+    .legenda-imagem { font-size: 0.75rem; }
+    .noticia-bloco hr { margin: 24px 0; }
+
+    /* Imagens verticais viravam tirinhas finas no celular */
+    .img-orientacao-vertical.img-tamanho-pequena  { width: 45%; min-height: 0; }
+    .img-orientacao-vertical.img-tamanho-media    { width: 60%; min-height: 0; }
+    .img-orientacao-vertical.img-tamanho-grande   { width: 80%; min-height: 0; }
+    .img-orientacao-vertical.img-tamanho-gigante  { width: 100%; min-height: 0; }
+
+    /* Galeria: no máximo 2 colunas e altura menor */
+    .preview-galeria.cols-3,
+    .preview-galeria.cols-4 { grid-template-columns: 1fr 1fr; }
+    .preview-galeria.altura-pequena img { height: 80px; }
+    .preview-galeria.altura-media img   { height: 120px; }
+    .preview-galeria.altura-grande img  { height: 170px; }
+    .conteudo-artigo .preview-galeria.altura-grande img { height: 200px; }
+
+    .noticia-acoes-admin { flex-wrap: wrap; gap: 10px; margin-top: 30px; padding-top: 16px; }
+    .btn-editar-noticia, .btn-excluir-noticia { padding: 10px 20px; font-size: 0.9rem; }
+    .btn-voltar-noticia { padding: 10px 26px; font-size: 0.9rem; }
+
+    /* Editor */
+    .editor-noticia-wrapper { padding: 0 12px 30px; gap: 18px; margin: 16px auto; }
+    .coluna-editor { padding: 16px; }
+    .coluna-preview { padding: 18px; }
+    .preview-titulo { font-size: 1.4rem; }
+    .preview-descricao { font-size: 0.95rem; }
+    .preview-bloco .conteudo-texto { font-size: 0.95rem; }
 }

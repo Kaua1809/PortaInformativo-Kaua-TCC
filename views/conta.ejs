@@ -23,7 +23,7 @@
             <!-- PERFIL TOPO -->
             <section class="profile-section" style="justify-content: center; text-align: center; flex-direction: column; align-items: center; margin-bottom: 40px;">
                 <div class="profile-avatar" style="margin: 0 auto 20px;">
-                    <img src="<%= usuario.foto_perfil || '/images/avatar-padrao.png' %>" alt="Foto">
+                    <img src="<%= usuario.foto_perfil || FOTO_PADRAO %>" alt="Foto">
                 </div>
                 <div class="profile-info">
     <h2 style="justify-content: center;"><%= usuario.nome_exibicao %> <a href="/conta/editar" style="color: #888;"><i class="bi bi-pencil"></i></a></h2>
@@ -235,7 +235,7 @@
             <form action="/conta/editar" method="POST" enctype="multipart/form-data">
                 <section class="profile-section">
                     <div class="profile-avatar">
-                        <img src="<%= usuario.foto_perfil || '/images/avatar-padrao.png' %>" alt="Foto">
+                        <img src="<%= usuario.foto_perfil || FOTO_PADRAO %>" alt="Foto">
                         <div class="upload-btn-wrapper">
                             <button type="button" class="btn-upload"><i class="bi bi-camera"></i></button>
                             <input type="file" name="foto_perfil" accept="image/*" />

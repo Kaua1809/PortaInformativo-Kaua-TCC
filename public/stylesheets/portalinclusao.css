@@ -578,3 +578,45 @@
     .post-col-imagem { flex: 0 0 100%; }
     #comentario-container { padding: 14px; margin: 14px auto; }
 }
+
+/* =====================================================================
+   AJUSTE RESPONSIVO (bloco no FINAL). Para desfazer, apague daqui.
+   ===================================================================== */
+
+/* BUG: o texto "*ADICIONAR FOTO OU VÍDEO" tinha z-index:3 e ficava POR CIMA
+   da foto escolhida (preview-container tem z-index:1). Agora fica atrás. */
+.coluna-midia::before { z-index: 0; }
+
+@media (max-width: 768px) {
+    .main-nova-postagem { padding: 16px 10px; }
+    .card-nova-postagem { padding: 14px; min-height: 0; }
+    .coluna-midia { min-height: 200px; }
+    .coluna-midia::before { font-size: 0.85rem; top: 14px; left: 14px; right: 14px; }
+    .coluna-texto { padding: 14px; gap: 8px; }
+    .coluna-texto textarea.form-control { min-height: 120px; font-size: 0.92rem; }
+    .post-user-name { font-size: 0.9rem; }
+    .botoes-container { margin-top: 14px; gap: 8px; }
+    .btn-publicar,
+    .botoes-container .btn-primary,
+    .btn-voltar,
+    .botoes-container a.text-muted { font-size: 0.8rem; padding: 12px 14px; }
+
+    /* Comentários */
+    #comentario-container { margin: 10px auto; padding: 12px; }
+    .post-wrapper { gap: 16px; }
+    .nome-autor { font-size: 1rem; }
+    .texto-post { font-size: 0.95rem; line-height: 1.5; }
+    .comentarios-secao { padding-top: 18px; }
+    .comentario-card { gap: 10px; margin-bottom: 16px; }
+    .comentario-corpo p { font-size: 0.92rem; }
+    .comentario-acoes { flex-wrap: wrap; gap: 8px 14px; font-size: 0.85rem; }
+    .btn-resp, .btn-ver-respostas, .acao-icone { font-size: 0.85rem; }
+    .lista-respostas { padding-left: 12px; }
+    .btn-voltar-custom { padding: 10px 36px; font-size: 0.9rem; }
+}
+
+@media (max-width: 480px) {
+    .caixa-novo-comentario.aberto,
+    .caixa-resposta.aberto { flex-direction: column; align-items: stretch; }
+    .btn-enviar-comentario, .btn-enviar-resposta { align-self: flex-end; }
+}

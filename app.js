@@ -35,6 +35,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.locals.FOTO_PADRAO = '/images/semfoto.png';
+
 // 6. IMPORTAÇÃO E DEFINIÇÃO DAS ROTAS
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');

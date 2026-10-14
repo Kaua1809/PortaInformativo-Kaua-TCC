@@ -122,7 +122,7 @@
                 <% usuarios.forEach(function(usuario) { %>
                     <a href="/responsavel/perfil/<%= usuario.id %>" class="card-resultado card-resultado-usuario">
                         <img class="card-resultado-avatar"
-                             src="<%= usuario.foto_perfil || '/images/avatar-padrao.png' %>"
+                             src="<%= usuario.foto_perfil || FOTO_PADRAO %>"
                              alt="<%= usuario.nome_exibicao %>">
                         <div class="card-resultado-info">
                             <div class="card-resultado-titulo"><%= usuario.nome_exibicao %></div>

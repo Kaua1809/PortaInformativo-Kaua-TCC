@@ -294,3 +294,28 @@
             .publicacao-menu.aberto { width: 55%; }
             .publicacao-menu button { font-size: 0.75rem; }
         }
+
+/* =====================================================================
+   AJUSTE RESPONSIVO (bloco no FINAL). Para desfazer, apague daqui.
+   ===================================================================== */
+@media (max-width: 768px) {
+    .profile-section { gap: 12px; margin-bottom: 28px; }
+    .profile-avatar { width: 100px; height: 100px; border-width: 3px; }
+    .profile-info h2 { font-size: clamp(1.3rem, 6vw, 1.75rem); margin-bottom: 6px; gap: 10px; }
+    .bio-text { font-size: 0.9rem; line-height: 1.5; }
+
+    .section-divider { margin-bottom: 18px; }
+    .content-section.active { gap: 12px; }
+    .custom-card { padding: 16px; gap: 12px; }
+    .card-info h4 { font-size: 1rem; }
+    .card-info p { font-size: 0.9rem; margin-top: 4px; }
+    .card-info span.label { font-size: 0.7rem; }
+    .btn-action { padding: 10px 16px; font-size: 0.9rem; }
+    .btn-save, .btn-cancel { font-size: 0.9rem; padding: 10px; }
+    .edit-input { font-size: 0.95rem; padding: 10px; }
+    .password-display { font-size: 1rem; }
+
+    .publicacoes-titulo { font-size: 0.95rem; padding: 12px 16px; margin: 28px 0 18px; }
+    /* só quebra linha com o menu aberto; fechado ele tem width:0 e quebraria letra por letra */
+    .publicacao-menu.aberto button { white-space: normal; overflow-wrap: anywhere; }
+}

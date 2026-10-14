@@ -962,3 +962,126 @@ footer #rodape {
     .rodape-grade { grid-template-columns: 1fr; gap: 30px; }
 }
 
+
+
+/* =====================================================================
+   AJUSTE RESPONSIVO: TIPOGRAFIA E ESPAÇAMENTO FLUIDOS (bloco no FINAL)
+   Para desfazer, apague daqui até o fim do arquivo.
+   Usa rem + clamp(), então continua respeitando o tamanho de fonte
+   escolhido em acessibilidade.css (html.fonte-*).
+   ===================================================================== */
+
+/* Card de deficiência tinha width:500px fixo e estourava a tela no celular */
+.card-def { width: 100%; max-width: 500px; }
+
+@media (max-width: 768px) {
+    /* Todas as margens/paddings que usam essas variáveis encolhem juntas */
+    :root {
+        --espacamento-pequeno: 8px;
+        --espacamento-medio: 14px;
+        --espacamento-grande: 20px;
+        --espacamento-xl: 30px;
+    }
+
+    h1 { font-size: clamp(1.35rem, 6vw, 2.2rem); }
+    h2 { font-size: clamp(1.2rem, 5vw, 1.8rem); }
+    h3 { font-size: clamp(1.05rem, 4.2vw, 1.3rem); }
+    h4 { font-size: clamp(0.95rem, 3.6vw, 1.1rem); }
+    p  { font-size: 0.95rem; line-height: 1.5; }
+
+    .menu-lateral a { font-size: 0.95rem; }
+
+    /* Carrossel: imagem e legenda proporcionais (legenda não passa da imagem) */
+    .carrosel { height: clamp(170px, 48vw, 250px); }
+    .carousel-caption {
+        left: 6%;
+        right: 6%;
+        bottom: 8px;
+        padding: 0;
+    }
+    .carousel-caption h1,
+    .carousel-caption h2,
+    .carousel-caption h3,
+    .carousel-caption h4,
+    .carousel-caption h5,
+    .carousel-caption h6 {
+        font-size: clamp(0.95rem, 4vw, 1.15rem);
+        margin-bottom: 2px;
+        line-height: 1.25;
+    }
+    .carousel-caption p {
+        font-size: 0.8rem;
+        line-height: 1.35;
+        margin-bottom: 0;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .apresentacao-portal p { font-size: 0.95rem; }
+
+    /* Cards das condições */
+    .card-condicao img { height: clamp(160px, 45vw, 260px); }
+    .card-condicao-texto h3 { font-size: 1.05rem; }
+    .card-condicao-texto p { font-size: 0.88rem; }
+
+    /* Cards de notícia */
+    .card img { height: clamp(150px, 42vw, 200px); }
+    .card p, .textonoticias { font-size: 0.92rem; }
+
+    /* Página deficiências */
+    .cardimg { height: clamp(130px, 38vw, 170px); }
+    .btn-def { font-size: 0.95rem; min-height: 56px; }
+
+    /* Legislação / Sobre */
+    main.conteudo-legislacao { padding: 20px 14px; }
+    .titulo-principal { font-size: clamp(1.4rem, 6vw, 1.75rem); margin-bottom: 18px; }
+    .texto-intro { font-size: 0.95rem; margin-bottom: 16px; }
+    .grade-leis { gap: 18px; margin-bottom: 30px; }
+    .grade-sobre { gap: 18px; }
+    .card-lei .card-body { padding: 20px; }
+    .card-lei .card-title { font-size: 1.1rem; }
+    .card-lei .card-text { font-size: 0.93rem; }
+    .numero-lei { font-size: 0.85rem; margin-bottom: 10px; }
+    .card-lei .card-footer { padding: 14px 20px; }
+    .grade-sobre .card-lei .card-title {
+        margin: -20px -20px 14px;
+        padding: 14px 20px;
+        min-height: 64px;
+    }
+
+    /* Pesquisa */
+    .pesquisa-topo { padding: 20px 12px 4px; font-size: 0.95rem; }
+    .card-resultado { gap: 14px; padding: 18px 12px; }
+    .card-resultado-foto,
+    .card-resultado-foto-placeholder { height: clamp(140px, 40vw, 180px); }
+    .card-resultado-titulo { font-size: 1.15rem; margin-bottom: 6px; }
+    .card-resultado-desc { font-size: 0.88rem; line-height: 1.55; margin-bottom: 8px; }
+    .card-resultado-meta { font-size: 0.75rem; }
+    .sem-resultado { padding: 40px 16px; font-size: 0.95rem; }
+
+    /* Rodapé */
+    .rodape-grade { gap: 20px; margin-bottom: 20px; }
+    .rodape-titulo { font-size: 1.05rem; margin-bottom: 12px; }
+    .rodape-coluna a, .rodape-coluna p { font-size: 0.88rem; margin-bottom: 6px; }
+    .rodape-redes a { width: 40px; height: 40px; font-size: 1.1rem; }
+    #rodape { font-size: 0.85rem; }
+}
+
+@media (max-width: 480px) {
+    :root {
+        --espacamento-pequeno: 6px;
+        --espacamento-medio: 12px;
+        --espacamento-grande: 16px;
+        --espacamento-xl: 24px;
+    }
+    p { font-size: 0.9rem; }
+    .card-lei .card-body { padding: 16px; }
+    .card-lei .card-footer { padding: 12px 16px; }
+    .grade-sobre .card-lei .card-title {
+        margin: -16px -16px 12px;
+        padding: 12px 16px;
+        min-height: 56px;
+    }
+}

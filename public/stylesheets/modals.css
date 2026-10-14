@@ -195,3 +195,35 @@ textarea, .input-mensagem {
 .mostrar .modal-box {
     animation: animate-modal 0.3s ease-out;
 }
+
+/* =====================================================================
+   AJUSTE RESPONSIVO (bloco no FINAL). Para desfazer, apague daqui.
+   ===================================================================== */
+@media (max-width: 768px) {
+    .modal-container { padding: 12px; }
+    .modal-box { padding: 18px; max-height: 92vh; max-height: 92dvh; }
+    .modal-box h1 { font-size: clamp(1.2rem, 5vw, 1.5rem); margin-bottom: 14px; }
+    .modal-box p { font-size: 0.9rem; margin-bottom: 14px; }
+    .label-contato { font-size: 0.88rem; }
+    .input-contato { padding: 10px; font-size: 1rem; } /* 16px evita zoom automático no iPhone */
+    textarea, .input-mensagem { height: 110px; padding: 10px; font-size: 1rem; }
+    /* Botões do modal: tamanho próprio (antes ocupavam 50% / 100% da largura) */
+    .acoes-modal { flex-direction: row !important; gap: 8px; padding-top: 6px; }
+    .fechar, .enviar, .enviar1 {
+        width: auto;
+        min-width: 96px;
+        height: auto;
+        min-height: 34px;
+        padding: 6px 16px;
+        font-size: 0.82rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .fechar, .enviar, .enviar1 {
+        min-width: 84px;
+        min-height: 32px;
+        padding: 5px 12px;
+        font-size: 0.78rem;
+    }
+}

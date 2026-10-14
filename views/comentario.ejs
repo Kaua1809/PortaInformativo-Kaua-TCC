@@ -23,7 +23,7 @@
 
             <div class="post-col-info">
                 <div class="perfil-header">
-                    <img src="<%= postagem.foto_perfil || '/img/perfil-padrao.png' %>" class="avatar-img" alt="Avatar">
+                    <img src="<%= postagem.foto_perfil || FOTO_PADRAO %>" class="avatar-img" alt="Avatar">
                     <span class="nome-autor"><a href="/responsavel/perfil/<%= postagem.id_portal %>" style="color: inherit; text-decoration: none;"><%= postagem.nome_exibicao %></a></span>
                 </div>
                 <p class="texto-post"><%= postagem.comentarios %></p>
@@ -51,7 +51,7 @@
             <% if (comentarios && comentarios.length > 0) { %>
                 <% comentarios.forEach(comentario => { %>
                     <div class="comentario-card" id="comentario-card-<%= comentario.id %>">
-                        <img src="<%= comentario.foto_perfil || '/img/perfil-padrao.png' %>" class="avatar-img" alt="Avatar">
+                        <img src="<%= comentario.foto_perfil || FOTO_PADRAO %>" class="avatar-img" alt="Avatar">
                         <div class="comentario-corpo">
                             <strong><a href="/responsavel/perfil/<%= comentario.usuario_id %>" style="color: inherit; text-decoration: none;"><%= comentario.nome_exibicao %></a></strong>
                             <p><%= comentario.texto_comentario %></p>
@@ -176,9 +176,10 @@
 
     <script src="/javascripts/modal-contato.js"></script>
     <script>
+        const FOTO_PADRAO = <%- JSON.stringify(FOTO_PADRAO) %>;
         const POSTAGEM_ID = <%= postagem.id %>;
         const NOME_USUARIO_LOGADO = <%- JSON.stringify(usuarioLogado.nome_exibicao) %>;
-        const FOTO_USUARIO_LOGADO = <%- JSON.stringify(usuarioLogado.foto_perfil || '/img/perfil-padrao.png') %>;
+        const FOTO_USUARIO_LOGADO = <%- JSON.stringify(usuarioLogado.foto_perfil || FOTO_PADRAO) %>;
         const USUARIO_LOGADO_ADMIN = <%- JSON.stringify(!!usuarioLogado.is_admin) %>;
 
         let idDenunciaAtual = null;
@@ -283,7 +284,7 @@
         });
 
         function montarHtmlComentarioRaiz(c) {
-            const avatar = c.foto_perfil || '/img/perfil-padrao.png';
+            const avatar = c.foto_perfil || FOTO_PADRAO;
             return `
                 <div class="comentario-card" id="comentario-card-${c.id}">
                     <img src="${escapeHtml(avatar)}" class="avatar-img" alt="Avatar">
@@ -455,7 +456,7 @@
         document.querySelectorAll('.btn-ver-respostas').forEach(ativarBotaoVerRespostas);
 
         function montarHtmlResposta(resposta) {
-            const avatar = resposta.foto_perfil || '/img/perfil-padrao.png';
+            const avatar = resposta.foto_perfil || FOTO_PADRAO;
             const curtidoClasse = resposta.usuario_curtiu > 0 ? 'curtido' : '';
             const contador = resposta.total_curtidas > 0 ? resposta.total_curtidas : '';
             const btnExcluir = resposta.pode_excluir
