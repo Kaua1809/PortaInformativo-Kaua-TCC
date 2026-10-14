@@ -20,7 +20,7 @@ router.get('/', function(req, res) {
 router.post('/', function(req, res) {
   const { login, senha } = req.body;
 
-  const sql = 'SELECT * FROM Usuario WHERE login = ?';
+    const sql = 'SELECT * FROM usuario WHERE login = ?';
   
   db.query(sql, [login], async (err, results) => {
     if (err) return res.send('Erro no banco');

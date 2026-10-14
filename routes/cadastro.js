@@ -16,7 +16,7 @@ router.post('/', async (req, res) => {
     try {
         const hashedSenha = await bcrypt.hash(senha, 10);
 
-        const sql = 'INSERT INTO Usuario (login, nome_exibicao, email, senha, is_verified) VALUES (?, ?, ?, ?, false)';
+   const sql = 'INSERT INTO usuario (login, nome_exibicao, email, senha, is_verified) VALUES (?, ?, ?, ?, false)';
 
 db.query(sql, [login, login, email, hashedSenha], (err, result) => {
             if (err) {
