@@ -25,7 +25,7 @@
             <!-- APARECE APENAS SE ESTIVER LOGADO -->
             <a href="/conta" class="perfil-usuario">
                 <div class="avatar-container">
-<img src="<%= usuarioLogado.foto_perfil || '/images/default-avatar.png' %>" alt="Foto de Perfil" class="foto-perfil">
+<img src="<%= usuarioLogado.foto_perfil || (locals.FOTO_PADRAO || '/images/default-avatar.png') %>" alt="Foto de Perfil" class="foto-perfil">
 
                 </div>
                 <span class="nome-usuario2"><%= usuarioLogado.nome_exibicao %></span>

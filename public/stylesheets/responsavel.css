@@ -449,3 +449,61 @@ header {
     .avatar { width: 46px; height: 46px; }
     .pesquisa { font-size: 1.4rem; }
 }
+/* =====================================================================
+   AJUSTE TELAS PEQUENAS v2 (bloco no FINAL). Para desfazer, apague daqui.
+   Textos um pouco menores e imagem do post um pouco maior.
+   ===================================================================== */
+@media (max-width: 1199px) {
+    .post-coluna-imagem { width: 350px; }
+}
+
+@media (max-width: 991px) {
+    .post-coluna-imagem { width: 290px; }
+    .post-imagem { max-height: 420px; }
+
+    .nome-usuario { font-size: 1.1rem; }
+    .data-postagem { font-size: 0.85rem; }
+    .post-corpo p { font-size: 0.98rem; line-height: 1.5; }
+    .btn-acao { font-size: 0.95rem; }
+    .perfil-box h4 { font-size: 0.88rem; }
+    .btn-lateral { font-size: 0.78rem; }
+}
+
+@media (max-width: 767px) {
+    .post-imagem { max-height: 370px; }
+
+    .nome-usuario { font-size: 0.95rem; }
+    .data-postagem { font-size: 0.72rem; }
+    .post-corpo p { font-size: 0.85rem; line-height: 1.45; }
+    .post-acoes { gap: 16px; }
+    .btn-acao { font-size: 0.82rem; gap: 5px; }
+    .pesquisa { font-size: 1.15rem; }
+    .perfil-box h4 { font-size: 0.68rem; }
+    .btn-lateral { font-size: 0.64rem; }
+}
+
+@media (max-width: 480px) {
+    .post-imagem { max-height: 340px; }
+
+    .nome-usuario { font-size: 0.88rem; }
+    .data-postagem { font-size: 0.68rem; }
+    .post-corpo p { font-size: 0.8rem; }
+    .btn-acao { font-size: 0.78rem; }
+    .pesquisa { font-size: 1.05rem; }
+    .btn-lateral { font-size: 0.6rem; }
+}
+
+/* =====================================================================
+   HEADER IGUAL AO DAS OUTRAS PÁGINAS (bloco no FINAL). Para desfazer, apague daqui.
+   Antes o header era forçado a 110px (height / min-height), e o feed
+   usava calc(100vh - 110px). Agora o header tem a altura natural (a mesma
+   do style.css) e o feed/sidebar ocupam o que sobrar da tela.
+   ===================================================================== */
+header { height: auto; min-height: 0; }
+
+#container-portal {
+    height: auto;
+    flex: 1 1 0;
+    min-height: 0;
+    grid-template-rows: minmax(0, 1fr);
+}

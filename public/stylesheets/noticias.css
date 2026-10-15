@@ -841,3 +841,52 @@
     .preview-descricao { font-size: 0.95rem; }
     .preview-bloco .conteudo-texto { font-size: 0.95rem; }
 }
+/* =====================================================================
+   AJUSTE TELAS PEQUENAS v2 (bloco no FINAL). Para desfazer, apague daqui.
+   Os tamanhos de texto do editor (.texto-grande / .texto-extra-grande)
+   eram maiores que os títulos no celular e estouravam a tela.
+   ===================================================================== */
+@media (max-width: 768px) {
+    .texto-pequeno       { font-size: 0.72rem !important; }
+    .texto-medio         { font-size: 0.92rem !important; }
+    .texto-grande        { font-size: 1.05rem !important; }
+    .texto-extra-grande  { font-size: 1.2rem !important; }
+
+    .noticia-bloco,
+    .noticia-bloco p,
+    .noticia-bloco li { overflow-wrap: anywhere; }
+
+    .coluna-editor h1 { font-size: 1.2rem; }
+    .coluna-editor, .coluna-preview { padding: 16px; }
+    .preview-titulo { font-size: 1.3rem; }
+    .preview-descricao { font-size: 0.95rem; }
+    .preview-bloco.tipo-subtitulo .conteudo-texto { font-size: 1.05rem; }
+    .preview-bloco.tipo-citacao .conteudo-texto { font-size: 0.98rem; }
+
+    .noticia-acoes-admin { flex-wrap: wrap; gap: 10px; margin-top: 30px; padding-top: 16px; }
+    .btn-editar-noticia, .btn-excluir-noticia, .btn-voltar-noticia {
+        padding: 9px 18px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .texto-pequeno       { font-size: 0.68rem !important; }
+    .texto-medio         { font-size: 0.88rem !important; }
+    .texto-grande        { font-size: 1rem !important; }
+    .texto-extra-grande  { font-size: 1.1rem !important; }
+
+    .noticia-container { padding: 0 12px 20px; }
+    .noticia-foto { max-height: 190px; }
+    .noticia-titulo { font-size: clamp(1.2rem, 5.6vw, 1.45rem); }
+    .noticia-meta { font-size: 0.74rem; }
+    .noticia-descricao { font-size: 0.93rem; }
+    .noticia-bloco { font-size: 0.88rem; line-height: 1.6; }
+    .noticia-bloco img { max-height: 240px; }
+    .noticia-subtitulo { font-size: 1.25rem; margin-top: 20px; }
+    .bloco-tipo-citacao .conteudo-texto-view { font-size: 0.95rem; }
+    .autor-citacao-view { font-size: 0.82rem; }
+    .preview-galeria.cols-2,
+    .preview-galeria.cols-3,
+    .preview-galeria.cols-4 { grid-template-columns: 1fr 1fr; }
+}

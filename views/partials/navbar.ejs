@@ -13,26 +13,82 @@
 
 <!-- PESQUISA -->
 <div class="search-bar">
-    <button id="searchBtn"><i class="bi bi-search"></i></button>
+    <button id="searchBtn" type="button" aria-label="Pesquisar"><i class="bi bi-search"></i></button>
     <input type="text" id="searchInput" name="q" placeholder="Pesquisar..." autocomplete="off" readonly onfocus="this.removeAttribute('readonly');">
 </div>
 
+<!-- MODAL DE PESQUISA (só aparece em telas pequenas, ver style.css) -->
+<div id="modal-pesquisa" class="modal-pesquisa" aria-hidden="true">
+    <div class="modal-pesquisa-box" role="dialog" aria-modal="true" aria-label="Pesquisar">
+        <p class="modal-pesquisa-titulo">Pesquisar</p>
+        <button type="button" id="fecharPesquisa" class="modal-pesquisa-fechar" aria-label="Fechar">&times;</button>
+        <form id="formPesquisaModal" class="modal-pesquisa-form">
+            <input type="search" id="searchInputModal" name="q" placeholder="Pesquisar..." autocomplete="off" enterkeyhint="search">
+            <button type="submit" aria-label="Pesquisar"><i class="bi bi-search"></i></button>
+        </form>
+    </div>
+</div>
+
 <script>
-document.getElementById("searchBtn").addEventListener("click", buscar);
+(function () {
+    var telaPequena = window.matchMedia("(max-width: 768px)");
+    var modal = document.getElementById("modal-pesquisa");
+    var inputModal = document.getElementById("searchInputModal");
 
-document.getElementById("searchInput").addEventListener("keypress", function(e) {
-    if (e.key === "Enter") {
-        buscar();
+    function irParaResultado(valor) {
+        valor = (valor || "").trim();
+        if (valor !== "") {
+            window.location.href = "/pesquisa/resultado?q=" + encodeURIComponent(valor);
+        } else {
+            alert("Digite algo para pesquisar");
+        }
     }
-});
 
-function buscar() {
-    let valor = document.getElementById("searchInput").value.trim();
-
-    if (valor !== "") {
-        window.location.href = "/pesquisa/resultado?q=" + encodeURIComponent(valor);
-    } else {
-        alert("Digite algo para pesquisar");
+    function abrirModal() {
+        modal.classList.add("aberto");
+        modal.setAttribute("aria-hidden", "false");
+        setTimeout(function () { inputModal.focus(); }, 50);
     }
-}
+
+    function fecharModal() {
+        modal.classList.remove("aberto");
+        modal.setAttribute("aria-hidden", "true");
+    }
+
+    // Botão da lupa: em tela pequena abre o modal; em tela grande pesquisa direto
+    document.getElementById("searchBtn").addEventListener("click", function () {
+        if (telaPequena.matches) {
+            abrirModal();
+        } else {
+            irParaResultado(document.getElementById("searchInput").value);
+        }
+    });
+
+    // Enter na barra normal (tela grande)
+    document.getElementById("searchInput").addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+            irParaResultado(this.value);
+        }
+    });
+
+    // Envio do formulário do modal (Enter ou botão da lupa)
+    document.getElementById("formPesquisaModal").addEventListener("submit", function (e) {
+        e.preventDefault();
+        irParaResultado(inputModal.value);
+    });
+
+    // Fechar: botão X, clique fora da caixa, tecla Esc
+    document.getElementById("fecharPesquisa").addEventListener("click", fecharModal);
+    modal.addEventListener("click", function (e) {
+        if (e.target === modal) fecharModal();
+    });
+    document.addEventListener("keydown", function (e) {
+        if (e.key === "Escape") fecharModal();
+    });
+
+    // Se a tela crescer com o modal aberto, fecha
+    telaPequena.addEventListener("change", function (e) {
+        if (!e.matches) fecharModal();
+    });
+})();
 </script>
