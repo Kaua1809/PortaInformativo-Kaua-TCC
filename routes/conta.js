@@ -8,15 +8,22 @@ const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 const transporter = require('../mailer'); // Importando seu mailer existente
 
-// 1. Configuração do Multer (foto de perfil - salva em disco)
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) { cb(null, 'public/uploads/'); },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + path.extname(file.originalname);
-    cb(null, 'perfil-' + req.session.usuarioLogado.id + '-' + uniqueSuffix);
+// 1. Configuração do Multer (foto de perfil - memória -> salva no banco)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 2 * 1024 * 1024 }, // 2MB
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) cb(null, true);
+    else cb(new Error('Apenas imagens são permitidas'));
   }
 });
-const upload = multer({ storage: storage });
+
+function receberFotoPerfil(req, res, next) {
+  upload.single('foto_perfil')(req, res, (err) => {
+    if (err) return res.status(400).send('Foto inválida: ' + err.message + ' (máximo 2 MB, apenas imagens).');
+    next();
+  });
+}
 
 // 1b. Configuração do Multer para imagens de publicação (memória -> salva como BLOB no banco,
 // igual ao padrão já usado em responsavel.js para a coluna 'fotos')
@@ -75,6 +82,16 @@ router.get('/logout', function(req, res) {
   });
 });
 
+// 2c. GET /conta/foto/:id - entrega a foto de perfil guardada no banco
+router.get('/foto/:id', function(req, res) {
+  db.query('SELECT foto_perfil_dados, foto_perfil_tipo FROM usuario WHERE id = ?', [req.params.id], (err, results) => {
+    if (err || !results[0] || !results[0].foto_perfil_dados) return res.status(404).end();
+    res.set('Content-Type', results[0].foto_perfil_tipo || 'image/jpeg');
+    res.set('Cache-Control', 'public, max-age=31536000'); // o ?v= no caminho renova quando a foto muda
+    res.send(results[0].foto_perfil_dados);
+  });
+});
+
 // 3. GET /conta/editar - Abrir formulário
 router.get('/editar', function(req, res) {
   if (!req.session.usuarioLogado) return res.redirect('/login');
@@ -86,7 +103,7 @@ router.get('/editar', function(req, res) {
 });
 
 // 4. POST /conta/editar - Salvar
-router.post('/editar', upload.single('foto_perfil'), function(req, res) {
+router.post('/editar', receberFotoPerfil, function(req, res) {
   if (!req.session.usuarioLogado) return res.redirect('/login');
   const userId = req.session.usuarioLogado.id;
   const { nome_exibicao, bio, data_nascimento, genero } = req.body;
@@ -95,9 +112,9 @@ const generoFinal = (genero && genero !== "") ? genero : null;
 
 let sql, params;
 if (req.file) {
-    const fotoCaminho = '/uploads/' + req.file.filename;
-    sql = "UPDATE usuario SET nome_exibicao = ?, bio = ?, foto_perfil = ?, data_nascimento = ?, genero = ? WHERE id = ?";
-    params = [nome_exibicao, bio, fotoCaminho, nascimentoFinal, generoFinal, userId];
+    const fotoCaminho = '/conta/foto/' + userId + '?v=' + Date.now();
+    sql = "UPDATE usuario SET nome_exibicao = ?, bio = ?, foto_perfil = ?, foto_perfil_dados = ?, foto_perfil_tipo = ?, data_nascimento = ?, genero = ? WHERE id = ?";
+    params = [nome_exibicao, bio, fotoCaminho, req.file.buffer, req.file.mimetype, nascimentoFinal, generoFinal, userId];
     req.session.usuarioLogado.foto_perfil = fotoCaminho;
 } else {
     sql = "UPDATE usuario SET nome_exibicao = ?, bio = ?, data_nascimento = ?, genero = ? WHERE id = ?";

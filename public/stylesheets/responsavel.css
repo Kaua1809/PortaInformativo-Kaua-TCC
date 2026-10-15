@@ -507,3 +507,20 @@ header { height: auto; min-height: 0; }
     min-height: 0;
     grid-template-rows: minmax(0, 1fr);
 }
+
+/* =====================================================================
+   IMAGEM DO POST DENTRO DO CARD EM TELAS PEQUENAS (bloco no FINAL)
+   Os blocos "v2" acima redefinem a largura da coluna depois da regra
+   de 767px; aqui a largura volta a acompanhar o card.
+   Para desfazer, apague daqui até o fim do arquivo.
+   ===================================================================== */
+@media (max-width: 767px) {
+    .post-coluna-imagem {
+        width: 100%;
+        max-width: 100%;
+    }
+    .post-imagem {
+        width: 100%;
+        max-width: 100%;
+    }
+}
