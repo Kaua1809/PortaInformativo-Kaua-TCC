@@ -524,3 +524,69 @@ header { height: auto; min-height: 0; }
         max-width: 100%;
     }
 }
+
+/* =====================================================================
+   BARRA LATERAL VIRA FAIXA FIXA ABAIXO DA NAVBAR EM TELAS PEQUENAS
+   (bloco no FINAL). Para desfazer, apague daqui até o fim do arquivo.
+   Mesmo ponto de corte do restante (767px).
+   ===================================================================== */
+@media (max-width: 767px) {
+    /* uma coluna só: faixa em cima (linha automática) e feed embaixo (rola) */
+    #container-portal {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    /* a sidebar vem depois do feed no HTML; order a coloca na primeira linha */
+    #sidebar-completo {
+        order: -1;
+        height: auto;
+        overflow: visible;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 8px 10px;
+    }
+
+    /* foto + nome lado a lado */
+    .perfil-box {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+    }
+    .avatar-grande {
+        width: 36px;
+        height: 36px;
+        margin: 0;
+        flex-shrink: 0;
+    }
+    .perfil-box h4 {
+        margin: 0;
+        max-width: 110px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* botões em linha */
+    .acoes-lateral {
+        flex: 1 1 auto;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        gap: 6px;
+        margin-top: 0;
+    }
+    .btn-lateral {
+        flex: 0 0 auto;
+        padding: 6px 10px;
+    }
+}
+
+/* em telas bem estreitas só a foto, para os botões terem espaço */
+@media (max-width: 480px) {
+    .perfil-box h4 { display: none; }
+}

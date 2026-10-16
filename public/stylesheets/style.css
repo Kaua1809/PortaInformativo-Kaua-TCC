@@ -1271,3 +1271,106 @@ footer #rodape {
 @media (max-width: 360px) {
     html { font-size: 85%; }
 }
+
+/* =====================================================================
+   NAVBAR ACOMPANHA A ROLAGEM (bloco no FINAL)
+   Para desfazer, apague daqui até o fim do arquivo.
+   ===================================================================== */
+header {
+    position: sticky;
+    top: 0;
+    z-index: 900; /* acima do conteúdo, abaixo dos modais e do aviso (toast) */
+}
+
+/* Subtítulo ao lado do título (só em telas largas) */
+.subtitulo-portal {
+    color: var(--cor01);
+    font-family: var(--fonte-padrao);
+    font-size: 1.01rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    flex: 0 1 auto;
+    margin-left: 6px;
+    margin-right: 28px;
+    padding-left: 14px;
+    border-left: 2px solid rgba(244, 249, 233, 0.35);
+}
+@media (max-width: 1250px) {
+    .subtitulo-portal { display: none; }
+}
+
+/* =====================================================================
+   MODAL DE PESQUISA EM QUALQUER LARGURA (bloco no FINAL)
+   Antes ele só existia em telas pequenas; agora também abre no computador
+   quando a acessibilidade deixa a barra só com a lupa.
+   ===================================================================== */
+.modal-pesquisa {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    background: rgba(0, 0, 0, 0.55);
+    align-items: flex-start;
+    justify-content: center;
+    padding: 70px 14px 14px;
+}
+.modal-pesquisa-box {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    background-color: var(--cor03);
+    border-radius: 14px;
+    padding: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    animation: animate-pesquisa 0.2s ease-out;
+}
+.modal-pesquisa-titulo {
+    color: var(--cor01);
+    font-family: var(--fonte-destaque);
+    font-size: 0.95rem;
+    margin: 0 28px 8px 4px;
+}
+.modal-pesquisa-form { display: flex; align-items: center; gap: 8px; }
+.modal-pesquisa-form input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    border-radius: 25px;
+    padding: 10px 14px;
+    font-size: 16px;
+    font-family: var(--fonte-padrao);
+    background-color: var(--cor01);
+    color: #222;
+}
+.modal-pesquisa-form button {
+    flex: 0 0 auto;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1rem;
+    background-color: var(--cor02);
+    color: var(--cor01);
+}
+.modal-pesquisa-fechar {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    background: none;
+    border: none;
+    color: var(--cor01);
+    font-size: 1.4rem;
+    line-height: 1;
+    cursor: pointer;
+}
+@keyframes animate-pesquisa {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.modal-pesquisa.aberto { display: flex; }

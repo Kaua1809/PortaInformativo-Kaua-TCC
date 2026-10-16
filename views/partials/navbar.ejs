@@ -5,7 +5,10 @@
     <img src="/images/logo.png" alt="Logo" class="logo">
 
     <!-- TÍTULO -->
-    <h1><%= title %></h1>
+    <h1><%= title %></h1> 
+    <% if (locals.subtitulo) { %>
+    <span class="subtitulo-portal"><%= subtitulo %></span>
+<% } %>
 </div>
 
 <div id="overlay-menu"></div>
@@ -55,9 +58,15 @@
         modal.setAttribute("aria-hidden", "true");
     }
 
-    // Botão da lupa: em tela pequena abre o modal; em tela grande pesquisa direto
+    // A barra está "recolhida" (só a lupa) em tela pequena OU quando a acessibilidade a deixa redonda
+    function barraRecolhida() {
+        return telaPequena.matches ||
+               window.getComputedStyle(document.getElementById("searchInput")).display === "none";
+    }
+
+    // Botão da lupa: barra recolhida abre o modal; barra normal pesquisa direto
     document.getElementById("searchBtn").addEventListener("click", function () {
-        if (telaPequena.matches) {
+        if (barraRecolhida()) {
             abrirModal();
         } else {
             irParaResultado(document.getElementById("searchInput").value);
@@ -90,5 +99,44 @@
     telaPequena.addEventListener("change", function (e) {
         if (!e.matches) fecharModal();
     });
+})();
+
+// Barra de pesquisa em bolinha só quando o cabeçalho está apertado (texto ampliado)
+(function () {
+    var header = document.querySelector("header");
+    if (!header) return;
+    var titulo = header.querySelector("h1");
+    var subtitulo = header.querySelector(".subtitulo-portal");
+
+    function ajustarBarra() {
+        header.classList.remove("barra-bolinha"); // mede com a barra aberta
+
+        // 1) o cabeçalho passou da largura da tela
+        var estourou = header.scrollWidth > header.clientWidth + 1;
+
+        // 2) o título precisou quebrar em duas linhas
+        var tituloQuebrou = false;
+        if (titulo) {
+            var estilo = window.getComputedStyle(titulo);
+            var linha = parseFloat(estilo.lineHeight) || parseFloat(estilo.fontSize) * 1.2;
+            tituloQuebrou = titulo.offsetHeight > linha * 1.5;
+        }
+
+        // 3) o subtítulo ficou estreito demais para ler
+        var subtituloApertado = false;
+        if (subtitulo && window.getComputedStyle(subtitulo).display !== "none") {
+            subtituloApertado = subtitulo.getBoundingClientRect().width < 150;
+        }
+
+        header.classList.toggle("barra-bolinha", estourou || tituloQuebrou || subtituloApertado);
+    }
+
+    ajustarBarra();
+    window.addEventListener("load", ajustarBarra);
+    window.addEventListener("resize", ajustarBarra);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(ajustarBarra);
+    // roda de novo quando uma opção de acessibilidade muda
+    new MutationObserver(ajustarBarra)
+        .observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
 })();
 </script>

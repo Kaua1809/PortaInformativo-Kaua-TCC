@@ -53,11 +53,18 @@
    (headings do site usam rem, relativo à raiz).
    ========================================================================== */
 
-html.fonte-menor2 { font-size: 81.25%; }  /* ~13px */
-html.fonte-menor  { font-size: 93.75%; }  /* ~15px */
-/* fonte-normal não precisa de regra, é o tamanho padrão (100%) */
-html.fonte-grande { font-size: 112.5%; }  /* ~18px */
-html.fonte-maior  { font-size: 125%; }    /* ~20px */
+/* Tamanho "normal" em cada largura de tela.
+   Precisa ser igual ao html { font-size } do style.css (100% / 90% / 85%). */
+:root { --fonte-base: 100%; }
+@media (max-width: 480px) { :root { --fonte-base: 90%; } }
+@media (max-width: 360px) { :root { --fonte-base: 85%; } }
+
+/* Os níveis são proporcionais ao normal de cada tela */
+html.fonte-menor2 { font-size: calc(var(--fonte-base) * 0.8125); }
+/* fonte-normal não precisa de regra, é o tamanho padrão */
+html.fonte-menor  { font-size: calc(var(--fonte-base) * 0.9375); }
+html.fonte-grande { font-size: calc(var(--fonte-base) * 1.125); }
+html.fonte-maior  { font-size: calc(var(--fonte-base) * 1.25); }
 
 /* Garante rolagem mesmo com fonte maior aumentando a altura do conteúdo */
 html.fonte-grande,
@@ -7443,4 +7450,168 @@ html.tema-escuro.daltonismo-tritanopia .modal-pesquisa-form button   { backgroun
             [class*="leitura-fonte-"]) .carrosel {
         height: clamp(280px, 90vw, 380px);
     }
+}
+
+/* =====================================================================
+   CONTA: MENU DA PUBLICAÇÃO COM TEXTO GRANDE (bloco no FINAL)
+   O card mantém a largura normal; o menu passa para baixo da foto e as
+   opções ficam lado a lado, quebrando de linha entre palavras (nunca no
+   meio delas). Só vale com o menu aberto, então o Fechar volta ao normal.
+   Para desfazer, apague daqui até o fim do arquivo.
+   ===================================================================== */
+html:is(.fonte-grande, .fonte-maior,
+        .espacamento-media, .espacamento-grande,
+        .linha-media, .linha-grande,
+        [class*="leitura-fonte-"]) .publicacao-card.menu-aberto .publicacao-linha {
+    display: flex;
+    flex-direction: column;
+}
+
+html:is(.fonte-grande, .fonte-maior,
+        .espacamento-media, .espacamento-grande,
+        .linha-media, .linha-grande,
+        [class*="leitura-fonte-"]) .publicacao-card.menu-aberto .publicacao-imagem-wrapper {
+    width: 100%;
+}
+
+html:is(.fonte-grande, .fonte-maior,
+        .espacamento-media, .espacamento-grande,
+        .linha-media, .linha-grande,
+        [class*="leitura-fonte-"]) .publicacao-card.menu-aberto .publicacao-menu {
+    position: static !important;
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: center;
+    gap: 4px 14px;
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: auto !important;
+    transform: none !important;
+}
+
+html:is(.fonte-grande, .fonte-maior,
+        .espacamento-media, .espacamento-grande,
+        .linha-media, .linha-grande,
+        [class*="leitura-fonte-"]) .publicacao-card.menu-aberto .publicacao-menu button {
+    width: auto !important;
+    white-space: nowrap !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+}
+
+/* =====================================================================
+   TEXTO AMPLIADO (bloco no FINAL): fonte maior, espaçamento, altura da
+   linha ou fonte de leitura. Usa CSS aninhado (navegadores de 2023 em
+   diante). A classe .barra-bolinha é colocada no <header> pelo script do
+   navbar.ejs, só quando o cabeçalho está apertado.
+   Para desfazer, apague daqui até o fim do arquivo.
+   ===================================================================== */
+html:is(.fonte-grande, .fonte-maior,
+        .espacamento-media, .espacamento-grande,
+        .linha-media, .linha-grande,
+        [class*="leitura-fonte-"]) {
+
+    /* ---------- Cabeçalho ---------- */
+    @media (min-width: 769px) {
+        /* o título só quebra de linha se faltar espaço */
+        & header h1 { white-space: normal; flex: 0 1 auto; }
+
+        /* a barra aberta tem largura própria, para o subtítulo não esmagá-la */
+        & .search-bar {
+            flex: 0 0 auto;
+            width: clamp(200px, 22vw, 300px);
+            max-width: none;
+            min-width: 0;
+            margin-left: auto;
+        }
+    }
+
+    /* o subtítulo continua visível, cresce junto e quebra de linha em vez de ser cortado */
+    @media (min-width: 1251px) {
+        & .subtitulo-portal {
+            flex: 1 1 0;
+            min-width: 0;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            line-height: 1.3 !important;
+            margin-right: 16px;
+        }
+    }
+
+    /* barra vira bolinha SÓ quando o cabeçalho está apertado (classe do script) */
+    & header.barra-bolinha .search-bar {
+        flex: 0 0 auto;
+        width: 38px;
+        height: 38px;
+        min-width: 0;
+        max-width: none;
+        margin-left: auto;
+        padding: 0;
+        justify-content: center;
+        border-radius: 50%;
+    }
+    & header.barra-bolinha .search-bar #searchInput { display: none; }
+    & header.barra-bolinha #searchBtn {
+        width: 100%;
+        height: 100%;
+        padding: 0;
+        border-radius: 50%;
+        font-size: 1rem;
+        line-height: 1 !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    @media (max-width: 480px) {
+        & header.barra-bolinha .search-bar { width: 34px; height: 34px; }
+        & header.barra-bolinha #searchBtn { font-size: 0.9rem; }
+    }
+
+    /* ---------- Palavras longas não passam do card ---------- */
+    & :is(h1, h2, h3, h4, h5, h6, p, li, label, span, a, strong, em, small, button) {
+        overflow-wrap: break-word;
+    }
+
+    /* ---------- Feed: botões de ação quebram de linha ---------- */
+    & .post-acoes { flex-wrap: wrap; gap: 12px 24px; }
+    & .post-topo > div { min-width: 0; }
+
+    /* ---------- Botões dos modais: crescem com o texto ---------- */
+    & :is(.fechar, .enviar, .enviar1) {
+        width: auto;
+        min-width: 120px;
+        height: auto;
+        min-height: 40px;
+        padding: 8px 20px;
+    }
+    & .acoes-modal { flex-wrap: wrap; gap: 8px; }
+
+    /* ---------- Conta ---------- */
+    & .section-divider { flex-wrap: wrap; }
+    & .section-divider span { flex: 1 1 auto; overflow-wrap: anywhere; }
+    & .profile-info h2 { flex-wrap: wrap; overflow-wrap: anywhere; }
+    & .card-info { min-width: 0; }
+    & .btn-action { white-space: normal; }
+
+    /* ---------- Rodapé ---------- */
+    & .rodape-coluna { min-width: 0; overflow-wrap: anywhere; }
+
+    /* ---------- Cards de notícia: o texto desce para baixo da foto se faltar espaço ---------- */
+    @media (min-width: 769px) {
+        & .card a { flex-wrap: wrap; }
+        & .card a > :not(img) { flex: 1 1 240px; min-width: 0; }
+    }
+
+    /* ---------- Página de acessibilidade ---------- */
+    & .abas-acessibilidade { flex-wrap: wrap; }
+    & .aba-btn { flex: 1 1 auto; overflow-wrap: anywhere; }
+    & .grupo-botoes button { min-width: 0; overflow-wrap: anywhere; }
+
+    /* ---------- Notícia ---------- */
+    & .noticia-meta,
+    & .noticia-acoes-admin { flex-wrap: wrap; }
+    & :is(.noticia-titulo, .preview-titulo) { overflow-wrap: anywhere; }
 }

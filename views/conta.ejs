@@ -306,6 +306,24 @@
     </main>
 
     <script>
+                    // Pré-visualização da foto de perfil (modo edição)
+            const inputFoto = document.querySelector('input[name="foto_perfil"]');
+            if (inputFoto) {
+                inputFoto.addEventListener('change', function() {
+                    const arquivo = this.files[0];
+                    if (!arquivo) return;
+
+                    // mesmo limite do servidor (2 MB), para não dar erro só depois de salvar
+                    if (arquivo.size > 2 * 1024 * 1024) {
+                        mostrarToast('A foto deve ter no máximo 2 MB.', false);
+                        this.value = '';
+                        return;
+                    }
+
+                    document.querySelector('.profile-avatar img').src = URL.createObjectURL(arquivo);
+                });
+            }
+            
         document.addEventListener('DOMContentLoaded', function() {
             // Alternar Abas
             const tInfo = document.getElementById('tab-info');
