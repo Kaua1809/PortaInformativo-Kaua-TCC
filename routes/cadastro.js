@@ -10,60 +10,84 @@ router.get('/', (req, res) => {
 });
 
 // ROTA PARA RECEBER OS DADOS (POST /cadastro)
-router.post('/', async (req, res) => {
-    const { login, email, senha } = req.body;
-    
-    try {
-        const hashedSenha = await bcrypt.hash(senha, 10);
+router.post('/', (req, res) => {
+    const { login, senha } = req.body;
+    const email = (req.body.email || '').trim();
 
-   const sql = 'INSERT INTO usuario (login, nome_exibicao, email, senha, is_verified) VALUES (?, ?, ?, ?, false)';
+    // 1) Confere se já existe conta com esse e-mail ou esse nome de usuário
+    db.query('SELECT email, login FROM usuario WHERE email = ? OR login = ?', [email, login], async (errBusca, existentes) => {
+        if (errBusca) {
+            console.log(errBusca);
+            return res.render('cadastro', { erro: 'Erro ao cadastrar. Tente novamente.' });
+        }
 
-db.query(sql, [login, login, email, hashedSenha], (err, result) => {
-            if (err) {
-                console.log(err);
-                return res.render('cadastro', { erro: 'Erro ao cadastrar. Tente outro usuário ou e-mail.' });
-            }
+        if (existentes.length > 0) {
+            const emailRepetido = existentes.some(u => (u.email || '').toLowerCase() === email.toLowerCase());
+            return res.render('cadastro', {
+                erro: emailRepetido
+                    ? 'Já existe uma conta com esse e-mail. Faça login.'
+                    : 'Esse nome de usuário já está em uso. Escolha outro.'
+            });
+        }
 
-            const mailOptions = {
-                from: '"Portal Informativo" <portal.informativo02@gmail.com>',
-                to: email,
-                subject: 'Ativação de Conta - Portal Informativo',
-                html: `
-                    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
-                        <h2 style="color: #333; text-align: center;">Bem-vindo ao Portal Informativo!</h2>
-                        <p style="font-size: 16px; color: #555;">Olá, <strong>${login}</strong>!</p>
-                        <p style="font-size: 16px; color: #555;">Obrigado por se cadastrar no nosso portal. Para garantir a segurança da sua conta, precisamos que você confirme seu endereço de e-mail.</p>
-                        <div style="text-align: center; margin: 30px 0;">
-                          <a href="${process.env.BASE_URL || 'http://localhost:3000'}/verify?email=${encodeURIComponent(email)}"
-                               style="background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
-                               Confirmar meu E-mail
-                            </a>
-                        </div>
-                        <p style="font-size: 14px; color: #888; text-align: center;">Se você não criou esta conta, pode ignorar este e-mail com segurança.</p>
-                        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
-                        <p style="font-size: 12px; color: #aaa; text-align: center;">&copy; 2026 Portal Informativo - TCC</p>
-                    </div>
-                `
-            };
+        // 2) Não existe: cria a conta
+        try {
+            const hashedSenha = await bcrypt.hash(senha, 10);
 
-            // ÚNICO envio do e-mail de validação (antes havia uma chamada duplicada/aninhada aqui,
-            // que mandava o mesmo e-mail duas vezes e piorava a pontuação de spam no destinatário).
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.log('Erro e-mail:', error);
-                    return res.render('cadastro', { erro: 'Cadastro feito, mas houve um erro ao enviar o e-mail de validação.' });
+            const sql = 'INSERT INTO usuario (login, nome_exibicao, email, senha, is_verified) VALUES (?, ?, ?, ?, false)';
+
+            db.query(sql, [login, login, email, hashedSenha], (err, result) => {
+                if (err) {
+                    console.log(err);
+
+                    // Segurança extra: se o banco tiver UNIQUE e dois pedidos chegarem juntos
+                    if (err.code === 'ER_DUP_ENTRY') {
+                        return res.render('cadastro', { erro: 'Já existe uma conta com esse e-mail ou nome de usuário.' });
+                    }
+                    return res.render('cadastro', { erro: 'Erro ao cadastrar. Tente novamente.' });
                 }
 
-                // RECARREGA A PÁGINA DE CADASTRO COM A MENSAGEM DE SUCESSO
-                res.render('cadastro', {
-                    erro: null,
-                    sucesso: 'Enviamos um e-mail de validação! Por favor, verifique sua caixa de entrada (e a pasta de Spam) para ativar sua conta.'
+                const mailOptions = {
+                    from: '"Portal Informativo" <portal.informativo02@gmail.com>',
+                    to: email,
+                    subject: 'Ativação de Conta - Portal Informativo',
+                    html: `
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #ddd; border-radius: 8px; padding: 20px;">
+                            <h2 style="color: #333; text-align: center;">Bem-vindo ao Portal Informativo!</h2>
+                            <p style="font-size: 16px; color: #555;">Olá, <strong>${login}</strong>!</p>
+                            <p style="font-size: 16px; color: #555;">Obrigado por se cadastrar no nosso portal. Para garantir a segurança da sua conta, precisamos que você confirme seu endereço de e-mail.</p>
+                            <div style="text-align: center; margin: 30px 0;">
+                              <a href="${process.env.BASE_URL || 'http://localhost:3000'}/verify?email=${encodeURIComponent(email)}"
+                                   style="background-color: #007bff; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 16px;">
+                                   Confirmar meu E-mail
+                                </a>
+                            </div>
+                            <p style="font-size: 14px; color: #888; text-align: center;">Se você não criou esta conta, pode ignorar este e-mail com segurança.</p>
+                            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                            <p style="font-size: 12px; color: #aaa; text-align: center;">&copy; 2026 Portal Informativo - TCC</p>
+                        </div>
+                    `
+                };
+
+                // ÚNICO envio do e-mail de validação
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.log('Erro e-mail:', error);
+                        return res.render('cadastro', { erro: 'Cadastro feito, mas houve um erro ao enviar o e-mail de validação.' });
+                    }
+
+                    // RECARREGA A PÁGINA DE CADASTRO COM A MENSAGEM DE SUCESSO
+                    res.render('cadastro', {
+                        erro: null,
+                        sucesso: 'Enviamos um e-mail de validação! Por favor, verifique sua caixa de entrada (e a pasta de Spam) para ativar sua conta.'
+                    });
                 });
             });
-        });
-    } catch (e) {
-        res.render('cadastro', { erro: 'Erro interno no servidor.' });
-    }
+        } catch (e) {
+            console.log(e);
+            res.render('cadastro', { erro: 'Erro interno no servidor.' });
+        }
+    });
 });
 
 module.exports = router;

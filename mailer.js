@@ -4,6 +4,17 @@ const REMETENTE = {
   email: process.env.MAIL_FROM || 'incluaneuro@gmail.com'
 };
 
+// Imagem do topo de todos os e-mails (arquivo em public/images).
+// O endereço precisa ser público: no Render, BASE_URL deve ser o endereço do site.
+function cabecalhoComImagem() {
+  const base = (process.env.BASE_URL || 'http://localhost:3000').replace(/\/$/, '');
+  const logo = base + '/images/favicon.png'; // troque pelo nome da imagem que você quiser
+  return '<div style="text-align: center; padding: 16px 0 0;">' +
+         '<img src="' + logo + '" alt="IncluaNeuro" width="120" ' +
+         'style="display: block; margin: 0 auto; max-width: 100%; height: auto; border: 0;">' +
+         '</div>';
+}
+
 async function enviar({ to, subject, html }) {
   const resp = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
@@ -16,7 +27,7 @@ async function enviar({ to, subject, html }) {
       sender: REMETENTE,
       to: [{ email: to }],
       subject: subject,
-      htmlContent: html
+      htmlContent: cabecalhoComImagem() + html
     }),
     signal: AbortSignal.timeout(15000) // não fica preso mais de 15 segundos
   });

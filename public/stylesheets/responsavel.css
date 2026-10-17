@@ -590,3 +590,26 @@ header { height: auto; min-height: 0; }
 @media (max-width: 480px) {
     .perfil-box h4 { display: none; }
 }
+
+/* Card empilhado em telas médias (até 1199px) */
+@media (max-width: 1199px) {
+    .post-layout-horizontal {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .post-coluna-imagem,
+    .post-coluna-conteudo {
+        width: 100%;
+        max-width: 100%;
+    }
+}
+
+/* Evita estouro do texto em qualquer largura */
+.post-coluna-conteudo {
+    min-width: 0;
+}
+
+.post-corpo p {
+    overflow-wrap: anywhere;
+}
