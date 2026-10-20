@@ -124,3 +124,87 @@
     .faixa-outras-info { font-size: clamp(1.05rem, 4.5vw, 1.2rem); padding: var(--espacamento-medio); }
     .faixa-outras-info h2 { font-size: clamp(1.05rem, 4.5vw, 1.2rem); }
 }
+
+/* =====================================================================
+   ABAS DAS PÁGINAS DE CONDIÇÃO (bloco no FINAL do deficiencias.css)
+   Usado em mielomeningocele.ejs e hidrocefalia.ejs.
+   A barra fica logo abaixo da navbar e acompanha a rolagem (sticky).
+   As variáveis --altura-header e --altura-abas são preenchidas pelo
+   script no fim do .ejs.
+   Para desfazer, apague daqui até o fim do arquivo.
+   ===================================================================== */
+.abas-condicao {
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    background-color: var(--cor03);
+    position: sticky;
+    top: var(--altura-header, 0px);
+    z-index: 899; /* abaixo da navbar (900), acima do conteúdo */
+}
+
+.abas-condicao a {
+    flex: 1 1 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 56px;
+    padding: 8px var(--espacamento-pequeno);
+    font-family: var(--fonte-destaque);
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--cor01);
+    border-left: 1px solid rgba(244, 249, 233, 0.15);
+    transition: 0.3s;
+}
+
+.abas-condicao a:first-child { border-left: none; }
+
+.abas-condicao a:hover {
+    background-color: var(--cor02);
+    color: var(--cor01);
+}
+
+/* Aba ativa: mesma cor do fundo da página, como se estivesse "aberta" */
+.abas-condicao a.ativa {
+    background-color: var(--cor01);
+    color: var(--cor02);
+}
+
+.abas-condicao a:focus-visible {
+    outline: 3px solid var(--cor01);
+    outline-offset: -3px;
+}
+.abas-condicao a.ativa:focus-visible { outline-color: var(--cor03); }
+
+.aba-conteudo[hidden] { display: none; }
+
+/* Imagens fixas das seções: ficam abaixo da navbar + barra de abas,
+   em vez de entrar por trás delas e aparecer cortadas */
+@media (min-width: 901px) {
+    .condicao-secao-imagens,
+    .condicao-secao.inverter > img {
+        top: calc(var(--altura-header, 0px) + var(--altura-abas, 0px) + 20px);
+    }
+}
+
+/* Telas pequenas: um bloco embaixo do outro.
+   Sem sticky aqui: 7 blocos empilhados fixos ocupariam metade da tela. */
+@media (max-width: 768px) {
+    .abas-condicao {
+        position: static;
+        flex-direction: column;
+    }
+    .abas-condicao a {
+        flex: none;
+        width: 100%;
+        min-height: 46px;
+        padding: 10px var(--espacamento-medio);
+        font-size: 0.9rem;
+        border-left: none;
+        border-top: 1px solid rgba(244, 249, 233, 0.15);
+    }
+    .abas-condicao a:first-child { border-top: none; }
+}

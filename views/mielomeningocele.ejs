@@ -16,10 +16,26 @@
          <%- include('partials/menu') %>
          <%- include('partials/navbar') %>
     </header>
+
+    <!-- Barra de abas (logo abaixo da navbar) -->
+    <nav class="abas-condicao" aria-label="Seções da página">
+        <a href="#o-que-e" data-aba="o-que-e">O que é a mielomeningocele</a>
+        <a href="#causas" data-aba="causas">Causas e consequências</a>
+        <a href="#diagnostico-tratamento" data-aba="diagnostico-tratamento">Diagnóstico e tratamento</a>
+        <a href="#prevencao" data-aba="prevencao">Prevenção e riscos</a>
+        <a href="#brasil-mundo" data-aba="brasil-mundo">Dados e cenário no Brasil</a>
+        <a href="#vida-inclusao" data-aba="vida-inclusao">Vida diária e inclusão</a>
+        <a href="#fontes" data-aba="fontes">Fontes</a>
+    </nav>
+
     <main>
         <article class="conteudo-condicao">
 
             <h1 class="titulo-condicao">Mielomeningocele — o que é, causas e o que se sabe hoje</h1>
+
+
+            <!-- ABA: O que é (seção 1) -->
+            <section class="aba-conteudo" id="o-que-e">
 
             <!-- 1. O que é a mielomeningocele? (foto à esquerda) -->
             <div class="condicao-secao">
@@ -57,8 +73,14 @@
                     <p>                     
                         Durante esse processo, o tubo neural precisa se fechar corretamente. Quando ocorrem falhas nesse fechamento, podem surgir os chamados defeitos do tubo neural (DTN), que são malformações congênitas graves que podem afetar o cérebro, a coluna vertebral ou a medula espinhal.
                         Os dois defeitos do tubo neural mais conhecidos são a espinha bífida, que inclui a mielomeningocele, e a anencefalia.
+                    </p>
                 </div>
             </div>
+
+            </section>
+
+            <!-- ABA: Causas e consequências (seções 2 e 3) -->
+            <section class="aba-conteudo" id="causas">
 
             <!-- 2. Causas e fatores associados (só texto) -->
             <div class="condicao-secao">
@@ -73,16 +95,16 @@
                     <ul>
                         <li><strong>Baixos níveis de ácido fólico</strong> no organismo antes da gestação e durante as primeiras semanas de gravidez;</li>
 
-                        <li><strong>Uso de alguns medicamentos anticonvulsivantes</strong> , utilizados para controlar a atividade elétrica excessiva do cérebro;
+                        <li><strong>Uso de alguns medicamentos anticonvulsivantes</strong>, utilizados para controlar a atividade elétrica excessiva do cérebro;
                         </li>
 
-                        <li><strong>Diabetes materna mal controlada</strong>  antes e durante a gestação;
+                        <li><strong>Diabetes materna mal controlada</strong> antes e durante a gestação;
 </li>
 
-                    <li><strong>Histórico familiar</strong>  , especialmente quando já houve casos de defeitos do tubo neural na família ou uma gestação anterior afetada por essa condição;
+                    <li><strong>Histórico familiar</strong>, especialmente quando já houve casos de defeitos do tubo neural na família ou uma gestação anterior afetada por essa condição;
                     </li>
 
-                    <li><strong>Obesidade materna</strong>  antes da gestação.
+                    <li><strong>Obesidade materna</strong> antes da gestação.
                     </li>
 
                     </ul>
@@ -115,6 +137,11 @@
                     </ul>
                 </div>
             </div>
+
+            </section>
+
+            <!-- ABA: Diagnóstico e tratamento (seções 4 e 5) -->
+            <section class="aba-conteudo" id="diagnostico-tratamento">
 
             <!-- 4. Diagnóstico (foto à direita) -->
             <div class="condicao-secao inverter">
@@ -199,13 +226,18 @@ Quando a cirurgia fetal não é realizada, o fechamento da abertura na coluna ve
                         <li>Ortopedista</li>
                         <li>Urologista</li>
                         <li>Fisioterapeuta</li>
-                        <li>Cirugião fetal</li>
+                        <li>Cirurgião fetal</li>
                         <li>Dermatologista</li>
                         <li>Pediatra</li>
                     </ul>
 
                 </div>
             </div>
+
+            </section>
+
+            <!-- ABA: Prevenção (seção 6) -->
+            <section class="aba-conteudo" id="prevencao">
 
             <!-- 6. Prevenção e redução de riscos (foto à direita) -->
             <div class="condicao-secao inverter">
@@ -224,14 +256,6 @@ Quando a cirurgia fetal não é realizada, o fechamento da abertura na coluna ve
 
                     <h4>Quais são os fatores de risco para a mielomeningocele?</h4>
 
-
-
-
-
-
-
-
-
                     <ul>
                         <li><strong>Ácido fólico:</strong> Essa vitamina, também conhecida como vitamina B9, é fundamental para a formação adequada do sistema nervoso do bebê. Quando há uma quantidade insuficiente, o risco de defeitos do tubo neural pode aumentar.</li>
 
@@ -248,8 +272,12 @@ Quando a cirurgia fetal não é realizada, o fechamento da abertura na coluna ve
                 </div>
             </div>
 
+            </section>
+
+            <!-- ABA: Brasil e mundo (seção 7) -->
+            <section class="aba-conteudo" id="brasil-mundo">
+
             <!-- 7. Mielomeningocele no Brasil e no mundo (foto à esquerda) -->
-             
             <div class="condicao-secao">
                <div class="condicao-secao-imagens">
     <img src="/images/AtendimentoSUS.jfif" alt="Atendimento de criança com mielomeningocele por equipe multiprofissional">
@@ -271,6 +299,7 @@ Quando a cirurgia fetal não é realizada, o fechamento da abertura na coluna ve
                     <p>
 
                         O diagnóstico durante a gestação, realizado por exames como a ultrassonografia, permite identificar a mielomeningocele antes do nascimento e contribui para o planejamento dos cuidados necessários. Em casos selecionados, pode ser indicada a cirurgia intrauterina, realizada ainda durante a gestação. Entretanto, o acesso a esse procedimento é limitado pela complexidade da cirurgia, pelos custos e pela disponibilidade de centros especializados.
+                    </p>
 
 <p>Segundo informações apresentadas pela Abrasse em uma audiência pública no Senado Federal, entre 2010 e 2018, cerca de 12% das crianças acompanhadas pela associação tiveram acesso à cirurgia intrauterina. Em 2023 e 2024, esse percentual chegou a 85% entre os assistidos pela instituição. Esses números dizem respeito às pessoas acompanhadas pela associação e não representam necessariamente todas as crianças com mielomeningocele no Brasil.</p>
 
@@ -282,6 +311,11 @@ Quando a cirurgia fetal não é realizada, o fechamento da abertura na coluna ve
 
                 </div>
             </div>
+
+            </section>
+
+            <!-- ABA: Vida diária e inclusão (seções 8 e 9) -->
+            <section class="aba-conteudo" id="vida-inclusao">
 
             <!-- 8. Vivendo com mielomeningocele (foto à direita) -->
             <div class="condicao-secao inverter">
@@ -326,6 +360,11 @@ Quando a cirurgia fetal não é realizada, o fechamento da abertura na coluna ve
                     </ul>
                 </div>
             </div>
+
+            </section>
+
+            <!-- ABA: Fontes (seção 10) -->
+            <section class="aba-conteudo" id="fontes">
 
             <!-- 10. Fontes -->
             <div class="condicao-secao">
@@ -378,6 +417,9 @@ Quando a cirurgia fetal não é realizada, o fechamento da abertura na coluna ve
                 </div>
             </div>
 
+            </section>
+
+            <!-- Fora das abas: aparece em todas -->
             <div class="faixa-outras-info">
                 <h2>Outras informações e notícias</h2>
             </div>
@@ -409,10 +451,53 @@ Quando a cirurgia fetal não é realizada, o fechamento da abertura na coluna ve
     <%- include('partials/rodape') %>
 <%- include('partials/script-acessibilidade') %>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="javascripts/menu.js"></script>
     <script src="javascripts/modal-contato.js"></script>
     <script src="javascripts/modal-feedback.js"></script>
-    
+
+    <!-- Abas da página -->
+    <script>
+    (function () {
+        const abas = document.querySelectorAll('.abas-condicao a');
+        const secoes = document.querySelectorAll('.aba-conteudo');
+        if (!abas.length) return;
+
+        function mostrar(id) {
+            if (!document.getElementById(id)) id = abas[0].dataset.aba;
+            secoes.forEach(s => s.hidden = s.id !== id);
+            abas.forEach(a => {
+                const ativa = a.dataset.aba === id;
+                a.classList.toggle('ativa', ativa);
+                if (ativa) a.setAttribute('aria-current', 'true');
+                else a.removeAttribute('aria-current');
+            });
+        }
+
+        // A barra e as imagens fixas acompanham a rolagem logo abaixo da navbar (que também é sticky)
+        const header = document.querySelector('header');
+        const barra = document.querySelector('.abas-condicao');
+        function ajustarAlturas() {
+            const raiz = document.documentElement.style;
+            if (header) {
+                raiz.setProperty('--altura-header', Math.floor(header.getBoundingClientRect().height) + 'px');
+            }
+            if (barra) {
+                // em telas pequenas a barra não é sticky: não reserva espaço
+                const fixa = getComputedStyle(barra).position === 'sticky';
+                raiz.setProperty('--altura-abas', (fixa ? Math.floor(barra.getBoundingClientRect().height) : 0) + 'px');
+            }
+        }
+        ajustarAlturas();
+        window.addEventListener('resize', ajustarAlturas);
+        if ('ResizeObserver' in window) {
+            const ro = new ResizeObserver(ajustarAlturas);
+            if (header) ro.observe(header);
+            if (barra) ro.observe(barra);
+        }
+
+        window.addEventListener('hashchange', () => mostrar(location.hash.slice(1)));
+        mostrar(location.hash.slice(1));
+    })();
+    </script>
 </body>
 </html>

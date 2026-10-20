@@ -7615,3 +7615,202 @@ html:is(.fonte-grande, .fonte-maior,
     & .noticia-acoes-admin { flex-wrap: wrap; }
     & :is(.noticia-titulo, .preview-titulo) { overflow-wrap: anywhere; }
 }
+
+/* ==========================================================================
+   28. BARRA DE ABAS DAS PÁGINAS DE CONDIÇÃO (.abas-condicao)
+   Cola no FINAL do arquivo de acessibilidade (depois da seção 27 e dos
+   blocos de ajuste que já estão no fim).
+   --------------------------------------------------------------------------
+   POR QUE PRECISA: as regras gerais de link dos temas ("html.tema-escuro a",
+   "html.tema-contraste a", "html.daltonismo-x a") forçam
+   background-color: transparent !important e trocam cor/sublinhado. Isso
+   apagava o fundo da aba ativa e do hover. Aqui cada modo define o fundo
+   da barra, as cores das abas e o foco de teclado.
+
+   Notas:
+   - border-color/border-width só atuam nos lados que já têm borda (o
+     separador entre abas), então funcionam no desktop e no celular.
+   - O monocromático já é coberto pelo grayscale na raiz (seção 24.1); só
+     precisa do sublinhado na aba ativa (cor sozinha não basta).
+   - Atalho do daltonismo sozinho:
+     html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro)
+   ========================================================================== */
+
+
+/* ---------- 28.0 Padrão: foco visível também na aba ativa ---------- */
+.abas-condicao a.ativa:focus-visible { outline-color: var(--cor03, #153243); }
+
+
+/* ---------- 28.1 TEMA ESCURO ---------- */
+html.tema-escuro .abas-condicao {
+    background-color: var(--de-superficie-alt) !important;
+}
+html.tema-escuro .abas-condicao a {
+    background-color: transparent !important;
+    color: var(--de-texto) !important;
+    border-color: var(--de-borda) !important;
+}
+html.tema-escuro .abas-condicao a:hover {
+    background-color: var(--de-superficie) !important;
+    color: var(--de-destaque) !important;
+}
+html.tema-escuro .abas-condicao a.ativa {
+    background-color: var(--de-fundo) !important;
+    color: var(--de-destaque) !important;
+}
+
+
+/* ---------- 28.2 ALTO CONTRASTE (ESCURO) ---------- */
+html.tema-contraste .abas-condicao {
+    background-color: #000000 !important;
+    border-bottom: 2px solid #FFC94D !important;
+}
+html.tema-contraste .abas-condicao a {
+    background-color: transparent !important;
+    color: #FFFFFF !important;
+    text-decoration: none !important;
+    border-color: #FFC94D !important;
+    border-width: 2px !important;
+}
+html.tema-contraste .abas-condicao a:hover {
+    background-color: #1A1A1A !important;
+    color: #FFC94D !important;
+}
+/* aba ativa: fundo cheio + sublinhado (não depende só de cor) */
+html.tema-contraste .abas-condicao a.ativa {
+    background-color: #FFC94D !important;
+    color: #000000 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 4px;
+}
+html.tema-contraste .abas-condicao a.ativa:hover {
+    background-color: #E0AA30 !important;
+    color: #000000 !important;
+}
+html.tema-contraste .abas-condicao a.ativa:focus-visible {
+    outline-color: #000000 !important;
+}
+
+
+/* ---------- 28.3 ALTO CONTRASTE CLARO ---------- */
+html.tema-contraste-claro .abas-condicao {
+    background-color: #FFFFFF !important;
+    border-bottom: 2px solid #000000 !important;
+}
+html.tema-contraste-claro .abas-condicao a {
+    background-color: transparent !important;
+    color: #000000 !important;
+    text-decoration: none !important;
+    border-color: #000000 !important;
+    border-width: 2px !important;
+}
+html.tema-contraste-claro .abas-condicao a:hover {
+    background-color: #F0F0F0 !important;
+    color: #1A1A1A !important;
+}
+html.tema-contraste-claro .abas-condicao a.ativa {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    text-decoration: underline !important;
+    text-underline-offset: 4px;
+}
+html.tema-contraste-claro .abas-condicao a.ativa:hover {
+    background-color: #1A1A1A !important;
+    color: #FFFFFF !important;
+}
+html.tema-contraste-claro .abas-condicao a.ativa:focus-visible {
+    outline-color: #FFFFFF !important;
+}
+
+
+/* ---------- 28.4 DALTONISMO sozinho (mesmo padrão do header e do rodapé) ---------- */
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .abas-condicao {
+    background-color: var(--dc-destaque) !important;
+}
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .abas-condicao a {
+    background-color: transparent !important;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    border-color: rgba(255, 255, 255, 0.35) !important;
+}
+/* hover: mesmos tons escuros usados no menu lateral de cada tipo */
+html.daltonismo-protanopia:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .abas-condicao a:hover {
+    background-color: #004570 !important;
+    color: #ffffff !important;
+}
+html.daltonismo-deuteranopia:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .abas-condicao a:hover {
+    background-color: #7A3762 !important;
+    color: #ffffff !important;
+}
+html.daltonismo-tritanopia:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .abas-condicao a:hover {
+    background-color: #00543D !important;
+    color: #ffffff !important;
+}
+/* aba ativa: fundo da página + sublinhado (não depende só de cor) */
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .abas-condicao a.ativa {
+    background-color: var(--dc-fundo) !important;
+    color: var(--dc-destaque) !important;
+    text-decoration: underline !important;
+    text-underline-offset: 4px;
+}
+/* foco: a regra geral usa dc-destaque, igual ao fundo da barra (ficava invisível) */
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .abas-condicao a:focus-visible {
+    outline: 3px solid #ffffff !important;
+    outline-offset: -3px;
+}
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .abas-condicao a.ativa:focus-visible {
+    outline-color: var(--dc-destaque) !important;
+}
+
+
+/* ---------- 28.5 COMBO TEMA ESCURO + DALTONISMO (cores da navbar do combo) ---------- */
+html.tema-escuro[class*="daltonismo-"] .abas-condicao a {
+    color: #FFFFFF !important;
+    border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+html.tema-escuro.daltonismo-protanopia .abas-condicao   { background-color: #002D47 !important; }
+html.tema-escuro.daltonismo-deuteranopia .abas-condicao { background-color: #4A2039 !important; }
+html.tema-escuro.daltonismo-tritanopia .abas-condicao   { background-color: #003326 !important; }
+
+/* hover */
+html.tema-escuro.daltonismo-protanopia .abas-condicao a:hover   { background-color: #1A1A1A !important; color: #7DD3FC !important; }
+html.tema-escuro.daltonismo-deuteranopia .abas-condicao a:hover { background-color: #1A1A1A !important; color: #FAC4E3 !important; }
+html.tema-escuro.daltonismo-tritanopia .abas-condicao a:hover   { background-color: #1A1A1A !important; color: #6EE7B7 !important; }
+
+/* aba ativa: fundo do conteúdo do combo + cor do tipo + sublinhado (depois do hover, de propósito) */
+html.tema-escuro.daltonismo-protanopia .abas-condicao a.ativa {
+    background-color: #282828 !important;
+    color: #7DD3FC !important;
+    text-decoration: underline !important;
+    text-underline-offset: 4px;
+}
+html.tema-escuro.daltonismo-deuteranopia .abas-condicao a.ativa {
+    background-color: #282828 !important;
+    color: #FAC4E3 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 4px;
+}
+html.tema-escuro.daltonismo-tritanopia .abas-condicao a.ativa {
+    background-color: #282828 !important;
+    color: #6EE7B7 !important;
+    text-decoration: underline !important;
+    text-underline-offset: 4px;
+}
+
+
+/* ---------- 28.6 MONOCROMÁTICO ---------- */
+html.monocromatico.monocromatico .abas-condicao a.ativa {
+    text-decoration: underline !important;
+    text-underline-offset: 4px;
+}
+
+
+/* ---------- 28.7 TEXTO AMPLIADO (fonte maior, espaçamento, altura da linha, fonte de leitura) ---------- */
+/* palavras longas ("mielomeningocele") quebram dentro da aba em vez de estourar */
+html:is(.fonte-grande, .fonte-maior,
+        .espacamento-media, .espacamento-grande,
+        .linha-media, .linha-grande,
+        [class*="leitura-fonte-"]) .abas-condicao a {
+    overflow-wrap: anywhere;
+}
