@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajuda | IncluaNeuro</title>
+    <meta name="description" content="Aprenda a usar o IncluaNeuro: mapa com as funcionalidades do portal, vídeos e exemplos passo a passo.">
+    <link rel="shortcut icon" href="/images/favicon.png" type="image/x-icon">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/stylesheets/style.css">
+    <link rel="stylesheet" href="/stylesheets/acessibilidade.css">
+    <link rel="stylesheet" href="/stylesheets/modals.css">
+    <link rel="stylesheet" href="/stylesheets/ajuda.css">
+</head>
+<body>
+    <header>
+        <%- include('partials/menu') %>
+        <%- include('partials/navbar') %>
+    </header>
+
+    <main>
+    <article class="conteudo-ajuda">
+
+        <!-- ================= TOPO ================= -->
+        <div class="faixa-titulo">
+            <h2>AJUDA</h2>
+        </div>
+
+        <section class="ajuda-topo">
+            <p class="ajuda-intro">
+                Se você é iniciante no portal e não sabe como mexer em todas as
+                funcionalidades, esta página é para você! Abaixo há um mapa mental
+                listando as funcionalidades do portal e como se localizar nele.
+                Clique em um tópico para ir direto à explicação.
+            </p>
+        </section>
+
+        <!-- ================= MAPA MENTAL (ÍNDICE) ================= -->
+        <nav class="mapa" aria-label="Mapa de funcionalidades">
+            <div class="mapa-centro">Portal</div>
+
+            <ul class="mapa-ramos">
+                <li><a href="#tela-inicial"    class="mapa-no">Tela inicial</a></li>
+                <li><a href="#portal-inclusao" class="mapa-no">Portal da inclusão</a></li>
+                <li><a href="#condicoes"       class="mapa-no">Hidrocefalia e mielomeningocele</a></li>
+                <li><a href="#legislacao"      class="mapa-no">Legislação, contato e feedback</a></li>
+                <li><a href="#conta"           class="mapa-no">Conta pessoal</a></li>
+                <li><a href="#acessibilidade"  class="mapa-no">Acessibilidade</a></li>
+            </ul>
+        </nav>
+
+        <section class="ajuda-secao" id="tela-inicial">
+            <div class="faixa-titulo">
+                <h2>TELA INICIAL</h2>
+            </div>
+            <p class="ajuda-desc">Um vídeo rápido apresenta o início, as notícias, a pesquisa e o menu.</p>
+
+            <figure class="ajuda-video">
+                <video controls preload="metadata">
+                    <source src="/videos/TelaInicio.mp4#t=0.1" type="video/mp4">
+                    Seu navegador não suporta vídeo.
+                </video>
+            </figure>
+
+            <article class="card-lei ajuda-resumo">
+                <div class="card-body">
+                    <h3 class="card-title">Resumo da tela</h3>
+                    <p class="card-text">A tela inicial reúne o carrossel de destaques, a seção SOBRE, os cartões das condições, o acesso ao fórum e as notícias. No topo ficam o menu (três barras), o nome do portal e a barra de pesquisa.</p>
+                    <ul class="ajuda-lista">
+                        <li><strong>Cartões das condições:</strong> clique para abrir a página de cada condição.</li>
+                        <li><strong>Notícias:</strong> clique em uma notícia para lê-la completa.</li>
+                        <li><strong>Pesquisar:</strong> busca notícias, pessoas e conteúdos relacionados.</li>
+                        <li><strong>Menu:</strong> leva para qualquer página do portal.</li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+
+        <div class="seta-baixo seta-secao" aria-hidden="true"></div>
+
+        <section class="ajuda-secao" id="portal-inclusao">
+            <div class="faixa-titulo">
+                <h2>PORTAL DA INCLUSÃO</h2>
+            </div>
+            <p class="ajuda-desc">Espaço da comunidade: veja publicações, comente, curta e compartilhe as suas.</p>
+
+            <figure class="ajuda-video">
+                <video controls preload="metadata">
+                    <source src="/videos/TelaPortaldaInclusao.mp4" type="video/mp4">
+                    Seu navegador não suporta vídeo.
+                </video>
+            </figure>
+
+            <article class="card-lei ajuda-resumo">
+                <div class="card-body">
+                    <h3 class="card-title">Resumo da tela</h3>
+                    <p class="card-text">O Portal da Inclusão é o fórum de apoio, onde famílias, responsáveis, pessoas com deficiência e profissionais de saúde conversam, tiram dúvidas e compartilham experiências. Para participar, é preciso estar logado.</p>
+                    <ul class="ajuda-lista">
+                        <li><strong>Comentários:</strong> leia as respostas e escreva a sua.</li>
+                        <li><strong>Curtidas:</strong> clique no coração para curtir; clique de novo para remover.</li>
+                        <li><strong>Postar:</strong> escreva seu texto, adicione uma imagem se quiser e publique.</li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+
+        <div class="seta-baixo seta-secao" aria-hidden="true"></div>
+
+        <section class="ajuda-secao" id="condicoes">
+            <div class="faixa-titulo">
+                <h2>HIDROCEFALIA E MIELOMENINGOCELE</h2>
+            </div>
+            <p class="ajuda-desc">O portal tem uma página para cada condição.</p>
+
+            <figure class="ajuda-video">
+                <video controls preload="metadata">
+                    <source src="/videos/TelaCondicoes.mp4" type="video/mp4">
+                    Seu navegador não suporta vídeo.
+                </video>
+            </figure>
+
+            <article class="card-lei ajuda-resumo">
+                <div class="card-body">
+                    <h3 class="card-title">Resumo da tela</h3>
+                    <p class="card-text">Cada página explica o que é a condição, as causas, o diagnóstico, o tratamento, a prevenção, os números no Brasil e no mundo, a vida no dia a dia e como incluir e respeitar quem vive com ela.</p>
+                    <ul class="ajuda-lista">
+                        <li><strong>Como chegar:</strong> pelos cartões da tela inicial ou pelo menu (Hidrocefalia e Mielomeningocele).</li>
+                        <li><strong>Como ler:</strong> role a página e acompanhe cada tópico.</li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+
+        <div class="seta-baixo seta-secao" aria-hidden="true"></div>
+
+        <section class="ajuda-secao" id="legislacao">
+            <div class="faixa-titulo">
+                <h2>LEGISLAÇÃO, CONTATO E FEEDBACK</h2>
+            </div>
+            <p class="ajuda-desc">Consulte as leis de inclusão e fale com a equipe do portal.</p>
+
+            <figure class="ajuda-video">
+                <video controls preload="metadata">
+                    <source src="/videos/LegislacaoContatoFeedback.mp4" type="video/mp4">
+                    Seu navegador não suporta vídeo.
+                </video>
+            </figure>
+
+            <article class="card-lei ajuda-resumo">
+                <div class="card-body">
+                    <h3 class="card-title">Resumo da tela</h3>
+                    <p class="card-text">A página de Legislação mostra as leis de inclusão em cartões, cada um com um resumo. Contato e Feedback abrem em janelas (modais) sobre a página em que você está.</p>
+                    <ul class="ajuda-lista">
+                        <li><strong>Legislação:</strong> clique no botão do cartão para ler a lei completa.</li>
+                        <li><strong>Contato:</strong> abra pelo menu para ver as formas de falar com a equipe.</li>
+                        <li><strong>Feedback:</strong> abra pelo menu para enviar sugestões, elogios ou problemas encontrados.</li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+
+        <div class="seta-baixo seta-secao" aria-hidden="true"></div>
+
+        <section class="ajuda-secao" id="conta">
+            <div class="faixa-titulo">
+                <h2>CONTA PESSOAL</h2>
+            </div>
+            <p class="ajuda-desc">Entre, veja seu perfil e ajuste as configurações da sua conta.</p>
+
+            <figure class="ajuda-video">
+                <video controls preload="metadata">
+                    <source src="/videos/TelaConta.mp4" type="video/mp4">
+                    Seu navegador não suporta vídeo.
+                </video>
+            </figure>
+
+            <article class="card-lei ajuda-resumo">
+                <div class="card-body">
+                    <h3 class="card-title">Resumo da tela</h3>
+                    <p class="card-text">No fim do menu lateral ficam os botões Entrar e Cadastrar. Depois de entrar, sua foto e seu nome aparecem no mesmo lugar e dão acesso ao seu perfil e às configurações da conta.</p>
+                    <ul class="ajuda-lista">
+                        <li><strong>Entrar / Cadastrar:</strong> acesse ou crie sua conta.</li>
+                        <li><strong>Perfil:</strong> clique na sua foto e no seu nome no menu.</li>
+                        <li><strong>Configurações:</strong> altere foto, nome e demais dados da conta.</li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+
+        <div class="seta-baixo seta-secao" aria-hidden="true"></div>
+
+        <section class="ajuda-secao" id="acessibilidade">
+            <div class="faixa-titulo">
+                <h2>FERRAMENTAS DE ACESSIBILIDADE</h2>
+            </div>
+            <p class="ajuda-desc">No menu, clique em Acessibilidade para adaptar o portal ao seu jeito de ler e navegar.</p>
+
+            <figure class="ajuda-video">
+                <video controls preload="metadata">
+                    <source src="/videos/TelaAcessibilidade.mp4" type="video/mp4">
+                    Seu navegador não suporta vídeo.
+                </video>
+            </figure>
+
+            <article class="card-lei ajuda-resumo">
+                <div class="card-body">
+                    <h3 class="card-title">Resumo da tela</h3>
+                    <p class="card-text">A página de Acessibilidade tem três abas, e cada opção é ativada na hora e vale para o portal inteiro.</p>
+                    <ul class="ajuda-lista">
+                        <li><strong>Visual:</strong> tamanho da fonte, alto contraste, modo escuro, monocromático e daltonismo.</li>
+                        <li><strong>Leitura:</strong> fonte para leitura, destacar links, espaçamento do texto, cursor ampliado, altura da linha e régua de leitura.</li>
+                        <li><strong>Navegação:</strong> parar animações e restaurar o padrão.</li>
+                    </ul>
+                </div>
+            </article>
+        </section>
+
+        <a href="#" class="ajuda-topo-link">Voltar ao mapa</a>
+
+    </article>
+    </main>
+
+    <%- include('partials/modal-contato') %>
+    <%- include('partials/modal-feedback') %>
+    <%- include('partials/rodape') %>
+    <%- include('partials/script-acessibilidade') %>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/javascripts/menu.js"></script>
+    <script src="/javascripts/modal-contato.js"></script>
+    <script src="/javascripts/modal-feedback.js"></script>
+
+</body>
+</html>

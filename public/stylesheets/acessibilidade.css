@@ -7814,3 +7814,388 @@ html:is(.fonte-grande, .fonte-maior,
         [class*="leitura-fonte-"]) .abas-condicao a {
     overflow-wrap: anywhere;
 }
+
+/* ==========================================================================
+   29. PÁGINA DE AJUDA (ajuda.ejs / ajuda.css)
+   Cola no FINAL do arquivo de acessibilidade (depois de todos os blocos
+   que já estão no fim, inclusive o "TEXTO AMPLIADO").
+   Elementos: .mapa-centro, a.mapa-no, .mapa-ramos (hastes), .seta-baixo,
+   .ajuda-video, .ajuda-resumo (card-lei com faixa azul no título),
+   .ajuda-lista e a.ajuda-topo-link.
+   --------------------------------------------------------------------------
+   O QUE ESTAVA FALTANDO
+   - a.mapa-no e a.ajuda-topo-link são LINKS: as regras gerais "html.tema-x a"
+     e "html.daltonismo-x a" forçam background transparent e trocam a cor, então
+     os botões do mapa perdiam o fundo e ficavam só com texto solto.
+   - .mapa-centro, hastes e setas usam --cor02/--cor03 fixos: no tema escuro
+     somem no fundo (#153243 sobre #153243).
+   - A faixa azul do título do .ajuda-resumo precisa das mesmas cores da faixa
+     dos cards "SOBRE" (seção 25.1) em cada modo.
+   - Os links repetem a classe (a.mapa-no.mapa-no) para sempre vencer as regras
+     gerais de link, sem depender da ordem no arquivo.
+   Atalho nos blocos de daltonismo sozinho:
+   html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro)
+   ========================================================================== */
+
+
+/* ==========================================================================
+   29.1 TEMA ESCURO
+   ========================================================================== */
+
+html.tema-escuro .mapa-centro {
+    background-color: var(--de-superficie) !important;
+    color: var(--de-texto) !important;
+    border: 1px solid var(--de-destaque) !important;
+}
+html.tema-escuro a.mapa-no.mapa-no {
+    background-color: var(--de-superficie-alt) !important;
+    color: var(--de-destaque) !important;
+    border: 1px solid var(--de-borda) !important;
+}
+html.tema-escuro a.mapa-no.mapa-no:hover {
+    background-color: var(--de-borda) !important;
+    color: var(--de-texto) !important;
+}
+html.tema-escuro .mapa-centro::after,
+html.tema-escuro .mapa-ramos li::before,
+html.tema-escuro .mapa-ramos li::after,
+html.tema-escuro .seta-baixo {
+    background-color: var(--de-destaque) !important;
+}
+html.tema-escuro .seta-baixo::after {
+    border-color: var(--de-destaque) !important;
+}
+html.tema-escuro .ajuda-video video {
+    border: 1px solid var(--de-borda) !important;
+}
+html.tema-escuro .ajuda-resumo .card-title {
+    background-color: var(--de-superficie-alt) !important;
+    color: var(--de-destaque) !important;
+    border-bottom: 1px solid var(--de-borda) !important;
+}
+html.tema-escuro a.ajuda-topo-link.ajuda-topo-link {
+    background-color: var(--de-destaque) !important;
+    color: #0d1117 !important;
+}
+html.tema-escuro a.ajuda-topo-link.ajuda-topo-link:hover {
+    background-color: #5FA8C4 !important;
+    color: #0d1117 !important;
+}
+
+
+/* ==========================================================================
+   29.2 ALTO CONTRASTE (ESCURO)
+   ========================================================================== */
+
+html.tema-contraste .mapa-centro {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #FFC94D !important;
+}
+html.tema-contraste a.mapa-no.mapa-no {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #FFC94D !important;
+}
+html.tema-contraste a.mapa-no.mapa-no:hover {
+    background-color: #FFC94D !important;
+    color: #000000 !important;
+}
+html.tema-contraste .mapa-centro::after,
+html.tema-contraste .mapa-ramos li::before,
+html.tema-contraste .mapa-ramos li::after,
+html.tema-contraste .seta-baixo {
+    background-color: #FFC94D !important;
+}
+html.tema-contraste .seta-baixo::after {
+    border-color: #FFC94D !important;
+}
+html.tema-contraste .ajuda-video video {
+    border: 2px solid #FFC94D !important;
+}
+html.tema-contraste .ajuda-resumo .card-title {
+    background-color: #1A1A1A !important;
+    color: #FFC94D !important;
+    border-bottom: 2px solid #FFC94D !important;
+}
+html.tema-contraste a.ajuda-topo-link.ajuda-topo-link {
+    background-color: #FFC94D !important;
+    color: #000000 !important;
+    border: 2px solid #FFC94D !important;
+}
+html.tema-contraste a.ajuda-topo-link.ajuda-topo-link:hover {
+    background-color: #E0AA30 !important;
+    border-color: #E0AA30 !important;
+    color: #000000 !important;
+}
+
+
+/* ==========================================================================
+   29.3 ALTO CONTRASTE CLARO
+   ========================================================================== */
+
+html.tema-contraste-claro .mapa-centro {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    border: 2px solid #000000 !important;
+}
+html.tema-contraste-claro a.mapa-no.mapa-no {
+    background-color: #FFFFFF !important;
+    color: #000000 !important;
+    border: 2px solid #000000 !important;
+}
+html.tema-contraste-claro a.mapa-no.mapa-no:hover {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+}
+html.tema-contraste-claro .mapa-centro::after,
+html.tema-contraste-claro .mapa-ramos li::before,
+html.tema-contraste-claro .mapa-ramos li::after,
+html.tema-contraste-claro .seta-baixo {
+    background-color: #000000 !important;
+}
+html.tema-contraste-claro .seta-baixo::after {
+    border-color: #000000 !important;
+}
+html.tema-contraste-claro .ajuda-video video {
+    border: 2px solid #000000 !important;
+}
+html.tema-contraste-claro .ajuda-resumo .card-title {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border-bottom: 2px solid #000000 !important;
+}
+html.tema-contraste-claro a.ajuda-topo-link.ajuda-topo-link {
+    background-color: #000000 !important;
+    color: #FFFFFF !important;
+    border: 2px solid #000000 !important;
+}
+html.tema-contraste-claro a.ajuda-topo-link.ajuda-topo-link:hover {
+    background-color: #1A1A1A !important;
+    border-color: #1A1A1A !important;
+    color: #FFFFFF !important;
+}
+
+
+/* ==========================================================================
+   29.4 DALTONISMO sozinho (protanopia / deuteranopia / tritanopia)
+   ========================================================================== */
+
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .mapa-centro {
+    background-color: var(--dc-texto) !important;
+    color: #ffffff !important;
+}
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) a.mapa-no.mapa-no {
+    background-color: var(--dc-destaque) !important;
+    color: #ffffff !important;
+}
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .mapa-centro::after,
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .mapa-ramos li::before,
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .mapa-ramos li::after,
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .seta-baixo {
+    background-color: var(--dc-destaque) !important;
+}
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .seta-baixo::after {
+    border-color: var(--dc-destaque) !important;
+}
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .ajuda-video video {
+    border: 2px solid var(--dc-destaque) !important;
+}
+/* hover: mesmos tons escuros do menu lateral de cada tipo */
+html.daltonismo-protanopia:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) a.mapa-no.mapa-no:hover,
+html.daltonismo-protanopia:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) a.ajuda-topo-link.ajuda-topo-link:hover {
+    background-color: #004570 !important;
+    color: #ffffff !important;
+}
+html.daltonismo-deuteranopia:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) a.mapa-no.mapa-no:hover,
+html.daltonismo-deuteranopia:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) a.ajuda-topo-link.ajuda-topo-link:hover {
+    background-color: #7A3762 !important;
+    color: #ffffff !important;
+}
+html.daltonismo-tritanopia:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) a.mapa-no.mapa-no:hover,
+html.daltonismo-tritanopia:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) a.ajuda-topo-link.ajuda-topo-link:hover {
+    background-color: #00543D !important;
+    color: #ffffff !important;
+}
+/* faixa do título do resumo (igual à dos cards SOBRE) */
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .ajuda-resumo .card-title {
+    background-color: var(--dc-destaque) !important;
+    color: #ffffff !important;
+}
+/* a regra de texto do daltonismo cobre "p" mas não "li" */
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) .ajuda-lista li {
+    color: var(--dc-texto) !important;
+}
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) a.ajuda-topo-link.ajuda-topo-link {
+    background-color: var(--dc-destaque) !important;
+    color: #ffffff !important;
+}
+/* foco: a regra geral usa dc-destaque, igual ao fundo do nó (ficava invisível) */
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) a.mapa-no:focus-visible,
+html[class*="daltonismo-"]:not(.tema-escuro):not(.tema-contraste):not(.tema-contraste-claro) a.ajuda-topo-link:focus-visible {
+    outline: 3px solid var(--dc-texto) !important;
+    outline-offset: 3px;
+}
+
+
+/* ==========================================================================
+   29.5 COMBO TEMA ESCURO + DALTONISMO (cada tipo com a sua cor)
+   ========================================================================== */
+
+html.tema-escuro[class*="daltonismo-"] .ajuda-video video {
+    border: 2px solid #B0B8BF !important;
+}
+
+/* ---------- Protanopia ---------- */
+html.tema-escuro.daltonismo-protanopia .mapa-centro {
+    background-color: #002D47 !important;
+    color: #7DD3FC !important;
+    border: 2px solid #7DD3FC !important;
+}
+html.tema-escuro.daltonismo-protanopia a.mapa-no.mapa-no {
+    background-color: #282828 !important;
+    color: #7DD3FC !important;
+    border: 2px solid #7DD3FC !important;
+}
+html.tema-escuro.daltonismo-protanopia a.mapa-no.mapa-no:hover {
+    background-color: #7DD3FC !important;
+    color: #0B1220 !important;
+}
+html.tema-escuro.daltonismo-protanopia .mapa-centro::after,
+html.tema-escuro.daltonismo-protanopia .mapa-ramos li::before,
+html.tema-escuro.daltonismo-protanopia .mapa-ramos li::after,
+html.tema-escuro.daltonismo-protanopia .seta-baixo {
+    background-color: #7DD3FC !important;
+}
+html.tema-escuro.daltonismo-protanopia .seta-baixo::after {
+    border-color: #7DD3FC !important;
+}
+html.tema-escuro.daltonismo-protanopia .ajuda-resumo .card-title {
+    background-color: #002D47 !important;
+    color: #7DD3FC !important;
+    border-bottom: 2px solid #7DD3FC !important;
+}
+html.tema-escuro.daltonismo-protanopia a.ajuda-topo-link.ajuda-topo-link {
+    background-color: #7DD3FC !important;
+    color: #0B1220 !important;
+}
+html.tema-escuro.daltonismo-protanopia a.ajuda-topo-link.ajuda-topo-link:hover {
+    background-color: #A8E2F7 !important;
+    color: #0B1220 !important;
+}
+
+/* ---------- Deuteranopia ---------- */
+html.tema-escuro.daltonismo-deuteranopia .mapa-centro {
+    background-color: #4A2039 !important;
+    color: #FAC4E3 !important;
+    border: 2px solid #FAC4E3 !important;
+}
+html.tema-escuro.daltonismo-deuteranopia a.mapa-no.mapa-no {
+    background-color: #282828 !important;
+    color: #FAC4E3 !important;
+    border: 2px solid #FAC4E3 !important;
+}
+html.tema-escuro.daltonismo-deuteranopia a.mapa-no.mapa-no:hover {
+    background-color: #FAC4E3 !important;
+    color: #0B1220 !important;
+}
+html.tema-escuro.daltonismo-deuteranopia .mapa-centro::after,
+html.tema-escuro.daltonismo-deuteranopia .mapa-ramos li::before,
+html.tema-escuro.daltonismo-deuteranopia .mapa-ramos li::after,
+html.tema-escuro.daltonismo-deuteranopia .seta-baixo {
+    background-color: #FAC4E3 !important;
+}
+html.tema-escuro.daltonismo-deuteranopia .seta-baixo::after {
+    border-color: #FAC4E3 !important;
+}
+html.tema-escuro.daltonismo-deuteranopia .ajuda-resumo .card-title {
+    background-color: #4A2039 !important;
+    color: #FAC4E3 !important;
+    border-bottom: 2px solid #FAC4E3 !important;
+}
+html.tema-escuro.daltonismo-deuteranopia a.ajuda-topo-link.ajuda-topo-link {
+    background-color: #FAC4E3 !important;
+    color: #0B1220 !important;
+}
+html.tema-escuro.daltonismo-deuteranopia a.ajuda-topo-link.ajuda-topo-link:hover {
+    background-color: #FDDCF0 !important;
+    color: #0B1220 !important;
+}
+
+/* ---------- Tritanopia ---------- */
+html.tema-escuro.daltonismo-tritanopia .mapa-centro {
+    background-color: #003326 !important;
+    color: #6EE7B7 !important;
+    border: 2px solid #6EE7B7 !important;
+}
+html.tema-escuro.daltonismo-tritanopia a.mapa-no.mapa-no {
+    background-color: #282828 !important;
+    color: #6EE7B7 !important;
+    border: 2px solid #6EE7B7 !important;
+}
+html.tema-escuro.daltonismo-tritanopia a.mapa-no.mapa-no:hover {
+    background-color: #6EE7B7 !important;
+    color: #0B2318 !important;
+}
+html.tema-escuro.daltonismo-tritanopia .mapa-centro::after,
+html.tema-escuro.daltonismo-tritanopia .mapa-ramos li::before,
+html.tema-escuro.daltonismo-tritanopia .mapa-ramos li::after,
+html.tema-escuro.daltonismo-tritanopia .seta-baixo {
+    background-color: #6EE7B7 !important;
+}
+html.tema-escuro.daltonismo-tritanopia .seta-baixo::after {
+    border-color: #6EE7B7 !important;
+}
+html.tema-escuro.daltonismo-tritanopia .ajuda-resumo .card-title {
+    background-color: #003326 !important;
+    color: #6EE7B7 !important;
+    border-bottom: 2px solid #6EE7B7 !important;
+}
+html.tema-escuro.daltonismo-tritanopia a.ajuda-topo-link.ajuda-topo-link {
+    background-color: #6EE7B7 !important;
+    color: #0B2318 !important;
+}
+html.tema-escuro.daltonismo-tritanopia a.ajuda-topo-link.ajuda-topo-link:hover {
+    background-color: #A8F0D3 !important;
+    color: #0B2318 !important;
+}
+
+
+/* ==========================================================================
+   29.6 MONOCROMÁTICO (depois do escuro, com mais especificidade)
+   O grayscale na raiz já tira as cores; aqui só a faixa do resumo, igual
+   à dos cards SOBRE.
+   ========================================================================== */
+
+html.monocromatico.monocromatico .ajuda-resumo .card-title {
+    background-color: #3A3A3A !important;
+    color: #E8E8E8 !important;
+}
+
+
+/* ==========================================================================
+   29.7 FONTE DE LEITURA e TEXTO AMPLIADO
+   - .mapa-centro é uma <div> com font-family próprio, então não herdava a
+     fonte de leitura (os links e títulos já são cobertos pelas regras gerais).
+   - Com texto maior, palavras longas ("mielomeningocele") quebram dentro do
+     nó em vez de passar da borda.
+   ========================================================================== */
+
+html.leitura-fonte-opendyslexic .mapa-centro {
+    font-family: 'OpenDyslexic', var(--fonte-padrao, sans-serif) !important;
+    letter-spacing: 0.03em !important;
+}
+html.leitura-fonte-lexend .mapa-centro {
+    font-family: 'Lexend', var(--fonte-padrao, sans-serif) !important;
+}
+html.leitura-fonte-hyperlegible .mapa-centro {
+    font-family: 'Atkinson Hyperlegible', var(--fonte-padrao, sans-serif) !important;
+}
+
+html:is(.fonte-grande, .fonte-maior,
+        .espacamento-media, .espacamento-grande,
+        .linha-media, .linha-grande,
+        [class*="leitura-fonte-"]) .mapa-no {
+    overflow-wrap: anywhere;
+    line-height: 1.3 !important;
+}
